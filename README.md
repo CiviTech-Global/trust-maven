@@ -1,5 +1,7 @@
 # **TrustMaven**
 
+<img src="./trustmaven-banner.png" alt="" />
+
 **TrustMaven** is a comprehensive, intelligent risk management platform built to help organizations not only survive risk—but transform it into a strategic advantage. In a time when the cost of unmitigated risk can be existential, TrustMaven helps your organization stay resilient, compliant, and one step ahead.
 
 ---
