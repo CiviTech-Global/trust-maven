@@ -147,7 +147,3 @@ TrustMaven connects to the tools you already use—ERP systems, CRMs, security l
 ### **User Interface**
 
 The UI is clean, role-based, and designed to empower—not overwhelm. Whether you're an analyst, executive, or department lead, you'll see what matters most to you—and can act on it with confidence.
-
----
-
-Let me know if you’d like this formatted into a polished PDF, turned into a client-facing presentation, or adapted for different audiences like investors or internal onboarding decks.
