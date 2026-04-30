@@ -1,0 +1,19 @@
+{
+  "name": "trust-maven",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TrustMaven - Comprehensive Risk Management Platform",
+  "scripts": {
+    "dev:client": "cd Clients && npm run dev",
+    "dev:server": "cd Servers && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build:client": "cd Clients && npm run build",
+    "build:server": "cd Servers && npm run build",
+    "build": "npm run build:server && npm run build:client",
+    "install:all": "cd Clients && npm install && cd ../Servers && npm install",
+    "lint": "cd Clients && npm run lint && cd ../Servers && npm run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
