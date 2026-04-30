@@ -12,7 +12,7 @@ import {
   BeforeCreate,
   BeforeUpdate,
 } from "sequelize-typescript";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Organization } from "../organization/organization.model";
 import { Role } from "../role/role.model";
 

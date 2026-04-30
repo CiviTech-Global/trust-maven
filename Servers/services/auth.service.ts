@@ -96,12 +96,12 @@ export class AuthService {
 
   private generateTokens(payload: JwtPayload) {
     const accessToken = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
+      expiresIn: JWT_EXPIRES_IN as string | number,
+    } as jwt.SignOptions);
 
     const refreshToken = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: JWT_REFRESH_EXPIRES_IN,
-    });
+      expiresIn: JWT_REFRESH_EXPIRES_IN as string | number,
+    } as jwt.SignOptions);
 
     return { accessToken, refreshToken };
   }

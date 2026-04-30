@@ -1,4 +1,5 @@
-import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 const stats = [
   { label: "Total Risks", value: "0", color: "#0F766E" },
