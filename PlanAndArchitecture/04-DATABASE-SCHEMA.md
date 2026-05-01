@@ -145,7 +145,7 @@ Core risk registry entries.
 | project_id | UUID | FK → projects(id), NULL | Associated project |
 | title | VARCHAR(255) | NOT NULL | Risk title |
 | description | TEXT | NULL | Detailed risk description |
-| domain | ENUM | NOT NULL | Values: financial, cybersecurity, ai_governance, operational, regulatory |
+| domain | ENUM | NOT NULL | Values: financial, cybersecurity, strategic, operational, regulatory |
 | status | ENUM | NOT NULL, DEFAULT 'identified' | Values: identified, assessed, treated, accepted, closed |
 | owner_id | UUID | FK → users(id), NULL | Assigned risk owner |
 | created_at | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Record creation timestamp |

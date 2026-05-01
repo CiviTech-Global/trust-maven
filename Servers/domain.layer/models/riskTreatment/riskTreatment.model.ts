@@ -46,6 +46,9 @@ export class RiskTreatment extends Model {
   @Column({ type: DataType.DATEONLY })
   dueDate!: string | null;
 
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  isDemoData!: boolean;
+
   @CreatedAt
   createdAt!: Date;
 

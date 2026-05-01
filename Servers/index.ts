@@ -10,6 +10,12 @@ import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
 import projectRoutes from "./routes/project.route";
 import riskRoutes from "./routes/risk.route";
+import dashboardRoutes from "./routes/dashboard.route";
+import demoDataRoutes from "./routes/demoData.route";
+import controlRoutes from "./routes/control.route";
+import exportRoutes from "./routes/export.route";
+import auditLogRoutes from "./routes/auditLog.route";
+import notificationRoutes from "./routes/notification.route";
 
 dotenv.config();
 
@@ -49,6 +55,12 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/risks", riskRoutes);
+app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/demo-data", demoDataRoutes);
+app.use("/api/v1/controls", controlRoutes);
+app.use("/api/v1/export", exportRoutes);
+app.use("/api/v1/audit-logs", auditLogRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 
 // Global error handler
 app.use(

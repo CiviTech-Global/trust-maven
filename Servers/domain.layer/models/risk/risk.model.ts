@@ -42,7 +42,7 @@ export class Risk extends Model {
     type: DataType.ENUM(
       "financial",
       "cybersecurity",
-      "ai_governance",
+      "strategic",
       "operational",
       "regulatory"
     ),
@@ -68,6 +68,9 @@ export class Risk extends Model {
 
   @CreatedAt
   createdAt!: Date;
+
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  isDemoData!: boolean;
 
   @UpdatedAt
   updatedAt!: Date;

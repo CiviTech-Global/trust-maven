@@ -62,7 +62,7 @@ The MVP delivers a fully functional risk management platform covering the comple
 - **View Risks** - Tabular list with sortable columns and pagination
 - **Edit Risk** - Update any risk field, change status, reassign
 - **Delete Risk** - Soft delete / close with confirmation
-- **Filter by Domain** - Financial, Cybersecurity, AI Governance, Operational, Regulatory
+- **Filter by Domain** - Financial, Cybersecurity, Strategic, Operational, Regulatory
 - **Filter by Status** - Identified, Assessed, Treated, Accepted, Closed
 - **Filter by Project** - Show risks for a specific project
 - **Search** - Full-text search across title and description
@@ -82,7 +82,7 @@ Identified → Assessed → Treated → Accepted/Closed
 |--------|-----------|-------------|
 | Financial | Blue | Market, credit, liquidity, budget risks |
 | Cybersecurity | Red | Threats, breaches, vulnerabilities |
-| AI Governance | Purple | Model bias, transparency, ethics |
+| Strategic | Purple | M&A, market shifts, competitive positioning |
 | Operational | Orange | Process, supply chain, system failures |
 | Regulatory | Green | Compliance, legal, policy adherence |
 

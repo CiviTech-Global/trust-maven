@@ -358,7 +358,7 @@ List all risks in the organization with filtering.
 
 **Query Parameters:**
 - `page`, `limit`, `search`
-- `domain` (financial, cybersecurity, ai_governance, operational, regulatory)
+- `domain` (financial, cybersecurity, strategic, operational, regulatory)
 - `status` (identified, assessed, treated, accepted, closed)
 - `projectId` (UUID)
 - `ownerId` (UUID)
@@ -413,9 +413,9 @@ Create a new risk entry.
 **Request Body:**
 ```json
 {
-  "title": "AI model bias in loan approvals",
-  "description": "The ML model used for loan approval shows potential demographic bias...",
-  "domain": "ai_governance",
+  "title": "Market share erosion in core segment",
+  "description": "New market entrants with disruptive models threatening core revenue streams...",
+  "domain": "strategic",
   "projectId": "uuid",
   "ownerId": "uuid"
 }
@@ -427,12 +427,12 @@ Create a new risk entry.
   "success": true,
   "data": {
     "id": "uuid",
-    "title": "AI model bias in loan approvals",
-    "description": "The ML model used for loan approval shows potential demographic bias...",
-    "domain": "ai_governance",
+    "title": "Market share erosion in core segment",
+    "description": "New market entrants with disruptive models threatening core revenue streams...",
+    "domain": "strategic",
     "status": "identified",
     "owner": { "id": "uuid", "firstName": "Jane", "lastName": "Smith" },
-    "project": { "id": "uuid", "name": "AI Governance Review" },
+    "project": { "id": "uuid", "name": "Strategic Growth Review" },
     "createdAt": "2026-04-30T12:00:00Z",
     "updatedAt": "2026-04-30T12:00:00Z"
   }
@@ -673,7 +673,7 @@ Get summary statistics for the dashboard.
     "risksByDomain": {
       "financial": 18,
       "cybersecurity": 25,
-      "ai_governance": 10,
+      "strategic": 10,
       "operational": 22,
       "regulatory": 12
     },
@@ -683,7 +683,7 @@ Get summary statistics for the dashboard.
     "recentActivity": [
       {
         "type": "risk_created",
-        "description": "New risk identified: AI model bias",
+        "description": "New risk identified: Market share erosion",
         "user": "John Doe",
         "timestamp": "2026-04-30T11:30:00Z"
       }

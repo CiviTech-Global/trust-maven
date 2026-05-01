@@ -36,7 +36,7 @@ The domain layer contains pure TypeScript definitions with zero external depende
 
 ```typescript
 // domain/types/risk.types.ts
-export type RiskDomain = 'financial' | 'cybersecurity' | 'ai_governance' | 'operational' | 'regulatory';
+export type RiskDomain = 'financial' | 'cybersecurity' | 'strategic' | 'operational' | 'regulatory';
 export type RiskStatus = 'identified' | 'assessed' | 'treated' | 'accepted' | 'closed';
 export type TreatmentStrategy = 'avoid' | 'mitigate' | 'transfer' | 'accept';
 export type TreatmentStatus = 'planned' | 'in_progress' | 'completed';
@@ -285,7 +285,7 @@ import { z } from 'zod';
 export const createRiskSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(255),
   description: z.string().optional(),
-  domain: z.enum(['financial', 'cybersecurity', 'ai_governance', 'operational', 'regulatory']),
+  domain: z.enum(['financial', 'cybersecurity', 'strategic', 'operational', 'regulatory']),
   projectId: z.string().uuid().optional(),
   ownerId: z.string().uuid().optional(),
 });

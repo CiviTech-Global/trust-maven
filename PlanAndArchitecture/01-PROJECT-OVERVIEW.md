@@ -29,8 +29,8 @@ Risks related to financial loss, market volatility, credit exposure, liquidity c
 ### 2. Cybersecurity Risk
 Risks arising from cyber threats, data breaches, unauthorized access, malware, phishing, and infrastructure vulnerabilities. Covers both technical and human-factor security risks.
 
-### 3. AI Governance & Algorithmic Risk
-Risks associated with artificial intelligence systems, machine learning model bias, algorithmic decision-making transparency, data ethics, and regulatory compliance for automated systems (e.g., EU AI Act).
+### 3. Strategic Risk
+Risks associated with market shifts, M&A integration challenges, competitive disruption, geographic concentration, reputational damage, and long-term portfolio positioning.
 
 ### 4. Operational Risk
 Risks stemming from internal process failures, supply chain disruptions, system breakdowns, human error, and business continuity threats. Covers day-to-day operational resilience.

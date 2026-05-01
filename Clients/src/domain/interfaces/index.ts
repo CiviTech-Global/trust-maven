@@ -64,6 +64,41 @@ export interface Project {
   createdAt: string;
 }
 
+export interface Control {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  effectiveness: string;
+  riskId: string | null;
+  ownerId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  userId: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  changes: Record<string, unknown>;
+  createdAt: string;
+  user?: { id: string; firstName: string; lastName: string; email: string };
+}
+
+export interface NotificationItem {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  relatedEntityType: string | null;
+  relatedEntityId: string | null;
+  createdAt: string;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

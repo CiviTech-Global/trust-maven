@@ -48,6 +48,9 @@ export class Project extends Model {
   @Column({ type: DataType.DATEONLY })
   endDate!: string | null;
 
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  isDemoData!: boolean;
+
   @CreatedAt
   createdAt!: Date;
 

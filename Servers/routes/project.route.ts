@@ -1,28 +1,15 @@
 import { Router } from "express";
 import { authenticate, tenantIsolation } from "../middleware/auth.middleware";
+import { projectController } from "../controllers/project.ctrl";
 
 const router = Router();
 
 router.use(authenticate, tenantIsolation);
 
-router.get("/", (_req, res) => {
-  res.json({ success: true, data: [], message: "Project list - to be implemented" });
-});
-
-router.post("/", (_req, res) => {
-  res.status(201).json({ success: true, message: "Project create - to be implemented" });
-});
-
-router.get("/:id", (_req, res) => {
-  res.json({ success: true, data: null, message: "Project detail - to be implemented" });
-});
-
-router.put("/:id", (_req, res) => {
-  res.json({ success: true, message: "Project update - to be implemented" });
-});
-
-router.delete("/:id", (_req, res) => {
-  res.json({ success: true, message: "Project delete - to be implemented" });
-});
+router.get("/", (req, res) => projectController.findAll(req, res));
+router.post("/", (req, res) => projectController.create(req, res));
+router.get("/:id", (req, res) => projectController.findById(req, res));
+router.put("/:id", (req, res) => projectController.update(req, res));
+router.delete("/:id", (req, res) => projectController.delete(req, res));
 
 export default router;

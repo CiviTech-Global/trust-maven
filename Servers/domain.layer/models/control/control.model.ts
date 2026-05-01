@@ -51,6 +51,9 @@ export class Control extends Model {
   @Column({ type: DataType.UUID })
   ownerId!: string | null;
 
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  isDemoData!: boolean;
+
   @CreatedAt
   createdAt!: Date;
 

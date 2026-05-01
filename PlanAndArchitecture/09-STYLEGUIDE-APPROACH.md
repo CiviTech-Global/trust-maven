@@ -181,7 +181,7 @@ The 5x5 risk matrix is a central visualization requiring careful design:
 Each risk domain has a distinctive icon for quick visual identification:
 - Financial: chart/dollar icon
 - Cybersecurity: shield/lock icon
-- AI Governance: brain/circuit icon
+- Strategic: target/crosshair icon
 - Operational: gear/process icon
 - Regulatory: document/gavel icon
 

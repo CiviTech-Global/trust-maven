@@ -1,7 +1,7 @@
 export enum RiskDomain {
   FINANCIAL = "financial",
   CYBERSECURITY = "cybersecurity",
-  AI_GOVERNANCE = "ai_governance",
+  STRATEGIC = "strategic",
   OPERATIONAL = "operational",
   REGULATORY = "regulatory",
 }

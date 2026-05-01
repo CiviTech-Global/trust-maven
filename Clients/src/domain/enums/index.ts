@@ -1,7 +1,7 @@
 export enum RiskDomain {
   FINANCIAL = "financial",
   CYBERSECURITY = "cybersecurity",
-  AI_GOVERNANCE = "ai_governance",
+  STRATEGIC = "strategic",
   OPERATIONAL = "operational",
   REGULATORY = "regulatory",
 }
@@ -36,4 +36,16 @@ export enum UserRole {
   ANALYST = "analyst",
   AUDITOR = "auditor",
   VIEWER = "viewer",
+}
+
+export enum ControlType {
+  PREVENTIVE = "preventive",
+  DETECTIVE = "detective",
+  CORRECTIVE = "corrective",
+}
+
+export enum ControlEffectiveness {
+  EFFECTIVE = "effective",
+  PARTIALLY_EFFECTIVE = "partially_effective",
+  INEFFECTIVE = "ineffective",
 }

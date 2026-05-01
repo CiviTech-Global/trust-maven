@@ -50,6 +50,9 @@ export class RiskAssessment extends Model {
   @Column({ type: DataType.DATE, defaultValue: DataType.NOW })
   assessedAt!: Date;
 
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  isDemoData!: boolean;
+
   @CreatedAt
   createdAt!: Date;
 
