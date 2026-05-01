@@ -4,8 +4,8 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { rateLimit } from "express-rate-limit";
 import { sequelize } from "./database/db";
+import { generalApiLimiter, authLimiter } from "./middleware/rateLimit.middleware";
 import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
 import projectRoutes from "./routes/project.route";
@@ -40,23 +40,32 @@ app.use(
   })
 );
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(limiter);
+// Rate limiting (tiered — auth routes get stricter limits)
+app.use("/api/v1/auth", authLimiter);
+app.use(generalApiLimiter);
 
 // Body parsing
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Health check
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
+// Health check — verifies database connectivity
+app.get("/api/health", async (_req, res) => {
+  const checks: Record<string, { status: "ok" | "error"; error?: string }> = {};
+
+  try {
+    await sequelize.query("SELECT 1");
+    checks.database = { status: "ok" };
+  } catch (err: any) {
+    checks.database = { status: "error", error: err.message };
+  }
+
+  const allOk = Object.values(checks).every((c) => c.status === "ok");
+  res.status(allOk ? 200 : 503).json({
+    status: allOk ? "ok" : "degraded",
+    timestamp: new Date().toISOString(),
+    checks,
+  });
 });
 
 // API routes
@@ -106,9 +115,36 @@ async function bootstrap() {
       await sequelize.sync({ alter: true });
     }
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       logger.info(`Server running on http://localhost:${PORT}`);
     });
+
+    // Graceful shutdown
+    async function shutdown(signal: string) {
+      logger.info(`${signal} received — shutting down gracefully`);
+
+      server.close(async () => {
+        logger.info("HTTP server closed");
+
+        try {
+          await sequelize.close();
+          logger.info("Database connection closed");
+        } catch (err) {
+          logger.error("Error closing database:", err);
+        }
+
+        process.exit(0);
+      });
+
+      // Force exit after 10s if connections don't drain
+      setTimeout(() => {
+        logger.error("Graceful shutdown timed out — forcing exit");
+        process.exit(1);
+      }, 10000).unref();
+    }
+
+    process.on("SIGTERM", () => shutdown("SIGTERM"));
+    process.on("SIGINT", () => shutdown("SIGINT"));
   } catch (error) {
     logger.error("Failed to start server:", error);
     process.exit(1);
