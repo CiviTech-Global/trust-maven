@@ -24,6 +24,8 @@ import riskQuantificationRoutes from "./routes/riskQuantification.route";
 import controlMonitoringRoutes from "./routes/controlMonitoring.route";
 import auditMgmtRoutes from "./routes/auditMgmt.route";
 import reportTemplateRoutes from "./routes/reportTemplate.route";
+import searchRoutes from "./routes/search.route";
+import changeHistoryRoutes from "./routes/changeHistory.route";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -87,6 +89,8 @@ app.use("/api/v1/risk-quantification", riskQuantificationRoutes);
 app.use("/api/v1/control-monitoring", controlMonitoringRoutes);
 app.use("/api/v1/audits", auditMgmtRoutes);
 app.use("/api/v1/reports", reportTemplateRoutes);
+app.use("/api/v1/search", searchRoutes);
+app.use("/api/v1/change-history", changeHistoryRoutes);
 
 // Global error handler
 app.use(
