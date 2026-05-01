@@ -11,6 +11,7 @@ import {
   MedicalServices as TreatIcon,
   Delete as DeleteIcon,
   Download as DownloadIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material";
 import { useRisks, useDeleteRisk } from "../../../infrastructure/api/risks.api";
 import RiskChip from "../../components/common/RiskChip";
@@ -19,6 +20,7 @@ import ConfirmDialog from "../../components/common/ConfirmDialog";
 import CreateRiskModal from "./CreateRiskModal";
 import AssessRiskModal from "./AssessRiskModal";
 import TreatRiskModal from "./TreatRiskModal";
+import EditRiskModal from "./EditRiskModal";
 import axiosInstance from "../../../infrastructure/api/axiosInstance";
 import { downloadFile } from "../../../application/utils/download";
 
@@ -49,6 +51,7 @@ export default function RiskRegistryPage() {
   const [assessRisk, setAssessRisk] = useState<{ id: string; title: string } | null>(null);
   const [treatRisk, setTreatRisk] = useState<{ id: string; title: string } | null>(null);
   const [deleteRisk, setDeleteRisk] = useState<string | null>(null);
+  const [editRisk, setEditRisk] = useState<any | null>(null);
 
   const { data: risks, isLoading, error } = useRisks({
     domain: domain || undefined,
@@ -164,6 +167,11 @@ export default function RiskRegistryPage() {
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
+                      <Tooltip title="Edit">
+                        <IconButton size="small" onClick={() => setEditRisk(risk)}>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                       <Tooltip title="Assess">
                         <IconButton size="small" onClick={() => setAssessRisk({ id: risk.id, title: risk.title })}>
                           <AssessIcon fontSize="small" />
@@ -206,6 +214,10 @@ export default function RiskRegistryPage() {
           riskId={treatRisk.id}
           riskTitle={treatRisk.title}
         />
+      )}
+
+      {editRisk && (
+        <EditRiskModal open={true} onClose={() => setEditRisk(null)} risk={editRisk} />
       )}
 
       <ConfirmDialog

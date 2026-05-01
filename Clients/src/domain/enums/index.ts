@@ -49,3 +49,29 @@ export enum ControlEffectiveness {
   PARTIALLY_EFFECTIVE = "partially_effective",
   INEFFECTIVE = "ineffective",
 }
+
+export enum AssessmentType {
+  INHERENT = "inherent",
+  RESIDUAL = "residual",
+}
+
+export enum ApprovalStatus {
+  DRAFT = "draft",
+  PENDING_APPROVAL = "pending_approval",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}
+
+export enum TestFrequency {
+  MONTHLY = "monthly",
+  QUARTERLY = "quarterly",
+  SEMI_ANNUALLY = "semi_annually",
+  ANNUALLY = "annually",
+}
+
+export enum TestingMethod {
+  INQUIRY = "inquiry",
+  OBSERVATION = "observation",
+  INSPECTION = "inspection",
+  REPERFORMANCE = "reperformance",
+}

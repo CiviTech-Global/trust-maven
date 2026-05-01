@@ -79,6 +79,56 @@ export class RiskTreatmentService {
     return treatment;
   }
 
+  async approve(id: string, organizationId: string, userId: string) {
+    const treatment = await RiskTreatment.findByPk(id, {
+      include: [{ model: Risk }],
+    });
+    if (!treatment) throw new Error("Treatment not found");
+    if (treatment.risk.organizationId !== organizationId) throw new Error("Treatment not found");
+
+    await treatment.update({
+      approvalStatus: "approved",
+      approvedById: userId,
+      approvedAt: new Date(),
+    });
+
+    await auditService.log({
+      organizationId,
+      userId,
+      entityType: "risk_treatment",
+      entityId: treatment.id,
+      action: AuditAction.UPDATE,
+      changes: { approvalStatus: "approved" },
+    });
+
+    return treatment;
+  }
+
+  async reject(id: string, organizationId: string, userId: string) {
+    const treatment = await RiskTreatment.findByPk(id, {
+      include: [{ model: Risk }],
+    });
+    if (!treatment) throw new Error("Treatment not found");
+    if (treatment.risk.organizationId !== organizationId) throw new Error("Treatment not found");
+
+    await treatment.update({
+      approvalStatus: "rejected",
+      approvedById: userId,
+      approvedAt: new Date(),
+    });
+
+    await auditService.log({
+      organizationId,
+      userId,
+      entityType: "risk_treatment",
+      entityId: treatment.id,
+      action: AuditAction.UPDATE,
+      changes: { approvalStatus: "rejected" },
+    });
+
+    return treatment;
+  }
+
   async delete(id: string, organizationId: string, userId: string) {
     const treatment = await RiskTreatment.findByPk(id, {
       include: [{ model: Risk }],

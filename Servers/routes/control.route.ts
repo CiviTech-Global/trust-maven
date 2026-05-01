@@ -12,4 +12,9 @@ router.get("/:id", (req, res) => controlController.findById(req, res));
 router.put("/:id", (req, res) => controlController.update(req, res));
 router.delete("/:id", (req, res) => controlController.delete(req, res));
 
+// Framework mappings
+router.get("/:id/frameworks", (req, res) => controlController.getFrameworkMappings(req, res));
+router.post("/:id/frameworks", (req, res) => controlController.addFrameworkMapping(req, res));
+router.delete("/:id/frameworks/:mappingId", (req, res) => controlController.removeFrameworkMapping(req, res));
+
 export default router;

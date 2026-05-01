@@ -404,6 +404,128 @@ User notification records.
 
 ---
 
+## Phase 3 Schema Extensions
+
+The following columns and tables represent the industry-standard GRC maturity roadmap. These are planned additions — no code changes in this phase.
+
+### New Enums
+
+```sql
+-- Risk origin tracking (TPRM support)
+CREATE TYPE risk_source AS ENUM ('internal', 'external', 'third_party');
+
+-- Automated review scheduling
+CREATE TYPE review_cycle AS ENUM ('monthly', 'quarterly', 'semi_annual', 'annual');
+
+-- Inherent vs residual assessment distinction
+CREATE TYPE assessment_type AS ENUM ('inherent', 'residual');
+
+-- Assessor confidence level
+CREATE TYPE confidence_level AS ENUM ('low', 'medium', 'high');
+
+-- Control operating frequency
+CREATE TYPE control_frequency AS ENUM ('continuous', 'daily', 'weekly', 'monthly', 'quarterly', 'annually');
+
+-- Control testing methodology
+CREATE TYPE control_testing_method AS ENUM ('automated', 'manual', 'observation', 'inquiry');
+
+-- How fast risk impact materializes (Gartner-recommended)
+CREATE TYPE risk_velocity AS ENUM ('immediate', 'days', 'weeks', 'months', 'years');
+```
+
+### risks — New Columns
+
+| Column | Type | Why (industry standard) |
+|--------|------|------------------------|
+| `category` | VARCHAR(255) | Hierarchical taxonomy beyond 5 flat domains (e.g., "Cybersecurity > Data Breach > Customer PII"). ServiceNow, Archer use multi-level taxonomies. |
+| `risk_source` | risk_source ENUM | Where the risk originates. Critical for TPRM (Third-Party Risk Management). |
+| `review_cycle` | review_cycle ENUM | Drives automated re-assessment reminders. Every major GRC platform has this. |
+| `next_review_date` | DATE | Powers "overdue review" dashboard widgets. |
+| `risk_appetite_threshold` | INTEGER (1-25) | Org's acceptable risk level. Enables "above appetite" filtering — a standard RFP requirement. |
+| `velocity` | risk_velocity ENUM | How fast impact materializes. Gartner-recommended field. |
+
+### risk_assessments — New Columns
+
+| Column | Type | Why |
+|--------|------|-----|
+| `assessment_type` | assessment_type ENUM | **#1 industry-standard gap.** Every GRC platform distinguishes inherent (before controls) from residual (after controls). |
+| `confidence_level` | confidence_level ENUM | How confident the assessor is. AuditBoard, LogicGate include this. |
+| `financial_impact_estimate` | DECIMAL(15,2) | Dollar-value for quantitative risk analysis (FAIR methodology). |
+| `approved_by_id` | UUID FK → users | Sign-off from risk owner. All enterprise GRC requires approval workflows. |
+| `approved_at` | TIMESTAMPTZ | Audit trail for approval. |
+
+### controls — New Columns
+
+| Column | Type | Why |
+|--------|------|-----|
+| `frequency` | control_frequency ENUM | How often the control operates. SOC 2 auditors ask for this. |
+| `testing_method` | control_testing_method ENUM | How the control is tested. Mapped to COSO/COBIT testing standards. |
+| `last_tested_at` | TIMESTAMPTZ | When last tested. Powers "overdue test" alerts. |
+| `next_test_due` | DATE | Scheduled next test. |
+| `design_effectiveness` | control_effectiveness ENUM | Separate from operating effectiveness. PCAOB/SOX distinction. |
+| `operating_effectiveness` | control_effectiveness ENUM | Replaces single "effectiveness" field. |
+| `control_objective` | TEXT | What the control achieves. Maps to framework requirements. |
+| `evidence_requirements` | TEXT | What evidence proves the control works. |
+| `framework_mappings` | JSONB | Array of framework requirement IDs (e.g., `[{"framework": "SOC 2", "requirement": "CC6.1"}]`). |
+| `annual_cost` | DECIMAL(12,2) | Cost of operating the control. ROI analysis. |
+
+### risk_treatments — New Columns
+
+| Column | Type | Why |
+|--------|------|-----|
+| `cost_estimate` | DECIMAL(12,2) | Budget for the treatment. |
+| `target_residual_score` | INTEGER (1-25) | Expected risk score after treatment. |
+| `progress_pct` | INTEGER (0-100) | Actual completion % vs. the 3-status-only approach. |
+| `start_date` | DATE | When treatment began. |
+| `approved_by_id` | UUID FK → users | Approval before execution. |
+| `approved_at` | TIMESTAMPTZ | When approved. |
+| `evidence_of_completion` | TEXT | Proof of execution. |
+
+### New Tables (Phase 3b)
+
+#### key_risk_indicators
+
+Key Risk Indicators (KRIs) for automated risk monitoring and alerting.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| id | UUID | PK, DEFAULT uuid_generate_v4() | Primary key |
+| risk_id | UUID | FK → risks(id), NOT NULL, ON DELETE CASCADE | Associated risk |
+| name | VARCHAR(255) | NOT NULL | KRI name |
+| description | TEXT | NULL | What this indicator measures |
+| metric_type | VARCHAR(50) | NOT NULL | Values: count, percentage, currency, duration |
+| threshold_warning | DECIMAL(15,2) | NULL | Amber threshold value |
+| threshold_critical | DECIMAL(15,2) | NULL | Red threshold value |
+| current_value | DECIMAL(15,2) | NULL | Latest measured value |
+| last_measured_at | TIMESTAMPTZ | NULL | When last measured |
+| measurement_frequency | review_cycle ENUM | NOT NULL | How often to measure |
+| owner_id | UUID | FK → users(id), NULL | Responsible user |
+| created_at | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Record creation timestamp |
+| updated_at | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Last modification timestamp |
+
+**Indexes:**
+- `idx_kri_risk_id` on `risk_id`
+- `idx_kri_owner_id` on `owner_id`
+
+#### risk_control_mappings
+
+Many-to-many junction table replacing the current one-control-one-risk FK. One control can mitigate multiple risks (industry standard).
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| id | UUID | PK, DEFAULT uuid_generate_v4() | Primary key |
+| risk_id | UUID | FK → risks(id), NOT NULL, ON DELETE CASCADE | Associated risk |
+| control_id | UUID | FK → controls(id), NOT NULL, ON DELETE CASCADE | Associated control |
+| mapping_rationale | TEXT | NULL | Why this control mitigates this risk |
+| created_at | TIMESTAMPTZ | NOT NULL, DEFAULT NOW() | Record creation timestamp |
+
+**Indexes:**
+- `idx_rcm_risk_id` on `risk_id`
+- `idx_rcm_control_id` on `control_id`
+- `idx_rcm_unique` UNIQUE on `(risk_id, control_id)`
+
+---
+
 ## Migration Strategy
 
 ### Approach

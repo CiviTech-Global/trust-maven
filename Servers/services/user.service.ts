@@ -13,8 +13,9 @@ export class UserService {
     });
   }
 
-  async findById(id: string) {
-    const user = await User.findByPk(id, {
+  async findById(id: string, organizationId: string) {
+    const user = await User.findOne({
+      where: { id, organizationId },
       attributes: { exclude: ["passwordHash"] },
       include: [
         { model: Role, attributes: ["id", "name"] },
@@ -25,8 +26,8 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, data: Partial<{ firstName: string; lastName: string }>) {
-    const user = await User.findByPk(id);
+  async update(id: string, data: Partial<{ firstName: string; lastName: string }>, organizationId: string) {
+    const user = await User.findOne({ where: { id, organizationId } });
     if (!user) throw new Error("User not found");
 
     await user.update(data);
@@ -42,13 +43,20 @@ export class UserService {
 
     const tempPassword = crypto.randomBytes(8).toString("hex");
 
+    let resolvedRoleId = data.roleId;
+    if (resolvedRoleId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(resolvedRoleId)) {
+      const roleByName = await Role.findOne({ where: { name: resolvedRoleId } });
+      if (roleByName) resolvedRoleId = roleByName.id;
+      else resolvedRoleId = undefined;
+    }
+
     const user = await User.create({
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
       passwordHash: tempPassword,
       organizationId,
-      roleId: data.roleId || undefined,
+      roleId: resolvedRoleId || undefined,
       isActive: true,
     });
 

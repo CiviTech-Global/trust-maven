@@ -52,7 +52,7 @@ export class ControlService {
   }
 
   async create(
-    data: { title: string; description?: string; type: string; effectiveness?: string; riskId?: string; ownerId?: string },
+    data: { title: string; description?: string; type: string; effectiveness?: string; riskId?: string; ownerId?: string; designEffectiveness?: string; operatingEffectiveness?: string; testingMethod?: string; lastTestedAt?: string; nextTestDue?: string; testFrequency?: string },
     organizationId: string,
     userId: string
   ) {
@@ -76,7 +76,7 @@ export class ControlService {
 
   async update(
     id: string,
-    data: Partial<{ title: string; description: string; type: string; effectiveness: string; riskId: string; ownerId: string }>,
+    data: Partial<{ title: string; description: string; type: string; effectiveness: string; riskId: string; ownerId: string; designEffectiveness: string; operatingEffectiveness: string; testingMethod: string; lastTestedAt: string; nextTestDue: string; testFrequency: string }>,
     organizationId: string,
     userId: string
   ) {

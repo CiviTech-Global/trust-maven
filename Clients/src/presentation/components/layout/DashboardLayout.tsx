@@ -40,6 +40,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../application/redux/store";
 import { logout } from "../../../application/redux/slices/authSlice";
+import axiosInstance from "../../../infrastructure/api/axiosInstance";
 import { toggleTheme } from "../../../application/redux/slices/uiSlice";
 import { useDemoDataStatus, useCreateDemoData, useDeleteDemoData } from "../../../infrastructure/api/demoData.api";
 import { useUnreadCount, useUnreadNotifications, useMarkRead, useMarkAllRead } from "../../../infrastructure/api/notifications.api";
@@ -78,7 +79,12 @@ export default function DashboardLayout() {
   const markRead = useMarkRead();
   const markAllRead = useMarkAllRead();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+    } catch {
+      // proceed with local logout even if server call fails
+    }
     dispatch(logout());
     navigate("/login");
   };

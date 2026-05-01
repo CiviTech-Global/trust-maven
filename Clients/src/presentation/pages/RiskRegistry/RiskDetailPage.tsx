@@ -3,9 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   Box, Typography, Button, Chip, Card, CardContent,
   Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  LinearProgress, Alert, IconButton,
+  LinearProgress, Alert, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip,
 } from "@mui/material";
-import { ArrowBack as BackIcon, Add as AddIcon } from "@mui/icons-material";
+import {
+  ArrowBack as BackIcon, Add as AddIcon, Edit as EditIcon,
+  CheckCircle as ApproveIcon, Cancel as RejectIcon, Delete as DeleteIcon,
+} from "@mui/icons-material";
 import { useRisk } from "../../../infrastructure/api/risks.api";
 import { useAssessments } from "../../../infrastructure/api/assessments.api";
 import { useTreatments } from "../../../infrastructure/api/treatments.api";
@@ -14,6 +17,12 @@ import { useEntityAuditLogs } from "../../../infrastructure/api/auditLogs.api";
 import RiskChip from "../../components/common/RiskChip";
 import AssessRiskModal from "./AssessRiskModal";
 import TreatRiskModal from "./TreatRiskModal";
+import EditRiskModal from "./EditRiskModal";
+import EditTreatmentModal from "./EditTreatmentModal";
+import { useApproveAssessment, useRejectAssessment } from "../../../infrastructure/api/assessments.api";
+import { useApproveTreatment, useRejectTreatment } from "../../../infrastructure/api/treatments.api";
+import { useRiskControlMappings, useAddRiskControlMapping, useRemoveRiskControlMapping } from "../../../infrastructure/api/riskControlMappings.api";
+
 
 export default function RiskDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,12 +30,23 @@ export default function RiskDetailPage() {
   const [tab, setTab] = useState(0);
   const [assessOpen, setAssessOpen] = useState(false);
   const [treatOpen, setTreatOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editTreatment, setEditTreatment] = useState<any | null>(null);
+  const [linkControlOpen, setLinkControlOpen] = useState(false);
 
   const { data: risk, isLoading, error } = useRisk(id || null);
   const { data: assessments } = useAssessments(id || null);
   const { data: treatments } = useTreatments(id || null);
   const { data: controls } = useControls({ riskId: id || undefined });
   const { data: auditLogs } = useEntityAuditLogs("risk", id || null);
+  const { data: riskControlMappings } = useRiskControlMappings(id || null);
+  const { data: allControls } = useControls();
+  const approveAssessment = useApproveAssessment();
+  const rejectAssessment = useRejectAssessment();
+  const approveTreatment = useApproveTreatment();
+  const rejectTreatment = useRejectTreatment();
+  const addControlMapping = useAddRiskControlMapping();
+  const removeControlMapping = useRemoveRiskControlMapping();
 
   if (isLoading) return <LinearProgress />;
   if (error || !risk) return <Alert severity="error">Risk not found</Alert>;
@@ -58,6 +78,9 @@ export default function RiskDetailPage() {
             )}
           </Box>
         </Box>
+        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => setEditOpen(true)}>
+          Edit
+        </Button>
       </Box>
 
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3, borderBottom: 1, borderColor: "divider" }}>
@@ -91,6 +114,15 @@ export default function RiskDetailPage() {
                 <Typography variant="body2" color="text.secondary">Created</Typography>
                 <Typography variant="body1">{new Date(risk.createdAt).toLocaleDateString()}</Typography>
               </Box>
+              <Box>
+                <Typography variant="body2" color="text.secondary">Risk Appetite Threshold</Typography>
+                <Typography variant="body1">
+                  {(risk as any).riskAppetiteThreshold || "--"}
+                  {score !== null && (risk as any).riskAppetiteThreshold && score > (risk as any).riskAppetiteThreshold && (
+                    <Chip label="Exceeds Appetite" size="small" color="error" sx={{ ml: 1 }} />
+                  )}
+                </Typography>
+              </Box>
             </Box>
           </CardContent>
         </Card>
@@ -108,17 +140,22 @@ export default function RiskDetailPage() {
               <TableHead>
                 <TableRow>
                   <TableCell>Date</TableCell>
+                  <TableCell>Type</TableCell>
                   <TableCell>Likelihood</TableCell>
                   <TableCell>Impact</TableCell>
                   <TableCell>Score</TableCell>
-                  <TableCell>Methodology</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Assessor</TableCell>
+                  <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {assessments?.map((a: any) => (
                   <TableRow key={a.id}>
                     <TableCell>{new Date(a.assessedAt).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <Chip label={a.assessmentType || "inherent"} size="small" color={a.assessmentType === "residual" ? "secondary" : "primary"} />
+                    </TableCell>
                     <TableCell>{a.likelihood}</TableCell>
                     <TableCell>{a.impact}</TableCell>
                     <TableCell>
@@ -128,12 +165,34 @@ export default function RiskDetailPage() {
                         {a.likelihood * a.impact}
                       </Typography>
                     </TableCell>
-                    <TableCell>{a.methodology || "--"}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={a.approvalStatus || "draft"}
+                        size="small"
+                        color={a.approvalStatus === "approved" ? "success" : a.approvalStatus === "rejected" ? "error" : a.approvalStatus === "pending_approval" ? "warning" : "default"}
+                      />
+                    </TableCell>
                     <TableCell>{a.assessor ? `${a.assessor.firstName} ${a.assessor.lastName}` : "--"}</TableCell>
+                    <TableCell align="right">
+                      {a.approvalStatus !== "approved" && (
+                        <Tooltip title="Approve">
+                          <IconButton size="small" color="success" onClick={() => id && approveAssessment.mutateAsync({ riskId: id, assessmentId: a.id })}>
+                            <ApproveIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {a.approvalStatus !== "rejected" && (
+                        <Tooltip title="Reject">
+                          <IconButton size="small" color="error" onClick={() => id && rejectAssessment.mutateAsync({ riskId: id, assessmentId: a.id })}>
+                            <RejectIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
                 {(!assessments || assessments.length === 0) && (
-                  <TableRow><TableCell colSpan={6} align="center">No assessments yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} align="center">No assessments yet</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -155,8 +214,10 @@ export default function RiskDetailPage() {
                   <TableCell>Strategy</TableCell>
                   <TableCell>Description</TableCell>
                   <TableCell>Status</TableCell>
+                  <TableCell>Approval</TableCell>
                   <TableCell>Responsible</TableCell>
                   <TableCell>Due Date</TableCell>
+                  <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -173,12 +234,40 @@ export default function RiskDetailPage() {
                         color={t.status === "completed" ? "success" : t.status === "in_progress" ? "info" : "default"}
                       />
                     </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={t.approvalStatus || "draft"}
+                        size="small"
+                        color={t.approvalStatus === "approved" ? "success" : t.approvalStatus === "rejected" ? "error" : t.approvalStatus === "pending_approval" ? "warning" : "default"}
+                      />
+                    </TableCell>
                     <TableCell>{t.responsible ? `${t.responsible.firstName} ${t.responsible.lastName}` : "--"}</TableCell>
                     <TableCell>{t.dueDate ? new Date(t.dueDate).toLocaleDateString() : "--"}</TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="Edit">
+                        <IconButton size="small" onClick={() => setEditTreatment(t)}>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      {t.approvalStatus !== "approved" && (
+                        <Tooltip title="Approve">
+                          <IconButton size="small" color="success" onClick={() => id && approveTreatment.mutateAsync({ riskId: id, treatmentId: t.id })}>
+                            <ApproveIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {t.approvalStatus !== "rejected" && (
+                        <Tooltip title="Reject">
+                          <IconButton size="small" color="error" onClick={() => id && rejectTreatment.mutateAsync({ riskId: id, treatmentId: t.id })}>
+                            <RejectIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
                 {(!treatments || treatments.length === 0) && (
-                  <TableRow><TableCell colSpan={5} align="center">No treatments yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={7} align="center">No treatments yet</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -187,37 +276,87 @@ export default function RiskDetailPage() {
       )}
 
       {tab === 3 && (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Effectiveness</TableCell>
-                <TableCell>Owner</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {controls?.map((c: any) => (
-                <TableRow key={c.id}>
-                  <TableCell>{c.title}</TableCell>
-                  <TableCell><Chip label={c.type} size="small" /></TableCell>
-                  <TableCell>
-                    <Chip
-                      label={c.effectiveness?.replace("_", " ")}
-                      size="small"
-                      color={c.effectiveness === "effective" ? "success" : c.effectiveness === "ineffective" ? "error" : "warning"}
-                    />
-                  </TableCell>
-                  <TableCell>{c.owner ? `${c.owner.firstName} ${c.owner.lastName}` : "--"}</TableCell>
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+            <Button variant="contained" startIcon={<AddIcon />} onClick={() => setLinkControlOpen(true)}>
+              Link Control
+            </Button>
+          </Box>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Type</TableCell>
+                  <TableCell>Effectiveness</TableCell>
+                  <TableCell>Owner</TableCell>
+                  <TableCell align="right">Actions</TableCell>
                 </TableRow>
-              ))}
-              {(!controls || controls.length === 0) && (
-                <TableRow><TableCell colSpan={4} align="center">No linked controls</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {riskControlMappings?.map((m: any) => (
+                  <TableRow key={m.id}>
+                    <TableCell>{m.control?.title}</TableCell>
+                    <TableCell><Chip label={m.control?.type} size="small" /></TableCell>
+                    <TableCell>
+                      <Chip
+                        label={m.control?.effectiveness?.replace("_", " ")}
+                        size="small"
+                        color={m.control?.effectiveness === "effective" ? "success" : m.control?.effectiveness === "ineffective" ? "error" : "warning"}
+                      />
+                    </TableCell>
+                    <TableCell>{m.control?.owner ? `${m.control.owner.firstName} ${m.control.owner.lastName}` : "--"}</TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="Unlink">
+                        <IconButton size="small" color="error" onClick={() => id && removeControlMapping.mutateAsync({ riskId: id, controlId: m.id })}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {(!riskControlMappings || riskControlMappings.length === 0) && (
+                  <TableRow><TableCell colSpan={5} align="center">No linked controls</TableCell></TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {linkControlOpen && (
+            <Dialog open={true} onClose={() => setLinkControlOpen(false)} maxWidth="sm" fullWidth>
+              <DialogTitle>Link Control to Risk</DialogTitle>
+              <DialogContent>
+                <Box sx={{ mt: 1 }}>
+                  {allControls?.filter((c: any) => !riskControlMappings?.some((m: any) => m.controlId === c.id)).map((c: any) => (
+                    <Box key={c.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", py: 1, borderBottom: "1px solid #eee" }}>
+                      <Box>
+                        <Typography variant="body1" fontWeight={500}>{c.title}</Typography>
+                        <Typography variant="body2" color="text.secondary">{c.type}</Typography>
+                      </Box>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={async () => {
+                          if (id) {
+                            await addControlMapping.mutateAsync({ riskId: id, controlId: c.id });
+                          }
+                        }}
+                      >
+                        Link
+                      </Button>
+                    </Box>
+                  ))}
+                  {allControls?.filter((c: any) => !riskControlMappings?.some((m: any) => m.controlId === c.id)).length === 0 && (
+                    <Typography color="text.secondary" sx={{ py: 2, textAlign: "center" }}>No available controls to link</Typography>
+                  )}
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setLinkControlOpen(false)}>Close</Button>
+              </DialogActions>
+            </Dialog>
+          )}
+        </Box>
       )}
 
       {tab === 4 && (
@@ -263,6 +402,12 @@ export default function RiskDetailPage() {
       )}
       {treatOpen && id && (
         <TreatRiskModal open={true} onClose={() => setTreatOpen(false)} riskId={id} riskTitle={risk.title} />
+      )}
+      {editOpen && risk && (
+        <EditRiskModal open={true} onClose={() => setEditOpen(false)} risk={risk} />
+      )}
+      {editTreatment && id && (
+        <EditTreatmentModal open={true} onClose={() => setEditTreatment(null)} riskId={id} treatment={editTreatment} />
       )}
     </Box>
   );

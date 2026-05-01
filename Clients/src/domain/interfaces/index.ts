@@ -1,4 +1,4 @@
-import { RiskDomain, RiskStatus, TreatmentStrategy, ProjectStatus } from "../enums";
+import { RiskDomain, RiskStatus, TreatmentStrategy, ProjectStatus, AssessmentType, ApprovalStatus, TestFrequency, TestingMethod } from "../enums";
 
 export interface User {
   id: string;
@@ -27,6 +27,7 @@ export interface Risk {
   status: RiskStatus;
   projectId: string | null;
   ownerId: string | null;
+  riskAppetiteThreshold: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,6 +42,10 @@ export interface RiskAssessment {
   methodology: string;
   notes: string;
   assessedAt: string;
+  assessmentType: AssessmentType;
+  approvalStatus: ApprovalStatus;
+  approvedById: string | null;
+  approvedAt: string | null;
 }
 
 export interface RiskTreatment {
@@ -51,6 +56,9 @@ export interface RiskTreatment {
   status: string;
   responsibleId: string | null;
   dueDate: string | null;
+  approvalStatus: ApprovalStatus;
+  approvedById: string | null;
+  approvedAt: string | null;
 }
 
 export interface Project {
@@ -70,6 +78,12 @@ export interface Control {
   description: string;
   type: string;
   effectiveness: string;
+  designEffectiveness: string;
+  operatingEffectiveness: string;
+  testingMethod: TestingMethod | null;
+  lastTestedAt: string | null;
+  nextTestDue: string | null;
+  testFrequency: TestFrequency | null;
   riskId: string | null;
   ownerId: string | null;
   createdAt: string;
@@ -97,6 +111,22 @@ export interface NotificationItem {
   relatedEntityType: string | null;
   relatedEntityId: string | null;
   createdAt: string;
+}
+
+export interface RiskControlMapping {
+  id: string;
+  riskId: string;
+  controlId: string;
+  mappedById: string | null;
+  mappedAt: string;
+}
+
+export interface ControlFrameworkMapping {
+  id: string;
+  controlId: string;
+  frameworkId: string;
+  requirementId: string;
+  mappedAt: string;
 }
 
 export interface ApiResponse<T = unknown> {

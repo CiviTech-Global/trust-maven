@@ -24,6 +24,7 @@ export default function CreateRiskModal({ open, onClose }: CreateRiskModalProps)
   const [description, setDescription] = useState("");
   const [domain, setDomain] = useState("");
   const [projectId, setProjectId] = useState("");
+  const [riskAppetiteThreshold, setRiskAppetiteThreshold] = useState("");
   const createRisk = useCreateRisk();
   const { data: projects } = useProjects();
 
@@ -34,13 +35,14 @@ export default function CreateRiskModal({ open, onClose }: CreateRiskModalProps)
       description: description || undefined,
       domain,
       projectId: projectId || undefined,
-    });
-    setTitle(""); setDescription(""); setDomain(""); setProjectId("");
+      riskAppetiteThreshold: riskAppetiteThreshold ? parseInt(riskAppetiteThreshold) : undefined,
+    } as any);
+    setTitle(""); setDescription(""); setDomain(""); setProjectId(""); setRiskAppetiteThreshold("");
     onClose();
   };
 
   const handleClose = () => {
-    setTitle(""); setDescription(""); setDomain(""); setProjectId("");
+    setTitle(""); setDescription(""); setDomain(""); setProjectId(""); setRiskAppetiteThreshold("");
     onClose();
   };
 
@@ -62,6 +64,15 @@ export default function CreateRiskModal({ open, onClose }: CreateRiskModalProps)
               <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
             ))}
           </TextField>
+          <TextField
+            label="Risk Appetite Threshold (1-25)"
+            type="number"
+            value={riskAppetiteThreshold}
+            onChange={(e) => setRiskAppetiteThreshold(e.target.value)}
+            fullWidth
+            inputProps={{ min: 1, max: 25 }}
+            helperText="Optional. Scores above this threshold will trigger a warning."
+          />
         </Box>
       </DialogContent>
       <DialogActions>

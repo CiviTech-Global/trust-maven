@@ -15,7 +15,7 @@ export class UserController {
   async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const id = req.params.id as string;
-      const user = await userService.findById(id);
+      const user = await userService.findById(id, req.user!.organizationId);
       res.json({ success: true, data: user });
     } catch (error: any) {
       res.status(404).json({ success: false, message: error.message });
@@ -26,7 +26,7 @@ export class UserController {
     try {
       const id = req.params.id as string;
       const { firstName, lastName } = req.body;
-      const user = await userService.update(id, { firstName, lastName });
+      const user = await userService.update(id, { firstName, lastName }, req.user!.organizationId);
       res.json({ success: true, data: user });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });

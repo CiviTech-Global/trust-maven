@@ -108,9 +108,12 @@ export class AuthService {
 
   async refreshToken(token: string) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-      const tokens = this.generateTokens(decoded);
-      return tokens;
+      const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload & {
+        iat?: number;
+        exp?: number;
+      };
+      const { userId, email, organizationId, role } = decoded;
+      return this.generateTokens({ userId, email, organizationId, role });
     } catch {
       throw new Error("Invalid refresh token");
     }

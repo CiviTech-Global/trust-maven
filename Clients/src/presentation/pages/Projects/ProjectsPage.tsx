@@ -5,11 +5,12 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Chip, LinearProgress, Alert, Link,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { useProjects, useDeleteProject } from "../../../infrastructure/api/projects.api";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import CreateProjectModal from "./CreateProjectModal";
+import EditProjectModal from "./EditProjectModal";
 
 const STATUS_COLORS: Record<string, "default" | "primary" | "success" | "warning" | "info"> = {
   draft: "default",
@@ -31,6 +32,7 @@ export default function ProjectsPage() {
   const navigate = useNavigate();
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editProject, setEditProject] = useState<any | null>(null);
   const { data: projects, isLoading, error } = useProjects();
   const deleteMutation = useDeleteProject();
 
@@ -119,6 +121,11 @@ export default function ProjectsPage() {
                     <Typography variant="body2">{project.risks?.length ?? 0}</Typography>
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="Edit">
+                      <IconButton size="small" onClick={() => setEditProject(project)}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Delete">
                       <IconButton size="small" color="error" onClick={() => setDeleteId(project.id)}>
                         <DeleteIcon fontSize="small" />
@@ -133,6 +140,10 @@ export default function ProjectsPage() {
       )}
 
       <CreateProjectModal open={createOpen} onClose={() => setCreateOpen(false)} />
+
+      {editProject && (
+        <EditProjectModal open={true} onClose={() => setEditProject(null)} project={editProject} />
+      )}
 
       <ConfirmDialog
         open={!!deleteId}

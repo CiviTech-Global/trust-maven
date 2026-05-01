@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { riskService } from "../services/risk.service";
 import { riskAssessmentService } from "../services/riskAssessment.service";
 import { riskTreatmentService } from "../services/riskTreatment.service";
+import { riskControlMappingService } from "../services/riskControlMapping.service";
 
 export class RiskController {
   async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -103,6 +104,35 @@ export class RiskController {
     }
   }
 
+  async updateAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const assessmentId = req.params.assessmentId as string;
+      const assessment = await riskAssessmentService.update(
+        assessmentId,
+        req.body,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, data: assessment });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  async deleteAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const assessmentId = req.params.assessmentId as string;
+      await riskAssessmentService.delete(
+        assessmentId,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, message: "Assessment deleted" });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
   // Treatment endpoints
   async getTreatments(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
@@ -157,6 +187,104 @@ export class RiskController {
         req.user!.userId
       );
       res.json({ success: true, message: "Treatment deleted" });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  // Assessment approval
+  async approveAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const assessmentId = req.params.assessmentId as string;
+      const assessment = await riskAssessmentService.approve(
+        assessmentId,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, data: assessment });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  async rejectAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const assessmentId = req.params.assessmentId as string;
+      const assessment = await riskAssessmentService.reject(
+        assessmentId,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, data: assessment });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  // Treatment approval
+  async approveTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const treatmentId = req.params.treatmentId as string;
+      const treatment = await riskTreatmentService.approve(
+        treatmentId,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, data: treatment });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  async rejectTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const treatmentId = req.params.treatmentId as string;
+      const treatment = await riskTreatmentService.reject(
+        treatmentId,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, data: treatment });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  // Risk-Control mapping
+  async getRiskControlMappings(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const riskId = req.params.riskId as string;
+      const mappings = await riskControlMappingService.findByRisk(riskId);
+      res.json({ success: true, data: mappings });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async addRiskControlMapping(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const riskId = req.params.riskId as string;
+      const controlId = req.params.controlId as string;
+      const mapping = await riskControlMappingService.create(
+        { riskId, controlId },
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.status(201).json({ success: true, data: mapping });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async removeRiskControlMapping(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const controlId = req.params.controlId as string;
+      await riskControlMappingService.delete(
+        controlId,
+        req.user!.organizationId,
+        req.user!.userId
+      );
+      res.json({ success: true, message: "Control unlinked from risk" });
     } catch (error: any) {
       res.status(404).json({ success: false, message: error.message });
     }

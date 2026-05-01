@@ -1,14 +1,16 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  Box, Typography, Chip, Card, CardContent,
+  Box, Typography, Button, Chip, Card, CardContent,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   LinearProgress, Alert, IconButton,
 } from "@mui/material";
-import { ArrowBack as BackIcon } from "@mui/icons-material";
+import { ArrowBack as BackIcon, Edit as EditIcon } from "@mui/icons-material";
 import { useProject } from "../../../infrastructure/api/projects.api";
 import { useRisks } from "../../../infrastructure/api/risks.api";
 import RiskChip from "../../components/common/RiskChip";
 import RiskMatrix from "../../components/common/RiskMatrix";
+import EditProjectModal from "./EditProjectModal";
 import Grid from "@mui/material/Grid2";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -32,6 +34,7 @@ export default function ProjectDetailPage() {
   const navigate = useNavigate();
   const { data: project, isLoading, error } = useProject(id || null);
   const { data: risks } = useRisks({ projectId: id || undefined });
+  const [editOpen, setEditOpen] = useState(false);
 
   if (isLoading) return <LinearProgress />;
   if (error || !project) return <Alert severity="error">Project not found</Alert>;
@@ -76,7 +79,14 @@ export default function ProjectDetailPage() {
             )}
           </Box>
         </Box>
+        <Button variant="outlined" startIcon={<EditIcon />} onClick={() => setEditOpen(true)}>
+          Edit
+        </Button>
       </Box>
+
+      {editOpen && project && (
+        <EditProjectModal open={true} onClose={() => setEditOpen(false)} project={project} />
+      )}
 
       {project.description && (
         <Card sx={{ mb: 3 }}>

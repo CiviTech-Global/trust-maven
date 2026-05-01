@@ -75,10 +75,27 @@ export class AuthController {
       }
 
       const tokens = await authService.refreshToken(token);
-      res.json({ success: true, data: tokens });
+
+      res.cookie("refreshToken", tokens.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      res.json({ success: true, data: { accessToken: tokens.accessToken } });
     } catch (error: any) {
       res.status(401).json({ success: false, message: error.message });
     }
+  }
+
+  async logout(_req: Request, res: Response): Promise<void> {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    res.json({ success: true, message: "Logged out" });
   }
 }
 

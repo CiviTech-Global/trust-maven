@@ -6,6 +6,7 @@ import {
   ForeignKey,
   BelongsTo,
   CreatedAt,
+  UpdatedAt,
   Default,
   PrimaryKey,
 } from "sequelize-typescript";
@@ -53,6 +54,25 @@ export class RiskAssessment extends Model {
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 
+  @Column({
+    type: DataType.ENUM("inherent", "residual"),
+    defaultValue: "inherent",
+  })
+  assessmentType!: string;
+
+  @Column({
+    type: DataType.ENUM("draft", "pending_approval", "approved", "rejected"),
+    defaultValue: "draft",
+  })
+  approvalStatus!: string;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.UUID })
+  approvedById!: string | null;
+
+  @Column({ type: DataType.DATE })
+  approvedAt!: Date | null;
+
   @CreatedAt
   createdAt!: Date;
 
@@ -61,4 +81,7 @@ export class RiskAssessment extends Model {
 
   @BelongsTo(() => User)
   assessor!: User;
+
+  @BelongsTo(() => User, "approvedById")
+  approver!: User;
 }

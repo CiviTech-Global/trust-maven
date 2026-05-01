@@ -51,6 +51,34 @@ export class Control extends Model {
   @Column({ type: DataType.UUID })
   ownerId!: string | null;
 
+  @Column({
+    type: DataType.ENUM("effective", "partially_effective", "ineffective"),
+    defaultValue: "effective",
+  })
+  designEffectiveness!: string;
+
+  @Column({
+    type: DataType.ENUM("effective", "partially_effective", "ineffective"),
+    defaultValue: "effective",
+  })
+  operatingEffectiveness!: string;
+
+  @Column({
+    type: DataType.ENUM("inquiry", "observation", "inspection", "reperformance"),
+  })
+  testingMethod!: string | null;
+
+  @Column({ type: DataType.DATE })
+  lastTestedAt!: Date | null;
+
+  @Column({ type: DataType.DATEONLY })
+  nextTestDue!: string | null;
+
+  @Column({
+    type: DataType.ENUM("monthly", "quarterly", "semi_annually", "annually"),
+  })
+  testFrequency!: string | null;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 

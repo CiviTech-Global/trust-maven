@@ -1,7 +1,14 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { lazy, Suspense } from "react";
-import { useSelector } from "react-redux";
+import { lazy, Suspense, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
+import {
+  setCredentials,
+  setSessionStatus,
+  logout,
+} from "../redux/slices/authSlice";
+import { CircularProgress, Box } from "@mui/material";
+import axiosInstance from "../../infrastructure/api/axiosInstance";
 import DashboardLayout from "../../presentation/components/layout/DashboardLayout";
 
 const LoginPage = lazy(
@@ -39,11 +46,48 @@ const SettingsPage = lazy(
 );
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
+  const dispatch = useDispatch();
+  const { accessToken, isAuthenticated, sessionStatus } = useSelector(
+    (state: RootState) => state.auth
   );
 
-  if (!isAuthenticated) {
+  useEffect(() => {
+    if (accessToken && sessionStatus === "idle") {
+      dispatch(setSessionStatus("checking"));
+      axiosInstance
+        .get("/auth/me")
+        .then((res) => {
+          dispatch(
+            setCredentials({
+              user: res.data.data,
+              accessToken: accessToken,
+            })
+          );
+          dispatch(setSessionStatus("valid"));
+        })
+        .catch(() => {
+          dispatch(logout());
+          dispatch(setSessionStatus("invalid"));
+        });
+    }
+  }, [accessToken, sessionStatus, dispatch]);
+
+  if (sessionStatus === "checking") {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!isAuthenticated && sessionStatus !== "checking") {
     return <Navigate to="/login" replace />;
   }
 

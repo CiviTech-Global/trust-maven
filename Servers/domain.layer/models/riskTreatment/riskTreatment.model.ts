@@ -49,6 +49,19 @@ export class RiskTreatment extends Model {
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 
+  @Column({
+    type: DataType.ENUM("draft", "pending_approval", "approved", "rejected"),
+    defaultValue: "draft",
+  })
+  approvalStatus!: string;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.UUID })
+  approvedById!: string | null;
+
+  @Column({ type: DataType.DATE })
+  approvedAt!: Date | null;
+
   @CreatedAt
   createdAt!: Date;
 
@@ -60,4 +73,7 @@ export class RiskTreatment extends Model {
 
   @BelongsTo(() => User)
   responsible!: User;
+
+  @BelongsTo(() => User, "approvedById")
+  approver!: User;
 }

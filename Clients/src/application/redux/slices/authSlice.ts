@@ -9,11 +9,14 @@ interface User {
   role: string;
 }
 
+type SessionStatus = "idle" | "checking" | "valid" | "invalid";
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  sessionStatus: SessionStatus;
 }
 
 const initialState: AuthState = {
@@ -21,6 +24,7 @@ const initialState: AuthState = {
   accessToken: null,
   isAuthenticated: false,
   isLoading: false,
+  sessionStatus: "idle",
 };
 
 const authSlice = createSlice({
@@ -35,10 +39,17 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
     },
+    updateAccessToken(state, action: PayloadAction<string>) {
+      state.accessToken = action.payload;
+    },
+    setSessionStatus(state, action: PayloadAction<SessionStatus>) {
+      state.sessionStatus = action.payload;
+    },
     logout(state) {
       state.user = null;
       state.accessToken = null;
       state.isAuthenticated = false;
+      state.sessionStatus = "idle";
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
@@ -46,5 +57,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout, setLoading } = authSlice.actions;
+export const {
+  setCredentials,
+  updateAccessToken,
+  setSessionStatus,
+  logout,
+  setLoading,
+} = authSlice.actions;
 export default authSlice.reducer;

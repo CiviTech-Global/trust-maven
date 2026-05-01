@@ -16,6 +16,7 @@ import controlRoutes from "./routes/control.route";
 import exportRoutes from "./routes/export.route";
 import auditLogRoutes from "./routes/auditLog.route";
 import notificationRoutes from "./routes/notification.route";
+import { logger } from "./utils/logger";
 
 dotenv.config();
 
@@ -70,7 +71,7 @@ app.use(
     res: express.Response,
     _next: express.NextFunction
   ) => {
-    console.error("Unhandled error:", err.message);
+    logger.error("Unhandled error:", err.message);
     res.status(500).json({
       error: "Internal server error",
       message:
@@ -83,18 +84,17 @@ app.use(
 async function bootstrap() {
   try {
     await sequelize.authenticate();
-    console.log("Database connected successfully");
+    logger.info("Database connected");
 
     if (process.env.NODE_ENV === "development") {
       await sequelize.sync({ alter: true });
-      console.log("Database synced");
     }
 
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      logger.info(`Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
+    logger.error("Failed to start server:", error);
     process.exit(1);
   }
 }

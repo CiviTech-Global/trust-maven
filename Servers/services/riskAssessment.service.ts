@@ -14,7 +14,7 @@ export class RiskAssessmentService {
   }
 
   async create(
-    data: { riskId: string; likelihood: number; impact: number; methodology?: string; notes?: string },
+    data: { riskId: string; likelihood: number; impact: number; methodology?: string; notes?: string; assessmentType?: string },
     organizationId: string,
     userId: string
   ) {
@@ -38,6 +38,82 @@ export class RiskAssessmentService {
       entityId: assessment.id,
       action: AuditAction.CREATE,
       changes: data,
+    });
+
+    return assessment;
+  }
+
+  async update(
+    id: string,
+    data: Partial<{ likelihood: number; impact: number; methodology: string; notes: string }>,
+    organizationId: string,
+    userId: string
+  ) {
+    const assessment = await RiskAssessment.findByPk(id, {
+      include: [{ model: Risk }],
+    });
+    if (!assessment) throw new Error("Assessment not found");
+    if (assessment.risk.organizationId !== organizationId) throw new Error("Assessment not found");
+
+    await assessment.update(data);
+
+    await auditService.log({
+      organizationId,
+      userId,
+      entityType: "risk_assessment",
+      entityId: assessment.id,
+      action: AuditAction.UPDATE,
+      changes: data,
+    });
+
+    return assessment;
+  }
+
+  async approve(id: string, organizationId: string, userId: string) {
+    const assessment = await RiskAssessment.findByPk(id, {
+      include: [{ model: Risk }],
+    });
+    if (!assessment) throw new Error("Assessment not found");
+    if (assessment.risk.organizationId !== organizationId) throw new Error("Assessment not found");
+
+    await assessment.update({
+      approvalStatus: "approved",
+      approvedById: userId,
+      approvedAt: new Date(),
+    });
+
+    await auditService.log({
+      organizationId,
+      userId,
+      entityType: "risk_assessment",
+      entityId: assessment.id,
+      action: AuditAction.UPDATE,
+      changes: { approvalStatus: "approved" },
+    });
+
+    return assessment;
+  }
+
+  async reject(id: string, organizationId: string, userId: string) {
+    const assessment = await RiskAssessment.findByPk(id, {
+      include: [{ model: Risk }],
+    });
+    if (!assessment) throw new Error("Assessment not found");
+    if (assessment.risk.organizationId !== organizationId) throw new Error("Assessment not found");
+
+    await assessment.update({
+      approvalStatus: "rejected",
+      approvedById: userId,
+      approvedAt: new Date(),
+    });
+
+    await auditService.log({
+      organizationId,
+      userId,
+      entityType: "risk_assessment",
+      entityId: assessment.id,
+      action: AuditAction.UPDATE,
+      changes: { approvalStatus: "rejected" },
     });
 
     return assessment;

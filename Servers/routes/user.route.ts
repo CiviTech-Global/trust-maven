@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { authenticate, authorize } from "../middleware/auth.middleware";
+import { authenticate, authorize, tenantIsolation } from "../middleware/auth.middleware";
 import { UserRole } from "../types";
 import { userController } from "../controllers/user.ctrl";
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate, tenantIsolation);
 
 router.get("/", authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN), (req, res) => userController.findAll(req, res));
 router.post("/", authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN), (req, res) => userController.create(req, res));

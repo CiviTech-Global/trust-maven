@@ -15,6 +15,8 @@ import { Policy } from "../domain.layer/models/policy/policy.model";
 import { Task } from "../domain.layer/models/task/task.model";
 import { File } from "../domain.layer/models/file/file.model";
 import { Notification } from "../domain.layer/models/notification/notification.model";
+import { RiskControlMapping } from "../domain.layer/models/riskControlMapping/riskControlMapping.model";
+import { ControlFrameworkMapping } from "../domain.layer/models/controlFrameworkMapping/controlFrameworkMapping.model";
 
 dotenv.config();
 
@@ -25,7 +27,7 @@ export const sequelize = new Sequelize({
   host: process.env.DB_HOST || "localhost",
   port: parseInt(process.env.DB_PORT || "5432"),
   dialect: "postgres",
-  logging: process.env.NODE_ENV === "development" ? console.log : false,
+  logging: process.env.DB_LOGGING === "true" ? console.log : false,
   models: [
     Organization,
     User,
@@ -42,6 +44,8 @@ export const sequelize = new Sequelize({
     Task,
     File,
     Notification,
+    RiskControlMapping,
+    ControlFrameworkMapping,
   ],
   pool: {
     max: 20,

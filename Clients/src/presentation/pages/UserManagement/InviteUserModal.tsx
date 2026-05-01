@@ -27,7 +27,7 @@ export default function InviteUserModal({ open, onClose }: InviteUserModalProps)
 
   const handleSubmit = async () => {
     if (!email || !firstName || !lastName) return;
-    await createUser.mutateAsync({ email, firstName, lastName });
+    await createUser.mutateAsync({ email, firstName, lastName, roleId: role });
     resetAndClose();
   };
 

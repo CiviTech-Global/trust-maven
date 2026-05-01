@@ -42,3 +42,31 @@ export function useUpdateTreatment() {
     },
   });
 }
+
+export function useApproveTreatment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ riskId, treatmentId }: { riskId: string; treatmentId: string }) => {
+      const { data } = await axiosInstance.put(`/risks/${riskId}/treatments/${treatmentId}/approve`);
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["treatments"] });
+      queryClient.invalidateQueries({ queryKey: ["risks"] });
+    },
+  });
+}
+
+export function useRejectTreatment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ riskId, treatmentId }: { riskId: string; treatmentId: string }) => {
+      const { data } = await axiosInstance.put(`/risks/${riskId}/treatments/${treatmentId}/reject`);
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["treatments"] });
+      queryClient.invalidateQueries({ queryKey: ["risks"] });
+    },
+  });
+}

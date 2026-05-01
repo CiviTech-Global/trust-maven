@@ -66,6 +66,9 @@ export class Risk extends Model {
   @Column({ type: DataType.UUID })
   ownerId!: string | null;
 
+  @Column({ type: DataType.INTEGER, validate: { min: 1, max: 25 } })
+  riskAppetiteThreshold!: number | null;
+
   @CreatedAt
   createdAt!: Date;
 

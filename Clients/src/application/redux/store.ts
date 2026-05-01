@@ -7,7 +7,7 @@ import uiReducer from "./slices/uiSlice";
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["user", "accessToken"],
+  whitelist: ["user", "accessToken", "isAuthenticated"],
 };
 
 const uiPersistConfig = {

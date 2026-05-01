@@ -291,3 +291,88 @@ The following features are planned for post-MVP releases:
 - Map risks to framework requirements
 - Gap analysis and compliance scoring
 - Framework assessment workflows
+
+---
+
+## Phase 3 — Industry GRC Maturity
+
+Phase 3 closes the gap between TrustMaven's MVP and enterprise GRC platforms (ServiceNow, AuditBoard, Archer, LogicGate). Delivered in three sub-phases.
+
+---
+
+### Phase 3a — Inherent/Residual Scoring, Control Testing, Treatment Approvals
+
+**Inherent vs Residual Assessments**
+- Add `assessment_type` (inherent | residual) to risk assessments — the #1 industry gap
+- Inherent assessment: risk level before any controls are applied
+- Residual assessment: risk level after controls are in effect
+- Dashboard widgets showing inherent-to-residual reduction per risk
+- `confidence_level` (low | medium | high) for assessor confidence tracking
+- `financial_impact_estimate` for FAIR-methodology quantitative risk analysis
+- Assessment approval workflow: `approved_by_id` + `approved_at` fields
+
+**Control Testing Lifecycle**
+- Split single `effectiveness` into `design_effectiveness` + `operating_effectiveness` (PCAOB/SOX standard)
+- Add `frequency` (continuous → annually) — how often the control operates
+- Add `testing_method` (automated | manual | observation | inquiry) — COSO/COBIT mapping
+- `last_tested_at` / `next_test_due` — powers overdue-test alerts
+- `control_objective` — what the control achieves, maps to framework requirements
+- `evidence_requirements` — what proof is needed to verify the control
+- `framework_mappings` (JSONB) — link controls to specific framework requirements (e.g., SOC 2 CC6.1)
+- `annual_cost` — cost of operating the control for ROI analysis
+
+**Treatment Approvals & Progress**
+- `cost_estimate` — budget for treatment plans
+- `target_residual_score` — expected risk score after treatment
+- `progress_pct` (0-100) — granular completion tracking beyond 3 statuses
+- `start_date` — when treatment execution began
+- Approval workflow: `approved_by_id` + `approved_at`
+- `evidence_of_completion` — proof of execution for audit
+
+---
+
+### Phase 3b — KRIs, Risk-Control M2M, Framework Mapping
+
+**Key Risk Indicators (KRIs)**
+- New `key_risk_indicators` table linked to risks
+- Configurable thresholds (warning + critical) per indicator
+- Metric types: count, percentage, currency, duration
+- Automated measurement tracking with `last_measured_at` + `measurement_frequency`
+- KRI dashboard with red/amber/green status indicators
+- Automated alerts when thresholds are breached
+
+**Risk-Control Many-to-Many Mapping**
+- New `risk_control_mappings` junction table
+- Replaces current one-control-one-risk FK constraint
+- One control can mitigate multiple risks (industry standard)
+- `mapping_rationale` field documents why a control addresses a risk
+- Enables control coverage analysis across the risk portfolio
+
+**Enhanced Risk Taxonomy**
+- `category` field for hierarchical risk classification (e.g., "Cybersecurity > Data Breach > Customer PII")
+- `risk_source` (internal | external | third_party) — critical for TPRM
+- `review_cycle` + `next_review_date` — automated re-assessment scheduling
+- `velocity` (immediate → years) — how fast impact materializes (Gartner-recommended)
+
+---
+
+### Phase 3c — Risk Appetite Dashboards, Quantitative Analysis
+
+**Risk Appetite Management**
+- `risk_appetite_threshold` per risk — org's acceptable risk level (1-25)
+- "Above appetite" filtering — standard enterprise RFP requirement
+- Risk appetite dashboard: heatmap overlay showing risks above/below threshold
+- Board-level reporting: appetite vs actual risk exposure
+
+**Quantitative Risk Analysis**
+- Financial impact estimates on assessments (FAIR methodology)
+- Aggregated financial exposure by domain, project, and portfolio
+- Treatment ROI: cost of treatment vs risk reduction value
+- Control cost-effectiveness: annual cost vs risks mitigated
+
+**Overdue & Compliance Dashboards**
+- Overdue risk reviews (based on `next_review_date`)
+- Overdue control tests (based on `next_test_due`)
+- Overdue treatments (existing, enhanced with progress %)
+- Framework compliance scoring based on control-to-requirement mappings
+- Executive summary: risk posture trend over time with appetite overlay

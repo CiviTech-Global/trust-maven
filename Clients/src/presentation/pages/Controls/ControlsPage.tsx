@@ -4,11 +4,12 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Chip, LinearProgress, Alert,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { useControls, useDeleteControl } from "../../../infrastructure/api/controls.api";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import CreateControlModal from "./CreateControlModal";
+import EditControlModal from "./EditControlModal";
 
 const TYPES = [
   { value: "", label: "All Types" },
@@ -54,6 +55,7 @@ export default function ControlsPage() {
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editControl, setEditControl] = useState<any | null>(null);
 
   const { data: controls, isLoading, error } = useControls({
     type: type || undefined,
@@ -105,7 +107,9 @@ export default function ControlsPage() {
               <TableRow>
                 <TableCell>Title</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Effectiveness</TableCell>
+                <TableCell>Design Eff.</TableCell>
+                <TableCell>Operating Eff.</TableCell>
+                <TableCell>Last Tested</TableCell>
                 <TableCell>Linked Risk</TableCell>
                 <TableCell>Owner</TableCell>
                 <TableCell>Updated</TableCell>
@@ -132,15 +136,32 @@ export default function ControlsPage() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={EFFECTIVENESS_LABELS[control.effectiveness] || control.effectiveness}
+                      label={EFFECTIVENESS_LABELS[control.designEffectiveness] || EFFECTIVENESS_LABELS[control.effectiveness] || control.effectiveness}
                       size="small"
                       sx={{
-                        backgroundColor: EFFECTIVENESS_COLORS[control.effectiveness]?.bg || "#F1F5F9",
-                        color: EFFECTIVENESS_COLORS[control.effectiveness]?.color || "#475569",
+                        backgroundColor: EFFECTIVENESS_COLORS[control.designEffectiveness || control.effectiveness]?.bg || "#F1F5F9",
+                        color: EFFECTIVENESS_COLORS[control.designEffectiveness || control.effectiveness]?.color || "#475569",
                         fontWeight: 500,
                         fontSize: "0.75rem",
                       }}
                     />
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={EFFECTIVENESS_LABELS[control.operatingEffectiveness] || "N/A"}
+                      size="small"
+                      sx={{
+                        backgroundColor: EFFECTIVENESS_COLORS[control.operatingEffectiveness]?.bg || "#F1F5F9",
+                        color: EFFECTIVENESS_COLORS[control.operatingEffectiveness]?.color || "#475569",
+                        fontWeight: 500,
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" color="text.secondary">
+                      {control.lastTestedAt ? new Date(control.lastTestedAt).toLocaleDateString() : "--"}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
@@ -158,6 +179,11 @@ export default function ControlsPage() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="Edit">
+                      <IconButton size="small" onClick={() => setEditControl(control)}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Delete">
                       <IconButton size="small" color="error" onClick={() => setDeleteId(control.id)}>
                         <DeleteIcon fontSize="small" />
@@ -172,6 +198,10 @@ export default function ControlsPage() {
       )}
 
       <CreateControlModal open={createOpen} onClose={() => setCreateOpen(false)} />
+
+      {editControl && (
+        <EditControlModal open={true} onClose={() => setEditControl(null)} control={editControl} />
+      )}
 
       <ConfirmDialog
         open={!!deleteId}

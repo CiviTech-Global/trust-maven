@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, Box, Typography, Slider, TextField,
+  Button, Box, Typography, Slider, TextField, MenuItem,
 } from "@mui/material";
 import { useCreateAssessment } from "../../../infrastructure/api/assessments.api";
 
@@ -16,6 +16,7 @@ export default function AssessRiskModal({ open, onClose, riskId, riskTitle }: As
   const [likelihood, setLikelihood] = useState(3);
   const [impact, setImpact] = useState(3);
   const [notes, setNotes] = useState("");
+  const [assessmentType, setAssessmentType] = useState("inherent");
   const createAssessment = useCreateAssessment();
 
   const score = likelihood * impact;
@@ -28,8 +29,9 @@ export default function AssessRiskModal({ open, onClose, riskId, riskTitle }: As
       impact,
       methodology: "Qualitative",
       notes: notes || undefined,
+      assessmentType,
     });
-    setLikelihood(3); setImpact(3); setNotes("");
+    setLikelihood(3); setImpact(3); setNotes(""); setAssessmentType("inherent");
     onClose();
   };
 
@@ -40,6 +42,17 @@ export default function AssessRiskModal({ open, onClose, riskId, riskTitle }: As
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
           {riskTitle}
         </Typography>
+        <TextField
+          select
+          label="Assessment Type"
+          value={assessmentType}
+          onChange={(e) => setAssessmentType(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        >
+          <MenuItem value="inherent">Inherent Risk</MenuItem>
+          <MenuItem value="residual">Residual Risk</MenuItem>
+        </TextField>
         <Box sx={{ mb: 3 }}>
           <Typography variant="body1" gutterBottom>Likelihood: {likelihood}</Typography>
           <Slider value={likelihood} onChange={(_, v) => setLikelihood(v as number)} min={1} max={5} step={1} marks valueLabelDisplay="auto" />
