@@ -53,6 +53,21 @@ const FrameworksPage = lazy(
 const SettingsPage = lazy(
   () => import("../../presentation/pages/Settings/SettingsPage")
 );
+const ControlMonitoringPage = lazy(
+  () => import("../../presentation/pages/Controls/ControlMonitoringPage")
+);
+const AuditsPage = lazy(
+  () => import("../../presentation/pages/Audits/AuditsPage")
+);
+const AuditDetailPage = lazy(
+  () => import("../../presentation/pages/Audits/AuditDetailPage")
+);
+const ReportsPage = lazy(
+  () => import("../../presentation/pages/Reports/ReportsPage")
+);
+const ReportBuilderPage = lazy(
+  () => import("../../presentation/pages/Reports/ReportBuilderPage")
+);
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -129,6 +144,12 @@ export default function AppRoutes() {
           <Route path="frameworks" element={<FrameworksPage />} />
           <Route path="users" element={<UserManagementPage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
+          <Route path="controls/monitoring" element={<ControlMonitoringPage />} />
+          <Route path="audits" element={<AuditsPage />} />
+          <Route path="audits/:id" element={<AuditDetailPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="reports/builder" element={<ReportBuilderPage />} />
+          <Route path="reports/builder/:id" element={<ReportBuilderPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

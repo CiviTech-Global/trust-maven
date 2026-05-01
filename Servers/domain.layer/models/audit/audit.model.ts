@@ -5,15 +5,17 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
   CreatedAt,
   UpdatedAt,
   Default,
   PrimaryKey,
 } from "sequelize-typescript";
 import { Organization } from "../organization/organization.model";
+import { User } from "../user/user.model";
 
-@Table({ tableName: "vendors", timestamps: true })
-export class Vendor extends Model {
+@Table({ tableName: "audits", timestamps: true })
+export class Audit extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -24,22 +26,35 @@ export class Vendor extends Model {
   organizationId!: string;
 
   @Column({ type: DataType.STRING(255), allowNull: false })
-  name!: string;
+  title!: string;
 
   @Column({ type: DataType.TEXT })
-  description!: string;
+  description!: string | null;
 
   @Column({
-    type: DataType.ENUM("critical", "high", "medium", "low"),
-    defaultValue: "medium",
+    type: DataType.ENUM("internal", "external"),
+    allowNull: false,
   })
-  riskLevel!: string;
+  auditType!: string;
 
-  @Column({ type: DataType.JSONB, defaultValue: {} })
-  contactInfo!: Record<string, unknown>;
-
-  @Column({ type: DataType.STRING(50), defaultValue: "active" })
+  @Column({
+    type: DataType.ENUM("planned", "in_progress", "completed", "cancelled"),
+    defaultValue: "planned",
+  })
   status!: string;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.UUID })
+  leadAuditorId!: string | null;
+
+  @Column({ type: DataType.TEXT })
+  scope!: string | null;
+
+  @Column({ type: DataType.DATEONLY, allowNull: false })
+  startDate!: string;
+
+  @Column({ type: DataType.DATEONLY })
+  endDate!: string | null;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
@@ -52,4 +67,7 @@ export class Vendor extends Model {
 
   @BelongsTo(() => Organization)
   organization!: Organization;
+
+  @BelongsTo(() => User)
+  leadAuditor!: User;
 }

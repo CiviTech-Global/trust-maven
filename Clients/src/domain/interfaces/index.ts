@@ -1,4 +1,4 @@
-import { RiskDomain, RiskStatus, TreatmentStrategy, ProjectStatus, AssessmentType, ApprovalStatus, TestFrequency, TestingMethod } from "../enums";
+import { RiskDomain, RiskStatus, TreatmentStrategy, ProjectStatus, AssessmentType, ApprovalStatus, TestFrequency, TestingMethod, MonitoringStatus } from "../enums";
 
 export interface User {
   id: string;
@@ -27,6 +27,7 @@ export interface Risk {
   status: RiskStatus;
   projectId: string | null;
   ownerId: string | null;
+  categoryId: string | null;
   riskAppetiteThreshold: number | null;
   createdAt: string;
   updatedAt: string;
@@ -84,6 +85,9 @@ export interface Control {
   lastTestedAt: string | null;
   nextTestDue: string | null;
   testFrequency: TestFrequency | null;
+  monitoringStatus: MonitoringStatus;
+  lastMonitoredAt: string | null;
+  consecutiveFailures: number;
   riskId: string | null;
   ownerId: string | null;
   createdAt: string;
@@ -127,6 +131,100 @@ export interface ControlFrameworkMapping {
   frameworkId: string;
   requirementId: string;
   mappedAt: string;
+}
+
+export interface RiskCategory {
+  id: string;
+  name: string;
+  description: string | null;
+  parentId: string | null;
+  level: number;
+  sortOrder: number;
+  code: string | null;
+  isActive: boolean;
+  children?: RiskCategory[];
+}
+
+export interface RiskQuantification {
+  id: string;
+  riskId: string;
+  assessorId: string;
+  singleLossExpectancy: number;
+  annualRateOfOccurrence: number;
+  annualLossExpectancy: number;
+  confidenceLevel: string;
+  lossEventFrequencyMin: number | null;
+  lossEventFrequencyMax: number | null;
+  lossMagnitudeMin: number | null;
+  lossMagnitudeMax: number | null;
+  methodology: string;
+  assumptions: string | null;
+  assessedAt: string;
+  assessor?: { id: string; firstName: string; lastName: string };
+}
+
+export interface ControlMonitoringEvent {
+  id: string;
+  controlId: string;
+  status: string;
+  executedAt: string;
+  executedById: string | null;
+  notes: string | null;
+  evidence: string | null;
+  executedBy?: { id: string; firstName: string; lastName: string };
+  createdAt: string;
+}
+
+export interface AuditRecord {
+  id: string;
+  title: string;
+  description: string | null;
+  auditType: string;
+  status: string;
+  leadAuditorId: string | null;
+  scope: string | null;
+  startDate: string;
+  endDate: string | null;
+  leadAuditor?: { id: string; firstName: string; lastName: string };
+  findings?: AuditFinding[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuditFinding {
+  id: string;
+  auditId: string;
+  title: string;
+  description: string | null;
+  severity: string;
+  status: string;
+  responsibleId: string | null;
+  controlId: string | null;
+  riskId: string | null;
+  dueDate: string | null;
+  remediationNotes: string | null;
+  closedAt: string | null;
+  responsible?: { id: string; firstName: string; lastName: string };
+  control?: { id: string; title: string };
+  risk?: { id: string; title: string };
+  audit?: { id: string; title: string };
+  createdAt: string;
+}
+
+export interface ReportTemplate {
+  id: string;
+  name: string;
+  description: string | null;
+  entityType: string;
+  columns: { field: string; label: string }[];
+  filters: { field: string; operator: string; value: string }[];
+  groupBy: string | null;
+  sortBy: string | null;
+  sortOrder: string;
+  isShared: boolean;
+  createdById: string;
+  createdBy?: { id: string; firstName: string; lastName: string };
+  createdAt: string;
 }
 
 export interface ApiResponse<T = unknown> {

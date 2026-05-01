@@ -169,16 +169,16 @@ All features above merged, deduplicated, and ranked by two axes:
 
 | # | Feature | Essentiality | Revenue Impact | Rationale |
 |---|---------|:---:|:---:|-----------|
-| 9 | **Key Risk Indicators (KRIs) with alerts** | 8/10 | 8/10 | Powers proactive risk monitoring dashboards. LogicGate and Optro headline this feature. Moving from reactive to proactive is a major selling point. |
-| 10 | **Vendor risk assessments & questionnaires** | 7/10 | 9/10 | TPRM is the fastest-growing GRC segment. Gartner has a separate Magic Quadrant for it. Basic vendor registry without assessments is incomplete. |
-| 11 | **Multi-framework compliance engine** | 8/10 | 9/10 | Map controls to multiple frameworks, show compliance coverage %, identify gaps. Hyperproof supports 50+ frameworks. This drives upsell to compliance-heavy customers. |
+| 9 | ~~**Key Risk Indicators (KRIs) with alerts**~~ | 8/10 | 8/10 | **DONE (Phase 3b)** — Powers proactive risk monitoring dashboards. LogicGate and Optro headline this feature. Moving from reactive to proactive is a major selling point. |
+| 10 | ~~**Vendor risk assessments & questionnaires**~~ | 7/10 | 9/10 | **DONE (Phase 3b)** — TPRM is the fastest-growing GRC segment. Gartner has a separate Magic Quadrant for it. Basic vendor registry without assessments is incomplete. |
+| 11 | ~~**Multi-framework compliance engine**~~ | 8/10 | 9/10 | **DONE (Phase 3b)** — Map controls to multiple frameworks, show compliance coverage %, identify gaps. Hyperproof supports 50+ frameworks. This drives upsell to compliance-heavy customers. |
 | 12 | **Automated evidence collection** | 7/10 | 8/10 | Vanta and Drata's core value prop. Integrations that pull evidence automatically save audit teams weeks. Major competitive differentiator for mid-market. |
-| 13 | **Continuous control monitoring** | 7/10 | 8/10 | Shift from point-in-time to continuous. Vanta runs 1400 tests/hour. Even basic continuous checks (control status, overdue tests) add significant value. |
-| 14 | **Audit management module** | 7/10 | 8/10 | Audit plans, findings, remediation tracking, auditor portal. ServiceNow and Optro treat this as a core module. Required for internal audit teams. |
-| 15 | **Risk quantification (FAIR methodology)** | 7/10 | 8/10 | Financial impact estimates on assessments. Enables "your cyber risk exposure is $2.4M" conversations. LogicGate and Optro use Monte Carlo simulations. |
-| 16 | **Hierarchical risk taxonomy** | 7/10 | 6/10 | Multi-level categories beyond 5 flat domains. Needed as risk registries grow past 100 entries. ServiceNow and Archer use deep taxonomies. |
-| 17 | **Review cycle automation** | 7/10 | 7/10 | Automated re-assessment reminders. "Overdue review" dashboards are standard. Low implementation cost, high perceived value. |
-| 18 | **Custom report builder** | 6/10 | 8/10 | Every enterprise buyer asks "can I build my own reports?" Fixed CSV/PDF exports won't satisfy compliance officers who need tailored board reports. |
+| 13 | ~~**Continuous control monitoring**~~ | 7/10 | 8/10 | **DONE (Phase 3b)** — Shift from point-in-time to continuous. Vanta runs 1400 tests/hour. Even basic continuous checks (control status, overdue tests) add significant value. |
+| 14 | ~~**Audit management module**~~ | 7/10 | 8/10 | **DONE (Phase 3b)** — Audit plans, findings, remediation tracking, auditor portal. ServiceNow and Optro treat this as a core module. Required for internal audit teams. |
+| 15 | ~~**Risk quantification (FAIR methodology)**~~ | 7/10 | 8/10 | **DONE (Phase 3b)** — Financial impact estimates on assessments. Enables "your cyber risk exposure is $2.4M" conversations. LogicGate and Optro use Monte Carlo simulations. |
+| 16 | ~~**Hierarchical risk taxonomy**~~ | 7/10 | 6/10 | **DONE (Phase 3b)** — Multi-level categories beyond 5 flat domains. Needed as risk registries grow past 100 entries. ServiceNow and Archer use deep taxonomies. |
+| 17 | ~~**Review cycle automation**~~ | 7/10 | 7/10 | **DONE (Phase 3b)** — Automated re-assessment reminders. "Overdue review" dashboards are standard. Low implementation cost, high perceived value. |
+| 18 | ~~**Custom report builder**~~ | 6/10 | 8/10 | **DONE (Phase 3b)** — Every enterprise buyer asks "can I build my own reports?" Fixed CSV/PDF exports won't satisfy compliance officers who need tailored board reports. |
 
 ---
 

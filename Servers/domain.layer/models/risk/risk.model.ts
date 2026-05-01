@@ -16,6 +16,7 @@ import { Project } from "../project/project.model";
 import { User } from "../user/user.model";
 import { RiskAssessment } from "../riskAssessment/riskAssessment.model";
 import { RiskTreatment } from "../riskTreatment/riskTreatment.model";
+import { RiskCategory } from "../riskCategory/riskCategory.model";
 
 @Table({ tableName: "risks", timestamps: true })
 export class Risk extends Model {
@@ -81,6 +82,10 @@ export class Risk extends Model {
   @CreatedAt
   createdAt!: Date;
 
+  @ForeignKey(() => RiskCategory)
+  @Column({ type: DataType.UUID })
+  categoryId!: string | null;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 
@@ -95,6 +100,9 @@ export class Risk extends Model {
 
   @BelongsTo(() => User)
   owner!: User;
+
+  @BelongsTo(() => RiskCategory)
+  category!: RiskCategory;
 
   @HasMany(() => RiskAssessment)
   assessments!: RiskAssessment[];

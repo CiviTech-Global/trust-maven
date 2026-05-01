@@ -36,6 +36,9 @@ import {
   Gavel as FrameworkIcon,
   People as UsersIcon,
   History as AuditIcon,
+  MonitorHeart as MonitorIcon,
+  FactCheck as AuditMgmtIcon,
+  Assessment as ReportsIcon,
   Notifications as NotifIcon,
   LightMode as LightIcon,
   DarkMode as DarkIcon,
@@ -57,7 +60,10 @@ const navItems = [
   { label: "Controls", path: "/controls", icon: <ControlIcon /> },
   { label: "KRIs", path: "/kris", icon: <KRIIcon /> },
   { label: "Vendors", path: "/vendors", icon: <VendorIcon /> },
+  { label: "Monitoring", path: "/controls/monitoring", icon: <MonitorIcon /> },
   { label: "Frameworks", path: "/frameworks", icon: <FrameworkIcon /> },
+  { label: "Audits", path: "/audits", icon: <AuditMgmtIcon /> },
+  { label: "Reports", path: "/reports", icon: <ReportsIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
 ];
 

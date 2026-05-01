@@ -19,6 +19,11 @@ import notificationRoutes from "./routes/notification.route";
 import kriRoutes from "./routes/kri.route";
 import vendorRoutes from "./routes/vendor.route";
 import frameworkRoutes from "./routes/framework.route";
+import riskCategoryRoutes from "./routes/riskCategory.route";
+import riskQuantificationRoutes from "./routes/riskQuantification.route";
+import controlMonitoringRoutes from "./routes/controlMonitoring.route";
+import auditMgmtRoutes from "./routes/auditMgmt.route";
+import reportTemplateRoutes from "./routes/reportTemplate.route";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -68,6 +73,11 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/kris", kriRoutes);
 app.use("/api/v1/vendors", vendorRoutes);
 app.use("/api/v1/frameworks", frameworkRoutes);
+app.use("/api/v1/risk-categories", riskCategoryRoutes);
+app.use("/api/v1/risk-quantification", riskQuantificationRoutes);
+app.use("/api/v1/control-monitoring", controlMonitoringRoutes);
+app.use("/api/v1/audits", auditMgmtRoutes);
+app.use("/api/v1/reports", reportTemplateRoutes);
 
 // Global error handler
 app.use(

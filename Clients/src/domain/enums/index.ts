@@ -75,3 +75,69 @@ export enum TestingMethod {
   INSPECTION = "inspection",
   REPERFORMANCE = "reperformance",
 }
+
+export enum MonitoringStatus {
+  HEALTHY = "healthy",
+  AT_RISK = "at_risk",
+  FAILING = "failing",
+  NOT_MONITORED = "not_monitored",
+}
+
+export enum MonitoringEventStatus {
+  PASS = "pass",
+  FAIL = "fail",
+  ERROR = "error",
+  SKIPPED = "skipped",
+}
+
+export enum ConfidenceLevel {
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+}
+
+export enum QuantificationMethodology {
+  SIMPLE_ALE = "simple_ale",
+  FAIR = "fair",
+}
+
+export enum AuditType {
+  INTERNAL = "internal",
+  EXTERNAL = "external",
+}
+
+export enum AuditMgmtStatus {
+  PLANNED = "planned",
+  IN_PROGRESS = "in_progress",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+}
+
+export enum FindingSeverity {
+  CRITICAL = "critical",
+  HIGH = "high",
+  MEDIUM = "medium",
+  LOW = "low",
+  INFORMATIONAL = "informational",
+}
+
+export enum FindingStatus {
+  OPEN = "open",
+  IN_REMEDIATION = "in_remediation",
+  REMEDIATED = "remediated",
+  ACCEPTED = "accepted",
+  CLOSED = "closed",
+}
+
+export enum ReportEntityType {
+  RISK = "risk",
+  CONTROL = "control",
+  AUDIT = "audit",
+  VENDOR = "vendor",
+  KRI = "kri",
+}
+
+export enum ReportSortOrder {
+  ASC = "asc",
+  DESC = "desc",
+}

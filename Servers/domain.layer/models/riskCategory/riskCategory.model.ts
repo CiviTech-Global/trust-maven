@@ -5,6 +5,7 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
   CreatedAt,
   UpdatedAt,
   Default,
@@ -12,8 +13,8 @@ import {
 } from "sequelize-typescript";
 import { Organization } from "../organization/organization.model";
 
-@Table({ tableName: "frameworks", timestamps: true })
-export class Framework extends Model {
+@Table({ tableName: "risk_categories", timestamps: true })
+export class RiskCategory extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -26,14 +27,24 @@ export class Framework extends Model {
   @Column({ type: DataType.STRING(255), allowNull: false })
   name!: string;
 
-  @Column({ type: DataType.STRING(50) })
-  version!: string;
-
   @Column({ type: DataType.TEXT })
-  description!: string;
+  description!: string | null;
 
-  @Column({ type: DataType.JSONB, defaultValue: [] })
-  requirements!: unknown[];
+  @ForeignKey(() => RiskCategory)
+  @Column({ type: DataType.UUID })
+  parentId!: string | null;
+
+  @Column({ type: DataType.INTEGER, defaultValue: 0 })
+  level!: number;
+
+  @Column({ type: DataType.INTEGER, defaultValue: 0 })
+  sortOrder!: number;
+
+  @Column({ type: DataType.STRING(50) })
+  code!: string | null;
+
+  @Column({ type: DataType.BOOLEAN, defaultValue: true })
+  isActive!: boolean;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
@@ -46,4 +57,10 @@ export class Framework extends Model {
 
   @BelongsTo(() => Organization)
   organization!: Organization;
+
+  @BelongsTo(() => RiskCategory, "parentId")
+  parent!: RiskCategory;
+
+  @HasMany(() => RiskCategory, "parentId")
+  children!: RiskCategory[];
 }

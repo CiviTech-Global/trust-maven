@@ -79,6 +79,18 @@ export class Control extends Model {
   })
   testFrequency!: string | null;
 
+  @Column({
+    type: DataType.ENUM("healthy", "at_risk", "failing", "not_monitored"),
+    defaultValue: "not_monitored",
+  })
+  monitoringStatus!: string;
+
+  @Column({ type: DataType.DATE })
+  lastMonitoredAt!: Date | null;
+
+  @Column({ type: DataType.INTEGER, defaultValue: 0 })
+  consecutiveFailures!: number;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 

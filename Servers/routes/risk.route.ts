@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authenticate, tenantIsolation } from "../middleware/auth.middleware";
 import { riskController } from "../controllers/risk.ctrl";
+import { riskQuantificationController } from "../controllers/riskQuantification.ctrl";
 
 const router = Router();
 
@@ -37,5 +38,11 @@ router.put("/:riskId/treatments/:treatmentId/reject", (req, res) => riskControll
 router.get("/:riskId/controls", (req, res) => riskController.getRiskControlMappings(req, res));
 router.post("/:riskId/controls/:controlId", (req, res) => riskController.addRiskControlMapping(req, res));
 router.delete("/:riskId/controls/:controlId", (req, res) => riskController.removeRiskControlMapping(req, res));
+
+// Risk Quantification (FAIR)
+router.get("/:riskId/quantifications", (req, res) => riskQuantificationController.findByRisk(req, res));
+router.post("/:riskId/quantifications", (req, res) => riskQuantificationController.create(req, res));
+router.put("/:riskId/quantifications/:qId", (req, res) => riskQuantificationController.update(req, res));
+router.delete("/:riskId/quantifications/:qId", (req, res) => riskQuantificationController.delete(req, res));
 
 export default router;

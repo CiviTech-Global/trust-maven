@@ -19,6 +19,12 @@ import { RiskControlMapping } from "../domain.layer/models/riskControlMapping/ri
 import { ControlFrameworkMapping } from "../domain.layer/models/controlFrameworkMapping/controlFrameworkMapping.model";
 import { KRI } from "../domain.layer/models/kri/kri.model";
 import { VendorAssessment } from "../domain.layer/models/vendorAssessment/vendorAssessment.model";
+import { RiskCategory } from "../domain.layer/models/riskCategory/riskCategory.model";
+import { RiskQuantification } from "../domain.layer/models/riskQuantification/riskQuantification.model";
+import { ControlMonitoringEvent } from "../domain.layer/models/controlMonitoringEvent/controlMonitoringEvent.model";
+import { Audit } from "../domain.layer/models/audit/audit.model";
+import { AuditFinding } from "../domain.layer/models/auditFinding/auditFinding.model";
+import { ReportTemplate } from "../domain.layer/models/reportTemplate/reportTemplate.model";
 
 dotenv.config();
 
@@ -50,6 +56,12 @@ export const sequelize = new Sequelize({
     ControlFrameworkMapping,
     KRI,
     VendorAssessment,
+    RiskCategory,
+    RiskQuantification,
+    ControlMonitoringEvent,
+    Audit,
+    AuditFinding,
+    ReportTemplate,
   ],
   pool: {
     max: 20,
