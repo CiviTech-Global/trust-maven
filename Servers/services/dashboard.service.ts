@@ -116,6 +116,20 @@ export class DashboardService {
       order: [["dueDate", "ASC"]],
     });
   }
+  async getOverdueReviews(organizationId: string) {
+    const today = new Date().toISOString().split("T")[0];
+    return Risk.findAll({
+      where: {
+        organizationId,
+        nextReviewDue: { [Op.lt]: today },
+        status: { [Op.notIn]: ["closed", "accepted"] },
+      },
+      include: [
+        { model: User, as: "owner", attributes: ["id", "firstName", "lastName"] },
+      ],
+      order: [["nextReviewDue", "ASC"]],
+    });
+  }
 }
 
 export const dashboardService = new DashboardService();

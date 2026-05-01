@@ -41,6 +41,15 @@ const UserManagementPage = lazy(
 const AuditLogsPage = lazy(
   () => import("../../presentation/pages/AuditLogs/AuditLogsPage")
 );
+const KRIsPage = lazy(
+  () => import("../../presentation/pages/KRIs/KRIsPage")
+);
+const VendorsPage = lazy(
+  () => import("../../presentation/pages/Vendors/VendorsPage")
+);
+const FrameworksPage = lazy(
+  () => import("../../presentation/pages/Frameworks/FrameworksPage")
+);
 const SettingsPage = lazy(
   () => import("../../presentation/pages/Settings/SettingsPage")
 );
@@ -115,6 +124,9 @@ export default function AppRoutes() {
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="projects/:id" element={<ProjectDetailPage />} />
           <Route path="controls" element={<ControlsPage />} />
+          <Route path="kris" element={<KRIsPage />} />
+          <Route path="vendors" element={<VendorsPage />} />
+          <Route path="frameworks" element={<FrameworksPage />} />
           <Route path="users" element={<UserManagementPage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
           <Route path="settings" element={<SettingsPage />} />

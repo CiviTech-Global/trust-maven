@@ -49,7 +49,7 @@ export class RiskService {
   }
 
   async create(
-    data: { title: string; description?: string; domain: string; projectId?: string; ownerId?: string; riskAppetiteThreshold?: number },
+    data: { title: string; description?: string; domain: string; projectId?: string; ownerId?: string; riskAppetiteThreshold?: number; reviewCycleDays?: number },
     organizationId: string,
     userId: string
   ) {
@@ -83,7 +83,7 @@ export class RiskService {
 
   async update(
     id: string,
-    data: Partial<{ title: string; description: string; domain: string; status: string; projectId: string; ownerId: string; riskAppetiteThreshold: number }>,
+    data: Partial<{ title: string; description: string; domain: string; status: string; projectId: string; ownerId: string; riskAppetiteThreshold: number; reviewCycleDays: number; lastReviewedAt: string; nextReviewDue: string }>,
     organizationId: string,
     userId: string
   ) {

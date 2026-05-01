@@ -69,6 +69,15 @@ export class Risk extends Model {
   @Column({ type: DataType.INTEGER, validate: { min: 1, max: 25 } })
   riskAppetiteThreshold!: number | null;
 
+  @Column({ type: DataType.INTEGER, validate: { min: 1 } })
+  reviewCycleDays!: number | null;
+
+  @Column({ type: DataType.DATEONLY })
+  lastReviewedAt!: string | null;
+
+  @Column({ type: DataType.DATEONLY })
+  nextReviewDue!: string | null;
+
   @CreatedAt
   createdAt!: Date;
 

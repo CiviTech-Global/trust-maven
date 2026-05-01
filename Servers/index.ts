@@ -16,6 +16,9 @@ import controlRoutes from "./routes/control.route";
 import exportRoutes from "./routes/export.route";
 import auditLogRoutes from "./routes/auditLog.route";
 import notificationRoutes from "./routes/notification.route";
+import kriRoutes from "./routes/kri.route";
+import vendorRoutes from "./routes/vendor.route";
+import frameworkRoutes from "./routes/framework.route";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -62,6 +65,9 @@ app.use("/api/v1/controls", controlRoutes);
 app.use("/api/v1/export", exportRoutes);
 app.use("/api/v1/audit-logs", auditLogRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
+app.use("/api/v1/kris", kriRoutes);
+app.use("/api/v1/vendors", vendorRoutes);
+app.use("/api/v1/frameworks", frameworkRoutes);
 
 // Global error handler
 app.use(

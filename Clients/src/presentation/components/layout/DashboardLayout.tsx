@@ -31,6 +31,9 @@ import {
   Logout as LogoutIcon,
   Science as DemoIcon,
   Security as ControlIcon,
+  TrendingUp as KRIIcon,
+  Store as VendorIcon,
+  Gavel as FrameworkIcon,
   People as UsersIcon,
   History as AuditIcon,
   Notifications as NotifIcon,
@@ -52,6 +55,9 @@ const navItems = [
   { label: "Risk Registry", path: "/risks", icon: <RiskIcon /> },
   { label: "Projects", path: "/projects", icon: <ProjectIcon /> },
   { label: "Controls", path: "/controls", icon: <ControlIcon /> },
+  { label: "KRIs", path: "/kris", icon: <KRIIcon /> },
+  { label: "Vendors", path: "/vendors", icon: <VendorIcon /> },
+  { label: "Frameworks", path: "/frameworks", icon: <FrameworkIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
 ];
 

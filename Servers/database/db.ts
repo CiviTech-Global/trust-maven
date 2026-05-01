@@ -17,6 +17,8 @@ import { File } from "../domain.layer/models/file/file.model";
 import { Notification } from "../domain.layer/models/notification/notification.model";
 import { RiskControlMapping } from "../domain.layer/models/riskControlMapping/riskControlMapping.model";
 import { ControlFrameworkMapping } from "../domain.layer/models/controlFrameworkMapping/controlFrameworkMapping.model";
+import { KRI } from "../domain.layer/models/kri/kri.model";
+import { VendorAssessment } from "../domain.layer/models/vendorAssessment/vendorAssessment.model";
 
 dotenv.config();
 
@@ -46,6 +48,8 @@ export const sequelize = new Sequelize({
     Notification,
     RiskControlMapping,
     ControlFrameworkMapping,
+    KRI,
+    VendorAssessment,
   ],
   pool: {
     max: 20,

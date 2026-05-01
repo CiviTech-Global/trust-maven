@@ -39,6 +39,14 @@ export class DashboardController {
       res.status(500).json({ success: false, message: error.message });
     }
   }
+  async getOverdueReviews(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const overdue = await dashboardService.getOverdueReviews(req.user!.organizationId);
+      res.json({ success: true, data: overdue });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
 }
 
 export const dashboardController = new DashboardController();
