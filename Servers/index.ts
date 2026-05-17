@@ -26,6 +26,10 @@ import auditMgmtRoutes from "./routes/auditMgmt.route";
 import reportTemplateRoutes from "./routes/reportTemplate.route";
 import searchRoutes from "./routes/search.route";
 import changeHistoryRoutes from "./routes/changeHistory.route";
+import regulationCatalogRoutes from "./routes/regulationCatalog.route";
+import organizationRegulationRoutes from "./routes/organizationRegulation.route";
+import complianceHubRoutes from "./routes/complianceHub.route";
+import { regulationSeederService } from "./services/regulationSeeder.service";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -91,6 +95,9 @@ app.use("/api/v1/audits", auditMgmtRoutes);
 app.use("/api/v1/reports", reportTemplateRoutes);
 app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/change-history", changeHistoryRoutes);
+app.use("/api/v1/regulations", regulationCatalogRoutes);
+app.use("/api/v1/org-regulations", organizationRegulationRoutes);
+app.use("/api/v1/compliance-hub", complianceHubRoutes);
 
 // Global error handler
 app.use(
@@ -117,6 +124,13 @@ async function bootstrap() {
 
     if (process.env.NODE_ENV === "development") {
       await sequelize.sync({ alter: true });
+    }
+
+    // Seed regulation definitions on first boot
+    try {
+      await regulationSeederService.seed();
+    } catch (err: any) {
+      logger.error("Failed to seed regulations:", err.message);
     }
 
     const server = app.listen(PORT, () => {

@@ -15,6 +15,10 @@ import { Audit } from "../domain.layer/models/audit/audit.model";
 import { AuditFinding } from "../domain.layer/models/auditFinding/auditFinding.model";
 import { ControlMonitoringEvent } from "../domain.layer/models/controlMonitoringEvent/controlMonitoringEvent.model";
 import { ReportTemplate } from "../domain.layer/models/reportTemplate/reportTemplate.model";
+import { RegulationDefinition } from "../domain.layer/models/regulationDefinition/regulationDefinition.model";
+import { RegulationRequirement } from "../domain.layer/models/regulationRequirement/regulationRequirement.model";
+import { OrganizationRegulation } from "../domain.layer/models/organizationRegulation/organizationRegulation.model";
+import { RequirementImplementation } from "../domain.layer/models/requirementImplementation/requirementImplementation.model";
 
 interface DemoRisk {
   title: string;
@@ -401,6 +405,57 @@ export class DemoDataService {
       isShared: true, isDemoData: true,
     });
 
+    // Adopt regulations for demo org (ISO 27001, NIST CSF 2.0, GDPR)
+    let regulationsAdopted = 0;
+    const demoRegCodes = ["ISO_27001_2022", "NIST_CSF_2", "GDPR"];
+    for (const code of demoRegCodes) {
+      const reg = await RegulationDefinition.findOne({ where: { code } });
+      if (!reg) continue;
+
+      const existing = await OrganizationRegulation.findOne({
+        where: { organizationId, regulationId: reg.id },
+      });
+      if (existing) continue;
+
+      await OrganizationRegulation.create({
+        organizationId,
+        regulationId: reg.id,
+        adoptedAt: new Date().toISOString().split("T")[0],
+        status: "active",
+        isDemoData: true,
+      });
+
+      // Create implementation records with varied statuses
+      const requirements = await RegulationRequirement.findAll({
+        where: { regulationId: reg.id, isActive: true },
+      });
+
+      const statuses = ["not_started", "in_progress", "implemented", "not_applicable"];
+      const implRecords = requirements.map((req, idx) => {
+        // Distribute statuses: ~40% implemented, ~20% in_progress, ~30% not_started, ~10% N/A
+        let status: string;
+        const r = idx % 10;
+        if (r < 4) status = "implemented";
+        else if (r < 6) status = "in_progress";
+        else if (r < 9) status = "not_started";
+        else status = "not_applicable";
+
+        return {
+          organizationId,
+          requirementId: req.id,
+          status,
+          isDemoData: true,
+          completedAt: status === "implemented" ? new Date() : null,
+        };
+      });
+
+      if (implRecords.length > 0) {
+        await RequirementImplementation.bulkCreate(implRecords, { ignoreDuplicates: true });
+      }
+
+      regulationsAdopted++;
+    }
+
     return {
       riskCategories: 25,
       projects: projects.length,
@@ -412,10 +467,15 @@ export class DemoDataService {
       findings: DEMO_FINDINGS.length,
       monitoringEvents: monitoringEvents.length,
       reportTemplates: 2,
+      regulationsAdopted,
     };
   }
 
   async deleteDemoData(organizationId: string) {
+    // Delete regulation demo data first
+    await RequirementImplementation.destroy({ where: { organizationId, isDemoData: true } });
+    await OrganizationRegulation.destroy({ where: { organizationId, isDemoData: true } });
+
     // Delete in reverse FK order
     await ReportTemplate.destroy({ where: { organizationId, isDemoData: true } });
     await ControlMonitoringEvent.destroy({ where: { organizationId, isDemoData: true } });

@@ -68,6 +68,21 @@ const ReportsPage = lazy(
 const ReportBuilderPage = lazy(
   () => import("../../presentation/pages/Reports/ReportBuilderPage")
 );
+const ComplianceHubPage = lazy(
+  () => import("../../presentation/pages/ComplianceHub/ComplianceHubPage")
+);
+const RegulationCatalogPage = lazy(
+  () => import("../../presentation/pages/ComplianceHub/RegulationCatalogPage")
+);
+const RegulationDetailPage = lazy(
+  () => import("../../presentation/pages/ComplianceHub/RegulationDetailPage")
+);
+const CrossMappingView = lazy(
+  () => import("../../presentation/pages/ComplianceHub/CrossMappingView")
+);
+const FrameworkRecommender = lazy(
+  () => import("../../presentation/pages/ComplianceHub/FrameworkRecommender")
+);
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -142,6 +157,11 @@ export default function AppRoutes() {
           <Route path="kris" element={<KRIsPage />} />
           <Route path="vendors" element={<VendorsPage />} />
           <Route path="frameworks" element={<FrameworksPage />} />
+          <Route path="compliance-hub" element={<ComplianceHubPage />} />
+          <Route path="compliance-hub/regulations" element={<RegulationCatalogPage />} />
+          <Route path="compliance-hub/regulations/:id" element={<RegulationDetailPage />} />
+          <Route path="compliance-hub/cross-mapping" element={<CrossMappingView />} />
+          <Route path="compliance-hub/recommend" element={<FrameworkRecommender />} />
           <Route path="users" element={<UserManagementPage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
           <Route path="controls/monitoring" element={<ControlMonitoringPage />} />

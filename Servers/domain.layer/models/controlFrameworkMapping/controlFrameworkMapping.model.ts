@@ -11,6 +11,8 @@ import {
 } from "sequelize-typescript";
 import { Control } from "../control/control.model";
 import { Framework } from "../framework/framework.model";
+import { RequirementImplementation } from "../requirementImplementation/requirementImplementation.model";
+import { RegulationRequirement } from "../regulationRequirement/regulationRequirement.model";
 
 @Table({ tableName: "control_framework_mappings", timestamps: false })
 export class ControlFrameworkMapping extends Model {
@@ -30,6 +32,14 @@ export class ControlFrameworkMapping extends Model {
   @Column({ type: DataType.STRING(255), allowNull: false })
   requirementId!: string;
 
+  @ForeignKey(() => RequirementImplementation)
+  @Column({ type: DataType.UUID })
+  requirementImplId!: string | null;
+
+  @ForeignKey(() => RegulationRequirement)
+  @Column({ type: DataType.UUID })
+  regulationRequirementId!: string | null;
+
   @CreatedAt
   @Column({ type: DataType.DATE, defaultValue: DataType.NOW })
   mappedAt!: Date;
@@ -39,4 +49,10 @@ export class ControlFrameworkMapping extends Model {
 
   @BelongsTo(() => Framework)
   framework!: Framework;
+
+  @BelongsTo(() => RequirementImplementation)
+  requirementImpl!: RequirementImplementation;
+
+  @BelongsTo(() => RegulationRequirement)
+  regulationRequirement!: RegulationRequirement;
 }

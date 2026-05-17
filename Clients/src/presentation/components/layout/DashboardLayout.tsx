@@ -42,6 +42,7 @@ import {
   Notifications as NotifIcon,
   LightMode as LightIcon,
   DarkMode as DarkIcon,
+  Hub as ComplianceHubIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../application/redux/store";
@@ -62,6 +63,7 @@ const navItems = [
   { label: "Vendors", path: "/vendors", icon: <VendorIcon /> },
   { label: "Monitoring", path: "/controls/monitoring", icon: <MonitorIcon /> },
   { label: "Frameworks", path: "/frameworks", icon: <FrameworkIcon /> },
+  { label: "Compliance Hub", path: "/compliance-hub", icon: <ComplianceHubIcon /> },
   { label: "Audits", path: "/audits", icon: <AuditMgmtIcon /> },
   { label: "Reports", path: "/reports", icon: <ReportsIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },

@@ -25,6 +25,11 @@ import { ControlMonitoringEvent } from "../domain.layer/models/controlMonitoring
 import { Audit } from "../domain.layer/models/audit/audit.model";
 import { AuditFinding } from "../domain.layer/models/auditFinding/auditFinding.model";
 import { ReportTemplate } from "../domain.layer/models/reportTemplate/reportTemplate.model";
+import { RegulationDefinition } from "../domain.layer/models/regulationDefinition/regulationDefinition.model";
+import { RegulationRequirement } from "../domain.layer/models/regulationRequirement/regulationRequirement.model";
+import { CrossFrameworkMapping } from "../domain.layer/models/crossFrameworkMapping/crossFrameworkMapping.model";
+import { OrganizationRegulation } from "../domain.layer/models/organizationRegulation/organizationRegulation.model";
+import { RequirementImplementation } from "../domain.layer/models/requirementImplementation/requirementImplementation.model";
 
 dotenv.config();
 
@@ -62,6 +67,11 @@ export const sequelize = new Sequelize({
     Audit,
     AuditFinding,
     ReportTemplate,
+    RegulationDefinition,
+    RegulationRequirement,
+    CrossFrameworkMapping,
+    OrganizationRegulation,
+    RequirementImplementation,
   ],
   pool: {
     max: 20,

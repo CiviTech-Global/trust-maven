@@ -32,6 +32,7 @@ Ranked by market position, analyst recognition, and relevance to TrustMaven's do
 | **Control Monitoring** | Continuous monitoring with event history, health status (healthy/at_risk/failing/not_monitored), overdue detection, consecutive failure tracking |
 | **KRIs** | Key Risk Indicators with thresholds (green/amber/red), current values, trend tracking, domain categorization |
 | **Frameworks** | Multi-framework compliance engine, JSONB requirements, control-to-framework mapping with coverage % |
+| **Governance OS** *(Phase 3c)* | Normalized regulation catalog (ISO 27001, NIST CSF 2.0, SOC 2, GDPR, ISO 31000, SOX), cross-framework mapping (~200+ bidirectional mappings), per-org regulation adoption, per-requirement implementation tracking, intelligent framework stack recommendations, automated gap analysis with cross-mapping leverage, framework-to-framework compliance translation, unified compliance hub |
 | **Vendors** | Full TPRM: registry with risk levels, vendor assessments (type/rating/score), contract & SLA fields |
 | **Audits** | Full audit management: plans, findings (severity/status), remediation tracking, overdue finding detection, internal/external audit types |
 | **Reports** | Custom report builder: entity selection, column/filter/groupBy config, JSON/CSV generation, shared templates |
@@ -79,7 +80,7 @@ Every feature below exists in at least one top-10 platform and is absent from Tr
 | Control-to-framework mapping | Archer, LogicGate, Vanta, Drata | ✅ **DONE** (Phase 3a) |
 | Continuous control monitoring | Vanta, Drata, ServiceNow, MetricStream | ✅ **DONE** (Phase 3b) |
 | Automated evidence collection | Vanta, Drata, LogicGate, Hyperproof | Missing (requires integrations) |
-| Control library with cross-framework deduplication | Archer, Hyperproof, Vanta | Missing |
+| Control library with cross-framework deduplication | Archer, Hyperproof, Vanta | 🔨 **Phase 3c** — cross-mapping shows which controls satisfy multiple frameworks |
 | Control cost tracking (annual cost, ROI) | LogicGate, Archer | Missing |
 
 ### Compliance & Audit Gaps
@@ -87,13 +88,13 @@ Every feature below exists in at least one top-10 platform and is absent from Tr
 | Feature | Who Has It | TrustMaven Status |
 |---------|-----------|-------------------|
 | Multi-framework compliance management | ALL top 10 | ✅ **DONE** (Phase 3b) |
-| Automated compliance gap analysis | Vanta, Drata, Archer, LogicGate | Missing |
+| Automated compliance gap analysis | Vanta, Drata, Archer, LogicGate | 🔨 **Phase 3c** — smart gap analysis with cross-mapping leverage |
 | Continuous compliance monitoring | Vanta, Drata, Hyperproof | ✅ **DONE** (Phase 3b) — via continuous control monitoring |
 | Audit management (plans, findings, remediation) | ServiceNow, Optro, Archer, MetricStream | ✅ **DONE** (Phase 3b) |
 | Audit evidence management & auditor portal | Optro, Hyperproof | Missing |
 | Regulatory change management / horizon scanning | IBM, LogicGate, MetricStream | Missing |
-| SOX compliance workflows | Optro, Archer, ServiceNow | Missing |
-| Cross-framework evidence reuse | Hyperproof, Vanta | Missing |
+| SOX compliance workflows | Optro, Archer, ServiceNow | 🔨 **Phase 3c** — SOX/COSO seed data + requirement tracking |
+| Cross-framework evidence reuse | Hyperproof, Vanta | 🔨 **Phase 3c** — cross-framework mapping enables control reuse visibility |
 
 ### Third-Party Risk Management (TPRM) Gaps
 
@@ -145,6 +146,17 @@ Every feature below exists in at least one top-10 platform and is absent from Tr
 | Business Continuity Management (BCM) | ServiceNow, MetricStream, IBM | Missing |
 | ESG risk management | MetricStream, Diligent, IBM | Missing |
 
+### Regulatory Intelligence & Cross-Framework Gaps
+
+| Feature | Who Has It | TrustMaven Status |
+|---------|-----------|-------------------|
+| Normalized regulation catalog (full requirement trees) | Archer, MetricStream, IBM, Vanta | 🔨 **Phase 3c** — 6 frameworks with full clause/article decomposition |
+| Cross-framework requirement mapping | Archer, Hyperproof, MetricStream | 🔨 **Phase 3c** — bidirectional mappings with relevance + type |
+| Framework-to-framework compliance translation | IBM, MetricStream | 🔨 **Phase 3c** — "show me what my ISO 27001 covers in SOC 2" |
+| Smart framework recommendation engine | None (unique differentiator) | 🔨 **Phase 3c** — industry/size/jurisdiction-based suggestions |
+| Per-requirement implementation tracking (owner/reviewer/evidence) | LogicGate, Archer, MetricStream | 🔨 **Phase 3c** — full lifecycle per requirement |
+| Unified multi-regulation compliance dashboard | Diligent, MetricStream, IBM | 🔨 **Phase 3c** — area scores, adoption tracking, gap highlights |
+
 ---
 
 ## Unified Priority Roadmap
@@ -192,12 +204,26 @@ All features above merged, deduplicated, and ranked by two axes:
 
 ---
 
+### TIER 2.5: Governance OS — Regulatory Intelligence (Phase 3c)
+*Transforms TrustMaven from a compliance tool into a decision-intelligence platform. Unique differentiator — no competitor provides this as a unified, cross-framework intelligence layer.*
+
+| # | Feature | Essentiality | Revenue Impact | Rationale |
+|---|---------|:---:|:---:|-----------|
+| 18a | **Normalized regulation catalog** | 9/10 | 9/10 | 🔨 **IN PROGRESS** — Full requirement trees for ISO 27001, NIST CSF 2.0, SOC 2, GDPR, ISO 31000, SOX. Structured decomposition (clause → subclause → requirement) enables granular tracking. Every serious GRC platform ships with pre-built framework content. |
+| 18b | **Cross-framework requirement mapping** | 8/10 | 9/10 | 🔨 **IN PROGRESS** — Bidirectional mappings showing "ISO 27001 A.5.1 ≈ SOC 2 CC1.1 ≈ NIST CSF GV.PO". Enables control reuse, reduces audit fatigue, and is the foundation for the intelligence layer. Archer and MetricStream have this; mid-market competitors don't. |
+| 18c | **Per-requirement implementation tracking** | 8/10 | 8/10 | 🔨 **IN PROGRESS** — Status, owner, reviewer, approver, evidence links, due date per requirement per organization. Turns frameworks from reference documents into actionable project plans. |
+| 18d | **Smart gap analysis with cross-mapping** | 7/10 | 9/10 | 🔨 **IN PROGRESS** — "You've implemented 80% of ISO 27001; that already covers 62% of SOC 2 via cross-mappings." This is the killer demo moment that closes deals. No mid-market competitor does this. |
+| 18e | **Framework recommendation engine** | 6/10 | 8/10 | 🔨 **IN PROGRESS** — "Based on your industry (fintech), size (200 employees), and jurisdictions (EU + US), we recommend: ISO 27001 + SOC 2 + GDPR." Unique differentiator — reduces time-to-value for new customers. |
+| 18f | **Unified compliance hub** | 7/10 | 8/10 | 🔨 **IN PROGRESS** — Single dashboard showing compliance posture across all adopted regulations, area scores, trends, and cross-framework coverage. The "single pane of glass" that enterprise buyers demand. |
+
+---
+
 ### TIER 3: Market Expansion Features (Phase 4)
 *These open new customer segments, enable premium pricing tiers, or address growing regulatory demands.*
 
 | # | Feature | Essentiality | Revenue Impact | Rationale |
 |---|---------|:---:|:---:|-----------|
-| 19 | **Compliance gap analysis (automated)** | 6/10 | 8/10 | "You're 73% compliant with SOC 2" — visual gap analysis is a top sales demo moment. Vanta and Drata lead here. |
+| 19 | **Compliance gap analysis (automated)** | 6/10 | 8/10 | Partially addressed by Phase 3c intelligence layer. Visual gap analysis is a top sales demo moment. Vanta and Drata lead here. |
 | 20 | **Issue management & remediation tracking** | 7/10 | 7/10 | Track control failures, policy violations, audit findings as formal issues with remediation workflows. Standard in ServiceNow and MetricStream. |
 | 21 | **Executive / board-level dashboards** | 6/10 | 8/10 | Diligent's unique angle — risk data formatted for board consumption. Enables "sell to the CISO, expand to the board" motion. |
 | 22 | **Risk velocity** | 6/10 | 5/10 | Gartner-recommended. Low effort to add, adds analytical depth. Differentiator in demos but not a deal-breaker. |
@@ -265,14 +291,42 @@ Phase 3b+ (Infrastructure & DX)  — ✅ COMPLETE
   ├─ ✅ SSE real-time notifications
   └─ ✅ React Error Boundary
 
+Phase 3c (Governance OS)  — Core regulatory intelligence layer 🔨 IN PROGRESS
+  ├─ Regulation Catalog (normalized definitions + requirement trees)
+  │   ├─ ISO 27001:2022 (7 clauses, 25+ subclauses, Annex A 93 controls)
+  │   ├─ NIST CSF 2.0 (6 functions, 22 categories, 106 subcategories)
+  │   ├─ SOC 2 Type II (5 trust service categories, ~60 criteria)
+  │   ├─ GDPR (11 chapters, key articles)
+  │   ├─ ISO 31000:2018 (principles + process + framework)
+  │   └─ SOX/COSO (5 components, key sections 302/404/906)
+  ├─ Cross-Framework Mapping (bidirectional, ~200+ mappings)
+  │   ├─ ISO 27001 ↔ NIST CSF ↔ SOC 2 (InfoSec triangle)
+  │   ├─ GDPR ↔ ISO 27001 (privacy ↔ security)
+  │   ├─ ISO 31000 ↔ ISO 27001 clause 6 (risk mgmt alignment)
+  │   └─ SOX/COSO ↔ SOC 2 (financial ↔ audit)
+  ├─ Organization Regulation Adoption (per-tenant framework selection)
+  ├─ Requirement Implementation Tracking (per-requirement status/owner/evidence)
+  ├─ Regulation Intelligence Service
+  │   ├─ Smart framework stack recommendations (by industry/size/jurisdiction)
+  │   ├─ Automated gap analysis with cross-mapping leverage
+  │   ├─ Framework-to-framework compliance translation
+  │   └─ Unified compliance scoring across areas
+  ├─ Compliance Hub (unified frontend)
+  │   ├─ Dashboard: area scores, adopted regulations, overall compliance %
+  │   ├─ Regulation Detail: collapsible requirement tree with implementation status
+  │   ├─ Cross-Mapping View: visual mapping between frameworks
+  │   └─ Framework Recommender: wizard for intelligent stack selection
+  └─ Seeder Service (TypeScript structure files → DB on boot/admin action)
+
 Phase 4 (Tier 3)   — Market expansion
-  ├─ Compliance gap analysis
+  ├─ Compliance gap analysis (partially covered by Phase 3c intelligence layer)
   ├─ Issue management & remediation
   ├─ Executive dashboards
   ├─ Workflow engine
   ├─ Integrations (Jira/Slack/Teams)
-  ├─ SOX workflows
-  └─ Regulatory change management
+  ├─ SOX workflows (partially covered by Phase 3c SOX seed data)
+  ├─ Regulatory change management
+  └─ Cross-framework evidence reuse (partially covered by Phase 3c cross-mappings)
 
 Phase 5+ (Tier 4)  — Innovation leadership
   ├─ AI risk/control/vendor intelligence
@@ -290,6 +344,7 @@ Phase 5+ (Tier 4)  — Innovation leadership
 |-------|-------------------------------|---------------|
 | **3a** | Mid-market companies with SOC 2/ISO requirements; any org with formal risk program | Enables paid tier. Without Tier 1 features, TrustMaven is a demo, not a product. |
 | **3b** | Compliance-heavy orgs (fintech, healthcare, SaaS); companies managing 3+ frameworks; organizations with TPRM requirements | Premium tier. KRIs, TPRM, and multi-framework are upsell drivers. |
+| **3c** | Multi-regulation enterprises (fintech needing SOC 2 + GDPR + SOX); organizations seeking framework consolidation; consultancies managing clients across standards | Governance OS premium. Cross-framework intelligence and smart gap analysis are unique differentiators. "Show me how my ISO 27001 work already covers SOC 2" is a killer demo moment. |
 | **4** | US public companies (SOX); enterprises with board reporting needs; dev-heavy orgs (via integrations) | Enterprise tier. Board dashboards and SOX workflows justify 3-5x pricing. |
 | **5+** | Financial services, critical infrastructure, regulated industries requiring AI-augmented GRC | Innovation premium. AI features are marketing differentiators and conference demo material. |
 
