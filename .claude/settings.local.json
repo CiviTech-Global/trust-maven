@@ -9,7 +9,8 @@
       "Bash(timeout 10 npx tsx:*)",
       "Bash(npm install:*)",
       "Bash(timeout 10 npx vite:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(find:*)"
     ]
   }
 }
