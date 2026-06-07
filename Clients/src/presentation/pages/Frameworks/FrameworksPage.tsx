@@ -23,7 +23,6 @@ function CoverageBar({ percent }: { percent: number }) {
           sx={{
             height: 8,
             borderRadius: 4,
-            backgroundColor: "#E2E8F0",
             "& .MuiLinearProgress-bar": { backgroundColor: color, borderRadius: 4 },
           }}
         />

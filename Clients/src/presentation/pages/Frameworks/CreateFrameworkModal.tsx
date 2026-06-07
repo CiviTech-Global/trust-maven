@@ -79,9 +79,9 @@ export default function CreateFrameworkModal({ open, onClose }: CreateFrameworkM
           </Box>
 
           {requirements.length > 0 && (
-            <Box sx={{ maxHeight: 300, overflow: "auto", border: "1px solid #E2E8F0", borderRadius: 1, p: 1 }}>
+            <Box sx={{ maxHeight: 300, overflow: "auto", border: 1, borderColor: "divider", borderRadius: 1, p: 1 }}>
               {requirements.map((req, idx) => (
-                <Box key={req.id} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 0.5, borderBottom: idx < requirements.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                <Box key={req.id} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", py: 0.5, borderBottom: idx < requirements.length - 1 ? "1px solid" : "none", borderColor: "divider" }}>
                   <Typography variant="body2">{idx + 1}. {req.title}</Typography>
                   <IconButton size="small" onClick={() => handleRemoveRequirement(req.id)}>
                     <DeleteIcon fontSize="small" />

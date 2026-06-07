@@ -1,4 +1,4 @@
-import { Box, Typography, Card, CardContent, LinearProgress, List, ListItem, ListItemText, Chip, Alert } from "@mui/material";
+import { Box, Typography, Card, CardContent, LinearProgress, List, ListItem, ListItemText, Chip, Alert, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import {
   Warning as RiskIcon,
@@ -30,6 +30,7 @@ const DOMAIN_LABELS: Record<string, string> = {
 };
 
 export default function DashboardPage() {
+  const theme = useTheme();
   const { data: stats, isLoading } = useDashboardStats();
   const { data: trends } = useDashboardTrends();
   const { data: overdueTreatments } = useOverdueTreatments();
@@ -63,7 +64,7 @@ export default function DashboardPage() {
           <StatCard
             label="Total Risks"
             value={stats?.totalRisks ?? 0}
-            color="#4338CA"
+            color={theme.palette.primary.main}
             icon={<RiskIcon />}
           />
         </Grid>

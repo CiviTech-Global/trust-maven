@@ -1,27 +1,97 @@
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import { Card, CardContent, Typography, Box, SvgIconProps, useTheme } from "@mui/material";
 
 interface StatCardProps {
   label: string;
   value: string | number;
-  color: string;
-  icon?: React.ReactNode;
+  color?: string;
+  accentColor?: string;
+  icon?: React.ReactElement<SvgIconProps>;
+  trend?: string;
+  trendDirection?: "up" | "down";
 }
 
-export default function StatCard({ label, value, color, icon }: StatCardProps) {
+export default function StatCard({ label, value, color, accentColor, icon, trend }: StatCardProps) {
+  const theme = useTheme();
+  const accent = color || accentColor || theme.palette.primary.main;
   return (
-    <Card>
-      <CardContent>
+    <Card
+      sx={{
+        position: "relative",
+        overflow: "visible",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: `linear-gradient(90deg, ${accent}, ${accent}88)`,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+        },
+      }}
+    >
+      <CardContent sx={{ pt: 3, pb: "20px !important" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <Box>
-            <Typography variant="body2" color="text.secondary">
+          <Box sx={{ flex: 1 }}>
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                color: "text.secondary",
+                mb: 0.5,
+                display: "block",
+              }}
+            >
               {label}
             </Typography>
-            <Typography variant="h1" sx={{ color, mt: 1 }}>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 700,
+                color: "text.primary",
+                fontSize: "1.75rem",
+                lineHeight: 1.2,
+              }}
+            >
               {value}
             </Typography>
+            {trend && (
+              <Typography
+                variant="caption"
+                sx={{
+                  mt: 0.5,
+                  display: "block",
+                  color: trend.startsWith("+") ? "#059669" : trend.startsWith("-") ? "#EF4444" : "text.secondary",
+                  fontWeight: 500,
+                }}
+              >
+                {trend}
+              </Typography>
+            )}
           </Box>
           {icon && (
-            <Box sx={{ color, opacity: 0.7 }}>{icon}</Box>
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+                borderRadius: 3,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: `${accent}12`,
+                color: accent,
+                flexShrink: 0,
+                ml: 2,
+                "& .MuiSvgIcon-root": {
+                  fontSize: 22,
+                },
+              }}
+            >
+              {icon}
+            </Box>
           )}
         </Box>
       </CardContent>

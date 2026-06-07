@@ -3,6 +3,7 @@ import {
   Box, Typography, Button, TextField, MenuItem,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Chip, LinearProgress, Alert, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions,
+  useTheme,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, TrendingUp as TrendIcon } from "@mui/icons-material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
@@ -34,6 +35,7 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
 };
 
 export default function KRIsPage() {
+  const theme = useTheme();
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
@@ -222,11 +224,11 @@ export default function KRIsPage() {
                   date: new Date(h.recordedAt).toLocaleDateString(),
                   value: h.value,
                 }))}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                   <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
                   <RechartsTooltip />
-                  <Line type="monotone" dataKey="value" stroke="#4338CA" strokeWidth={2} dot={{ fill: "#4338CA", r: 4 }} name="Value" />
+                  <Line type="monotone" dataKey="value" stroke={theme.palette.primary.main} strokeWidth={2} dot={{ fill: theme.palette.primary.main, r: 4 }} name="Value" />
                 </LineChart>
               </ResponsiveContainer>
             </Box>

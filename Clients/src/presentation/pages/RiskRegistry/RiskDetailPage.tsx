@@ -328,7 +328,7 @@ export default function RiskDetailPage() {
               <DialogContent>
                 <Box sx={{ mt: 1 }}>
                   {allControls?.filter((c: any) => !riskControlMappings?.some((m: any) => m.controlId === c.id)).map((c: any) => (
-                    <Box key={c.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", py: 1, borderBottom: "1px solid #eee" }}>
+                    <Box key={c.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", py: 1, borderBottom: "1px solid", borderColor: "divider" }}>
                       <Box>
                         <Typography variant="body1" fontWeight={500}>{c.title}</Typography>
                         <Typography variant="body2" color="text.secondary">{c.type}</Typography>

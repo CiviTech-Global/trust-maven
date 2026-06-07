@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 
 interface RiskPoint {
   likelihood: number;
@@ -10,15 +10,25 @@ interface RiskMatrixProps {
   points: RiskPoint[];
 }
 
-function getCellColor(likelihood: number, impact: number): string {
+function getCellColor(likelihood: number, impact: number, colors: {
+  error: string; warning: string; info: string; success: string;
+}): string {
   const score = likelihood * impact;
-  if (score >= 15) return "#FEE2E2";
-  if (score >= 10) return "#FEF3C7";
-  if (score >= 5) return "#DBEAFE";
-  return "#D1FAE5";
+  if (score >= 15) return colors.error;
+  if (score >= 10) return colors.warning;
+  if (score >= 5) return colors.info;
+  return colors.success;
 }
 
 export default function RiskMatrix({ points }: RiskMatrixProps) {
+  const theme = useTheme();
+  const cellColors = {
+    error: theme.palette.error.light,
+    warning: theme.palette.warning.light,
+    info: theme.palette.info.light,
+    success: theme.palette.success.light,
+  };
+
   const grid: number[][] = Array.from({ length: 5 }, () => Array(5).fill(0) as number[]);
   for (const p of points) {
     if (p.likelihood >= 1 && p.likelihood <= 5 && p.impact >= 1 && p.impact <= 5) {
@@ -47,28 +57,31 @@ export default function RiskMatrix({ points }: RiskMatrixProps) {
               {5 - rowIdx}
             </Typography>
           </Box>
-          {row.map((count: number, colIdx: number) => (
-            <Box
-              key={colIdx}
-              sx={{
-                flex: 1,
-                aspectRatio: "1",
-                backgroundColor: getCellColor(5 - rowIdx, colIdx + 1),
-                borderRadius: 0.5,
-                mx: "1px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: 28,
-              }}
-            >
-              {count > 0 && (
-                <Typography variant="body2" fontWeight={600} fontSize="0.7rem">
-                  {count}
-                </Typography>
-              )}
-            </Box>
-          ))}
+          {row.map((count: number, colIdx: number) => {
+            const cellBg = getCellColor(5 - rowIdx, colIdx + 1, cellColors);
+            return (
+              <Box
+                key={colIdx}
+                sx={{
+                  flex: 1,
+                  aspectRatio: "1",
+                  backgroundColor: cellBg,
+                  borderRadius: 0.5,
+                  mx: "1px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 28,
+                }}
+              >
+                {count > 0 && (
+                  <Typography variant="body2" fontWeight={600} fontSize="0.7rem">
+                    {count}
+                  </Typography>
+                )}
+              </Box>
+            );
+          })}
         </Box>
       ))}
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 0.5 }}>

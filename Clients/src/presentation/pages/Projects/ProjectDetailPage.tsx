@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   Box, Typography, Button, Chip, Card, CardContent,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  LinearProgress, Alert, IconButton,
+  LinearProgress, Alert, IconButton, useTheme,
 } from "@mui/material";
 import { ArrowBack as BackIcon, Edit as EditIcon } from "@mui/icons-material";
 import { useProject } from "../../../infrastructure/api/projects.api";
@@ -30,6 +30,7 @@ const STATUS_COLORS: Record<string, "default" | "primary" | "success" | "warning
 };
 
 export default function ProjectDetailPage() {
+  const theme = useTheme();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: project, isLoading, error } = useProject(id || null);
@@ -101,7 +102,7 @@ export default function ProjectDetailPage() {
           <Card>
             <CardContent>
               <Typography variant="body2" color="text.secondary">Total Risks</Typography>
-              <Typography variant="h1" sx={{ color: "#4338CA", mt: 1 }}>{risks?.length || 0}</Typography>
+              <Typography variant="h1" sx={{ color: theme.palette.primary.main, mt: 1 }}>{risks?.length || 0}</Typography>
             </CardContent>
           </Card>
         </Grid>

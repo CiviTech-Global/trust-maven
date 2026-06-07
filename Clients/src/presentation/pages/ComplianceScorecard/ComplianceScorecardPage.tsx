@@ -1,5 +1,5 @@
 import {
-  Box, Typography, Card, CardContent, LinearProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
+  Box, Typography, Card, CardContent, LinearProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import {
@@ -14,6 +14,7 @@ import { useAdoptedRegulations } from "../../../infrastructure/api/complianceHub
 import StatCard from "../../components/common/StatCard";
 
 export default function ComplianceScorecardPage() {
+  const theme = useTheme();
   const { data: frameworks, isLoading: frameworksLoading } = useFrameworks();
   const { data: orgRegs, isLoading: regsLoading } = useAdoptedRegulations();
   const isLoading = frameworksLoading || regsLoading;
@@ -64,7 +65,7 @@ export default function ComplianceScorecardPage() {
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard label="Overall Score" value={`${overallScore}%`} color="#4338CA" icon={<RegulationIcon />} />
+          <StatCard label="Overall Score" value={`${overallScore}%`} color={theme.palette.primary.main} icon={<RegulationIcon />} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard label="Compliant" value={compliant} color="#059669" icon={<CompliantIcon />} />
@@ -106,7 +107,7 @@ export default function ComplianceScorecardPage() {
                           <LinearProgress
                             variant="determinate"
                             value={item.score}
-                            sx={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: "#E2E8F0", "& .MuiLinearProgress-bar": { backgroundColor: getScoreColor(item.score) } }}
+                            sx={{ flex: 1, height: 8, borderRadius: 4, "& .MuiLinearProgress-bar": { backgroundColor: getScoreColor(item.score) } }}
                           />
                           <Typography variant="body2" fontWeight={600}>{item.score}%</Typography>
                         </Box>
