@@ -9,6 +9,31 @@ import { notificationService } from "./notification.service";
 import { AuditAction } from "../types";
 
 export class RiskService {
+  async bulkUpdate(
+    ids: string[],
+    data: Partial<{ status: string; ownerId: string; domain: string; projectId: string }>,
+    organizationId: string,
+    userId: string
+  ) {
+    if (!ids.length) throw new Error("No risk IDs provided");
+    const count = await Risk.count({ where: { id: ids, organizationId } });
+    if (count !== ids.length) throw new Error("Some risks not found");
+
+    await Risk.update(data, { where: { id: ids, organizationId } });
+
+    for (const id of ids) {
+      await auditService.log({
+        organizationId, userId,
+        entityType: "risk",
+        entityId: id,
+        action: AuditAction.UPDATE,
+        changes: { ...data, _bulk: true },
+      });
+    }
+
+    return { updated: ids.length };
+  }
+
   async findAll(
     organizationId: string,
     filters?: { domain?: string; status?: string; projectId?: string; search?: string }

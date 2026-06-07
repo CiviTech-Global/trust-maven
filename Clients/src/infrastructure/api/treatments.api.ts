@@ -16,7 +16,7 @@ export function useTreatments(riskId: string | null) {
 export function useCreateTreatment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ riskId, ...treatment }: { riskId: string; strategy: string; description: string; responsibleId?: string; dueDate?: string }) => {
+    mutationFn: async ({ riskId, ...treatment }: { riskId: string; strategy: string; description: string; responsibleId?: string; dueDate?: string; costEstimate?: number; progress?: number }) => {
       const { data } = await axiosInstance.post(`/risks/${riskId}/treatments`, treatment);
       return data.data;
     },
@@ -31,7 +31,7 @@ export function useCreateTreatment() {
 export function useUpdateTreatment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ riskId, treatmentId, ...updates }: { riskId: string; treatmentId: string } & Partial<RiskTreatment>) => {
+    mutationFn: async ({ riskId, treatmentId, ...updates }: { riskId: string; treatmentId: string } & Partial<RiskTreatment> & { costEstimate?: number; progress?: number }) => {
       const { data } = await axiosInstance.put(`/risks/${riskId}/treatments/${treatmentId}`, updates);
       return data.data;
     },

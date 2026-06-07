@@ -11,6 +11,9 @@ router.post("/register", authRateLimit, (req, res) =>
 router.post("/login", authRateLimit, (req, res) =>
   authController.login(req, res)
 );
+router.post("/mfa/complete", authRateLimit, (req, res) =>
+  authController.completeMfa(req, res)
+);
 router.get("/me", authenticate, (req, res) =>
   authController.me(req, res)
 );

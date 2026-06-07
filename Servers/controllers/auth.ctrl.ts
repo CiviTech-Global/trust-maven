@@ -29,6 +29,26 @@ export class AuthController {
     }
   }
 
+  async completeMfa(req: Request, res: Response): Promise<void> {
+    try {
+      const { mfaToken, code } = req.body;
+      if (!mfaToken || !code) {
+        res.status(400).json({ success: false, message: "mfaToken and code are required" });
+        return;
+      }
+      const result = await authService.completeMfaLogin(mfaToken, code);
+      res.cookie("refreshToken", result.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      res.json({ success: true, data: result });
+    } catch (error: any) {
+      res.status(401).json({ success: false, message: error.message });
+    }
+  }
+
   async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;

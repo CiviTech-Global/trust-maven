@@ -80,8 +80,17 @@ const RegulationDetailPage = lazy(
 const CrossMappingView = lazy(
   () => import("../../presentation/pages/ComplianceHub/CrossMappingView")
 );
+const PoliciesPage = lazy(
+  () => import("../../presentation/pages/Policies/PoliciesPage")
+);
 const FrameworkRecommender = lazy(
   () => import("../../presentation/pages/ComplianceHub/FrameworkRecommender")
+);
+const EvidencePage = lazy(
+  () => import("../../presentation/pages/Evidence/EvidencePage")
+);
+const ComplianceScorecardPage = lazy(
+  () => import("../../presentation/pages/ComplianceScorecard/ComplianceScorecardPage")
 );
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -156,12 +165,15 @@ export default function AppRoutes() {
           <Route path="controls" element={<ControlsPage />} />
           <Route path="kris" element={<KRIsPage />} />
           <Route path="vendors" element={<VendorsPage />} />
+          <Route path="policies" element={<PoliciesPage />} />
           <Route path="frameworks" element={<FrameworksPage />} />
           <Route path="compliance-hub" element={<ComplianceHubPage />} />
           <Route path="compliance-hub/regulations" element={<RegulationCatalogPage />} />
           <Route path="compliance-hub/regulations/:id" element={<RegulationDetailPage />} />
           <Route path="compliance-hub/cross-mapping" element={<CrossMappingView />} />
           <Route path="compliance-hub/recommend" element={<FrameworkRecommender />} />
+          <Route path="compliance-scorecard" element={<ComplianceScorecardPage />} />
+          <Route path="evidence" element={<EvidencePage />} />
           <Route path="users" element={<UserManagementPage />} />
           <Route path="audit-logs" element={<AuditLogsPage />} />
           <Route path="controls/monitoring" element={<ControlMonitoringPage />} />

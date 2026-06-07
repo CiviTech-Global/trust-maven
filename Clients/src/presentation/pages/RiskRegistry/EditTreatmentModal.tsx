@@ -32,6 +32,8 @@ export default function EditTreatmentModal({ open, onClose, riskId, treatment }:
   const [description, setDescription] = useState(treatment.description);
   const [status, setStatus] = useState(treatment.status);
   const [dueDate, setDueDate] = useState(treatment.dueDate || "");
+  const [costEstimate, setCostEstimate] = useState((treatment as any).costEstimate?.toString() || "");
+  const [progress, setProgress] = useState((treatment as any).progress || 0);
   const updateTreatment = useUpdateTreatment();
 
   useEffect(() => {
@@ -39,6 +41,8 @@ export default function EditTreatmentModal({ open, onClose, riskId, treatment }:
     setDescription(treatment.description);
     setStatus(treatment.status);
     setDueDate(treatment.dueDate || "");
+    setCostEstimate((treatment as any).costEstimate?.toString() || "");
+    setProgress((treatment as any).progress || 0);
   }, [treatment]);
 
   const handleSubmit = async () => {
@@ -50,6 +54,8 @@ export default function EditTreatmentModal({ open, onClose, riskId, treatment }:
       description,
       status,
       dueDate: dueDate || undefined,
+      costEstimate: costEstimate ? parseFloat(costEstimate) : undefined,
+      progress,
     });
     onClose();
   };
@@ -67,6 +73,8 @@ export default function EditTreatmentModal({ open, onClose, riskId, treatment }:
             {STATUSES.map((s) => <MenuItem key={s.value} value={s.value}>{s.label}</MenuItem>)}
           </TextField>
           <TextField label="Due Date" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} fullWidth InputLabelProps={{ shrink: true }} />
+          <TextField label="Cost Estimate ($)" type="number" value={costEstimate} onChange={(e) => setCostEstimate(e.target.value)} fullWidth />
+          <TextField label="Progress %" type="number" value={progress} onChange={(e) => setProgress(Math.min(100, Math.max(0, Number(e.target.value))))} fullWidth />
         </Box>
       </DialogContent>
       <DialogActions>

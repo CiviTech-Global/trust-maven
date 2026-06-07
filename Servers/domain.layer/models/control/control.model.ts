@@ -35,6 +35,9 @@ export class Control extends Model {
   @Column({ type: DataType.TEXT })
   description!: string;
 
+  @Column({ type: DataType.TEXT })
+  objective!: string | null;
+
   @Column({
     type: DataType.ENUM("preventive", "detective", "corrective"),
     allowNull: false,

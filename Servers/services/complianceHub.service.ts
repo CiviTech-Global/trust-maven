@@ -204,6 +204,70 @@ export class ComplianceHubService {
     return impl;
   }
 
+  // ── Bulk Operations ────────────────────────────────────────────
+
+  async bulkDeprecateRegulations(organizationId: string, ids: string[], userId: string) {
+    const orgRegs = await OrganizationRegulation.findAll({
+      where: { id: { [Op.in]: ids }, organizationId },
+    });
+
+    if (orgRegs.length === 0) throw new Error("No matching regulations found");
+
+    const updated = await OrganizationRegulation.update(
+      { status: "deprecated" },
+      { where: { id: { [Op.in]: ids }, organizationId } }
+    );
+
+    for (const orgReg of orgRegs) {
+      await auditService.log({
+        organizationId,
+        userId,
+        entityType: "organization_regulation",
+        entityId: orgReg.id,
+        action: AuditAction.UPDATE,
+        changes: { status: "deprecated", bulk: true },
+      });
+    }
+
+    return { updated: updated[0] };
+  }
+
+  async bulkUpdateRegulationStatus(
+    organizationId: string,
+    ids: string[],
+    status: string,
+    userId: string
+  ) {
+    const validStatuses = ["active", "planned", "deprecated"];
+    if (!validStatuses.includes(status)) {
+      throw new Error(`Invalid status. Must be one of: ${validStatuses.join(", ")}`);
+    }
+
+    const orgRegs = await OrganizationRegulation.findAll({
+      where: { id: { [Op.in]: ids }, organizationId },
+    });
+
+    if (orgRegs.length === 0) throw new Error("No matching regulations found");
+
+    const updated = await OrganizationRegulation.update(
+      { status },
+      { where: { id: { [Op.in]: ids }, organizationId } }
+    );
+
+    for (const orgReg of orgRegs) {
+      await auditService.log({
+        organizationId,
+        userId,
+        entityType: "organization_regulation",
+        entityId: orgReg.id,
+        action: AuditAction.UPDATE,
+        changes: { status, bulk: true },
+      });
+    }
+
+    return { updated: updated[0] };
+  }
+
   // ── Dashboard ─────────────────────────────────────────────────
 
   async getDashboard(organizationId: string) {

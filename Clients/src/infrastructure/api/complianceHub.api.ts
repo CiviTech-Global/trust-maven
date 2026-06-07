@@ -181,6 +181,34 @@ export function useDeprecateRegulation() {
   });
 }
 
+export function useBulkDeprecateRegulations() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { data } = await axiosInstance.post("/org-regulations/bulk/deprecate", { ids });
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["org-regulations"] });
+      queryClient.invalidateQueries({ queryKey: ["compliance-hub"] });
+    },
+  });
+}
+
+export function useBulkUpdateRegulationStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ ids, status }: { ids: string[]; status: string }) => {
+      const { data } = await axiosInstance.post("/org-regulations/bulk/status", { ids, status });
+      return data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["org-regulations"] });
+      queryClient.invalidateQueries({ queryKey: ["compliance-hub"] });
+    },
+  });
+}
+
 export function useUpdateRequirementImpl() {
   const queryClient = useQueryClient();
   return useMutation({

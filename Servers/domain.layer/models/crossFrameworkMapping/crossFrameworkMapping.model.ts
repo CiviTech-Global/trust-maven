@@ -18,6 +18,7 @@ import { RegulationRequirement } from "../regulationRequirement/regulationRequir
   indexes: [
     {
       unique: true,
+      name: "uq_cross_framework_source_target",
       fields: ["sourceRequirementId", "targetRequirementId"],
     },
   ],

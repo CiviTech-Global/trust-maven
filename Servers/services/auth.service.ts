@@ -3,6 +3,7 @@ import { User } from "../domain.layer/models/user/user.model";
 import { Organization } from "../domain.layer/models/organization/organization.model";
 import { Role } from "../domain.layer/models/role/role.model";
 import { JwtPayload, UserRole } from "../types";
+import { mfaService } from "./mfa.service";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "24h";
@@ -71,6 +72,22 @@ export class AuthService {
 
     await user.update({ lastLogin: new Date() });
 
+    // Check if MFA is enabled
+    const mfaEnabled = await mfaService.isEnabled(user.id);
+    if (mfaEnabled) {
+      // Return a temp token (5min) for MFA challenge
+      const mfaToken = jwt.sign(
+        { userId: user.id, purpose: "mfa_challenge" },
+        JWT_SECRET,
+        { expiresIn: "5m" } as jwt.SignOptions
+      );
+      return {
+        mfaRequired: true,
+        mfaToken,
+        userId: user.id,
+      };
+    }
+
     const tokens = this.generateTokens({
       userId: user.id,
       email: user.email,
@@ -79,6 +96,34 @@ export class AuthService {
     });
 
     return { user: user.toSafeJSON(), ...tokens };
+  }
+
+  async completeMfaLogin(mfaToken: string, totpCode: string) {
+    try {
+      const decoded = jwt.verify(mfaToken, JWT_SECRET) as JwtPayload & { purpose: string };
+      if (decoded.purpose !== "mfa_challenge") {
+        throw new Error("Invalid MFA token purpose");
+      }
+
+      await mfaService.verify(decoded.userId, totpCode);
+
+      const user = await User.findByPk(decoded.userId, {
+        include: [{ model: Role }, { model: Organization }],
+      });
+      if (!user) throw new Error("User not found");
+
+      const tokens = this.generateTokens({
+        userId: user.id,
+        email: user.email,
+        organizationId: user.organizationId,
+        role: user.role?.name as UserRole,
+      });
+
+      return { user: user.toSafeJSON(), ...tokens };
+    } catch (err: any) {
+      if (err.message.includes("Invalid MFA code")) throw err;
+      throw new Error("Invalid or expired MFA token");
+    }
   }
 
   async getMe(userId: string) {

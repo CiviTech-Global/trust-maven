@@ -46,6 +46,12 @@ export class RiskTreatment extends Model {
   @Column({ type: DataType.DATEONLY })
   dueDate!: string | null;
 
+  @Column({ type: DataType.DECIMAL(12, 2) })
+  costEstimate!: number | null;
+
+  @Column({ type: DataType.INTEGER, validate: { min: 0, max: 100 } })
+  progress!: number | null;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 

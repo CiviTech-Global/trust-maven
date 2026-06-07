@@ -129,6 +129,13 @@ export enum FindingStatus {
   CLOSED = "closed",
 }
 
+export enum PolicyStatus {
+  DRAFT = "draft",
+  REVIEW = "review",
+  APPROVED = "approved",
+  RETIRED = "retired",
+}
+
 export enum ReportEntityType {
   RISK = "risk",
   CONTROL = "control",

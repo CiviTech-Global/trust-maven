@@ -4,6 +4,11 @@ import { SOC2_SEED } from "./soc2.seed";
 import { GDPR_SEED } from "./gdpr.seed";
 import { ISO31000_SEED } from "./iso31000.seed";
 import { SOX_SEED } from "./sox.seed";
+import { PCI_DSS_SEED } from "./pci-dss.seed";
+import { HIPAA_SEED } from "./hipaa.seed";
+import { FEDRAMP_SEED } from "./fedramp.seed";
+import { CMMC_2_SEED } from "./cmmc-2.seed";
+import { EU_AI_ACT_SEED } from "./eu-ai-act.seed";
 import { CROSS_MAPPINGS_SEED } from "./cross-mappings.seed";
 
 export {
@@ -13,6 +18,11 @@ export {
   GDPR_SEED,
   ISO31000_SEED,
   SOX_SEED,
+  PCI_DSS_SEED,
+  HIPAA_SEED,
+  FEDRAMP_SEED,
+  CMMC_2_SEED,
+  EU_AI_ACT_SEED,
   CROSS_MAPPINGS_SEED,
 };
 
@@ -25,4 +35,9 @@ export const ALL_REGULATION_SEEDS = [
   GDPR_SEED,
   ISO31000_SEED,
   SOX_SEED,
+  PCI_DSS_SEED,
+  HIPAA_SEED,
+  FEDRAMP_SEED,
+  CMMC_2_SEED,
+  EU_AI_ACT_SEED,
 ];

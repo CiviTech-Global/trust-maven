@@ -52,6 +52,7 @@ export default function CreateControlModal({ open, onClose }: CreateControlModal
   const createControl = useCreateControl();
   const { data: risks } = useRisks();
   const { data: users } = useUsers();
+  const [objective, setObjective] = useState("");
 
   const handleSubmit = async () => {
     if (!title || !type) return;
@@ -66,6 +67,7 @@ export default function CreateControlModal({ open, onClose }: CreateControlModal
       operatingEffectiveness,
       testingMethod: testingMethod || undefined,
       testFrequency: testFrequency || undefined,
+      objective: objective || undefined,
     } as any);
     resetAndClose();
   };
@@ -74,7 +76,7 @@ export default function CreateControlModal({ open, onClose }: CreateControlModal
     setTitle(""); setDescription(""); setType(""); setEffectiveness("effective");
     setRiskId(""); setOwnerId("");
     setDesignEffectiveness("effective"); setOperatingEffectiveness("effective");
-    setTestingMethod(""); setTestFrequency("");
+    setTestingMethod(""); setTestFrequency(""); setObjective("");
     onClose();
   };
 
@@ -85,6 +87,7 @@ export default function CreateControlModal({ open, onClose }: CreateControlModal
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           <TextField label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required fullWidth />
           <TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} multiline rows={3} fullWidth />
+          <TextField label="Control Objective" value={objective} onChange={(e) => setObjective(e.target.value)} multiline rows={2} fullWidth />
           <TextField select label="Type" value={type} onChange={(e) => setType(e.target.value)} required fullWidth>
             {TYPES.map((t) => <MenuItem key={t.value} value={t.value}>{t.label}</MenuItem>)}
           </TextField>

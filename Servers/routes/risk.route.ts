@@ -45,4 +45,12 @@ router.post("/:riskId/quantifications", (req, res) => riskQuantificationControll
 router.put("/:riskId/quantifications/:qId", (req, res) => riskQuantificationController.update(req, res));
 router.delete("/:riskId/quantifications/:qId", (req, res) => riskQuantificationController.delete(req, res));
 
+// Bulk operations
+router.post("/bulk/update", (req, res) => riskController.bulkUpdate(req, res));
+router.post("/bulk/delete", (req, res) => riskController.bulkDelete(req, res));
+
+// AI-assisted suggestions
+router.get("/:riskId/ai/suggest-score", (req, res) => riskController.suggestScore(req, res));
+router.get("/:riskId/ai/suggest-treatment", (req, res) => riskController.suggestTreatment(req, res));
+
 export default router;

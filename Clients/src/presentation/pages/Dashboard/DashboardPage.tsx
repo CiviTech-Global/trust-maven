@@ -7,6 +7,7 @@ import {
   Assignment as TreatmentIcon,
 } from "@mui/icons-material";
 import { useDashboardStats, useDashboardTrends, useOverdueTreatments } from "../../../infrastructure/api/dashboard.api";
+import { useControlCoverage } from "../../../infrastructure/api/coverage.api";
 import StatCard from "../../components/common/StatCard";
 import RiskChip from "../../components/common/RiskChip";
 import RiskMatrix from "../../components/common/RiskMatrix";
@@ -32,6 +33,7 @@ export default function DashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();
   const { data: trends } = useDashboardTrends();
   const { data: overdueTreatments } = useOverdueTreatments();
+  const { data: coverage } = useControlCoverage();
 
   if (isLoading) {
     return (
@@ -205,6 +207,41 @@ export default function DashboardPage() {
                 </Typography>
               ) : (
                 <RiskMatrix points={matrixPoints} />
+              )}
+            </CardContent>
+          </Card>
+
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <Typography variant="h3" sx={{ mb: 2 }}>Control Coverage</Typography>
+              {!coverage ? (
+                <Typography variant="body2" color="text.secondary">Loading...</Typography>
+              ) : (
+                <Box>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                    <Box sx={{ position: "relative", width: 80, height: 80 }}>
+                      <Box sx={{ width: 80, height: 80, borderRadius: "50%", border: "6px solid", borderColor: coverage.coveragePercent >= 80 ? "#059669" : coverage.coveragePercent >= 50 ? "#D97706" : "#E11D48", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <Typography variant="h3" fontWeight={700}>{coverage.coveragePercent}%</Typography>
+                      </Box>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2">{coverage.coveredRisks} of {coverage.totalRisks} risks covered</Typography>
+                      <Typography variant="body2" color="error">{coverage.gaps} uncovered risk{coverage.gaps !== 1 ? "s" : ""}</Typography>
+                      {coverage.highRiskGaps > 0 && (
+                        <Chip label={`${coverage.highRiskGaps} high-risk gap${coverage.highRiskGaps !== 1 ? "s" : ""}`} color="error" size="small" sx={{ mt: 0.5 }} />
+                      )}
+                    </Box>
+                  </Box>
+                  {coverage.gapDetails?.length > 0 && (
+                    <Box sx={{ maxHeight: 120, overflow: "auto" }}>
+                      {coverage.gapDetails.slice(0, 5).map((g: any) => (
+                        <Typography key={g.id} variant="caption" display="block" color="text.secondary">
+                          {g.title} (Score: {g.score})
+                        </Typography>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
               )}
             </CardContent>
           </Card>

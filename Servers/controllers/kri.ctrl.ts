@@ -77,6 +77,15 @@ export class KRIController {
     }
   }
 
+  async getHistory(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const history = await kriService.getHistory(req.params.id as string, req.user!.organizationId);
+      res.json({ success: true, data: history });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
   async getBreached(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const breached = await kriService.getBreachedKRIs(req.user!.organizationId);

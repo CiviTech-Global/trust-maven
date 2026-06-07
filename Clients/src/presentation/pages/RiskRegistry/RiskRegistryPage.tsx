@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Box, Typography, Button, TextField, MenuItem,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, Tooltip, LinearProgress, Alert, Link,
+  IconButton, Tooltip, LinearProgress, Alert, Link, Checkbox, Paper,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -12,8 +12,9 @@ import {
   Delete as DeleteIcon,
   Download as DownloadIcon,
   Edit as EditIcon,
+  CheckCircle as CheckIcon,
 } from "@mui/icons-material";
-import { useRisks, useDeleteRisk } from "../../../infrastructure/api/risks.api";
+import { useRisks, useDeleteRisk, useBulkUpdateRisks, useBulkDeleteRisks } from "../../../infrastructure/api/risks.api";
 import RiskChip from "../../components/common/RiskChip";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
@@ -52,6 +53,9 @@ export default function RiskRegistryPage() {
   const [treatRisk, setTreatRisk] = useState<{ id: string; title: string } | null>(null);
   const [deleteRisk, setDeleteRisk] = useState<string | null>(null);
   const [editRisk, setEditRisk] = useState<any | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkStatus, setBulkStatus] = useState("");
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
 
   const { data: risks, isLoading, error } = useRisks({
     domain: domain || undefined,
@@ -59,11 +63,34 @@ export default function RiskRegistryPage() {
     search: search || undefined,
   });
   const deleteMutation = useDeleteRisk();
+  const bulkUpdate = useBulkUpdateRisks();
+  const bulkDelete = useBulkDeleteRisks();
 
   const handleDelete = async () => {
     if (!deleteRisk) return;
     await deleteMutation.mutateAsync(deleteRisk);
     setDeleteRisk(null);
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setSelectedIds(checked ? (risks || []).map((r: any) => r.id) : []);
+  };
+
+  const handleSelectOne = (id: string) => {
+    setSelectedIds((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
+  };
+
+  const handleBulkStatus = async () => {
+    if (!bulkStatus || !selectedIds.length) return;
+    await bulkUpdate.mutateAsync({ ids: selectedIds, data: { status: bulkStatus } });
+    setSelectedIds([]);
+    setBulkStatus("");
+  };
+
+  const handleBulkDelete = async () => {
+    await bulkDelete.mutateAsync(selectedIds);
+    setSelectedIds([]);
+    setBulkDeleteConfirm(false);
   };
 
   return (
@@ -100,6 +127,36 @@ export default function RiskRegistryPage() {
         <TextField label="Search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search risks..." sx={{ flex: 1 }} />
       </Box>
 
+      {selectedIds.length > 0 && (
+        <Paper elevation={2} sx={{ p: 1.5, mb: 2, display: "flex", alignItems: "center", gap: 2, bgcolor: "primary.main", color: "white" }}>
+          <CheckIcon fontSize="small" />
+          <Typography variant="body2" fontWeight={600}>{selectedIds.length} selected</Typography>
+          <Box sx={{ display: "flex", gap: 1, ml: "auto" }}>
+            <TextField
+              select size="small" value={bulkStatus}
+              onChange={(e) => setBulkStatus(e.target.value)}
+              sx={{ minWidth: 140, "& .MuiInputBase-root": { color: "white", borderColor: "white" }, "& .MuiSvgIcon-root": { color: "white" } }}
+            >
+              <MenuItem value="">Change status...</MenuItem>
+              <MenuItem value="identified">Identified</MenuItem>
+              <MenuItem value="assessed">Assessed</MenuItem>
+              <MenuItem value="treated">Treated</MenuItem>
+              <MenuItem value="accepted">Accepted</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+            </TextField>
+            <Button size="small" variant="contained" color="secondary" disabled={!bulkStatus || bulkUpdate.isPending} onClick={handleBulkStatus}>
+              Apply
+            </Button>
+            <Button size="small" variant="outlined" color="inherit" onClick={() => setBulkDeleteConfirm(true)}>
+              Delete All
+            </Button>
+            <Button size="small" variant="outlined" color="inherit" onClick={() => setSelectedIds([])}>
+              Clear
+            </Button>
+          </Box>
+        </Paper>
+      )}
+
       {isLoading && <LinearProgress sx={{ mb: 2 }} />}
 
       {!isLoading && (!risks || risks.length === 0) ? (
@@ -114,6 +171,13 @@ export default function RiskRegistryPage() {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    indeterminate={selectedIds.length > 0 && selectedIds.length < (risks || []).length}
+                    checked={(risks || []).length > 0 && selectedIds.length === (risks || []).length}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                  />
+                </TableCell>
                 <TableCell>Title</TableCell>
                 <TableCell>Domain</TableCell>
                 <TableCell>Status</TableCell>
@@ -128,7 +192,10 @@ export default function RiskRegistryPage() {
                 const latestAssessment = risk.assessments?.[0];
                 const score = latestAssessment ? latestAssessment.likelihood * latestAssessment.impact : null;
                 return (
-                  <TableRow key={risk.id} hover>
+                  <TableRow key={risk.id} hover selected={selectedIds.includes(risk.id)}>
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={selectedIds.includes(risk.id)} onChange={() => handleSelectOne(risk.id)} />
+                    </TableCell>
                     <TableCell>
                       <Link
                         component="button"
@@ -227,6 +294,15 @@ export default function RiskRegistryPage() {
         onConfirm={handleDelete}
         onCancel={() => setDeleteRisk(null)}
         loading={deleteMutation.isPending}
+      />
+
+      <ConfirmDialog
+        open={bulkDeleteConfirm}
+        title="Delete Selected Risks"
+        message={`Are you sure you want to delete ${selectedIds.length} risks? This action cannot be undone.`}
+        onConfirm={handleBulkDelete}
+        onCancel={() => setBulkDeleteConfirm(false)}
+        loading={bulkDelete.isPending}
       />
     </Box>
   );

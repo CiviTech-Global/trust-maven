@@ -43,6 +43,7 @@ const TEST_FREQUENCIES = [
 export default function EditControlModal({ open, onClose, control }: EditControlModalProps) {
   const [title, setTitle] = useState(control.title);
   const [description, setDescription] = useState(control.description || "");
+  const [objective, setObjective] = useState((control as any).objective || "");
   const [type, setType] = useState(control.type);
   const [effectiveness, setEffectiveness] = useState(control.effectiveness);
   const [riskId, setRiskId] = useState(control.riskId || "");
@@ -58,6 +59,7 @@ export default function EditControlModal({ open, onClose, control }: EditControl
   useEffect(() => {
     setTitle(control.title);
     setDescription(control.description || "");
+    setObjective((control as any).objective || "");
     setType(control.type);
     setEffectiveness(control.effectiveness);
     setRiskId(control.riskId || "");
@@ -74,6 +76,7 @@ export default function EditControlModal({ open, onClose, control }: EditControl
       id: control.id,
       title,
       description: description || undefined,
+      objective: objective || undefined,
       type,
       effectiveness,
       riskId: riskId || undefined,
@@ -93,6 +96,7 @@ export default function EditControlModal({ open, onClose, control }: EditControl
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           <TextField label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required fullWidth />
           <TextField label="Description" value={description} onChange={(e) => setDescription(e.target.value)} multiline rows={3} fullWidth />
+          <TextField label="Control Objective" value={objective} onChange={(e) => setObjective(e.target.value)} multiline rows={2} fullWidth />
           <TextField select label="Type" value={type} onChange={(e) => setType(e.target.value)} required fullWidth>
             {TYPES.map((t) => <MenuItem key={t.value} value={t.value}>{t.label}</MenuItem>)}
           </TextField>

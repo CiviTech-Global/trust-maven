@@ -30,6 +30,9 @@ import { RegulationRequirement } from "../domain.layer/models/regulationRequirem
 import { CrossFrameworkMapping } from "../domain.layer/models/crossFrameworkMapping/crossFrameworkMapping.model";
 import { OrganizationRegulation } from "../domain.layer/models/organizationRegulation/organizationRegulation.model";
 import { RequirementImplementation } from "../domain.layer/models/requirementImplementation/requirementImplementation.model";
+import { MfaSetting } from "../domain.layer/models/mfa/mfa.model";
+import { KriHistory } from "../domain.layer/models/kriHistory/kriHistory.model";
+import { Evidence } from "../domain.layer/models/evidence/evidence.model";
 
 dotenv.config();
 
@@ -72,6 +75,9 @@ export const sequelize = new Sequelize({
     CrossFrameworkMapping,
     OrganizationRegulation,
     RequirementImplementation,
+    MfaSetting,
+    KriHistory,
+    Evidence,
   ],
   pool: {
     max: 20,

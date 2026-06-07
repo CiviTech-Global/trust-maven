@@ -63,6 +63,33 @@ export function useUpdateRisk() {
   });
 }
 
+export function useBulkUpdateRisks() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: { ids: string[]; data: Partial<{ status: string; ownerId: string; domain: string; projectId: string }> }) => {
+      const res = await axiosInstance.post("/risks/bulk/update", payload);
+      return res.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["risks"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+}
+
+export function useBulkDeleteRisks() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      await axiosInstance.post("/risks/bulk/delete", { ids });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["risks"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+}
+
 export function useDeleteRisk() {
   const queryClient = useQueryClient();
   return useMutation({

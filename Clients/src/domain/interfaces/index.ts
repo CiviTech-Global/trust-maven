@@ -227,6 +227,34 @@ export interface ReportTemplate {
   createdAt: string;
 }
 
+export interface FileRecord {
+  id: string;
+  organizationId: string;
+  filename: string;
+  path: string;
+  mimeType: string | null;
+  size: number | null;
+  uploadedBy: string;
+  relatedEntityType: string | null;
+  relatedEntityId: string | null;
+  createdAt: string;
+  uploader?: { id: string; firstName: string; lastName: string };
+}
+
+export interface Policy {
+  id: string;
+  title: string;
+  content: string | null;
+  version: string;
+  status: string;
+  ownerId: string | null;
+  approvedAt: string | null;
+  organizationId: string;
+  createdAt: string;
+  updatedAt: string;
+  owner?: { id: string; firstName: string; lastName: string };
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

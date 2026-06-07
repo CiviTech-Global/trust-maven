@@ -1,4 +1,9 @@
 import { Notification } from "../domain.layer/models/notification/notification.model";
+import { User } from "../domain.layer/models/user/user.model";
+import { emailService } from "./email.service";
+import { logger } from "../utils/logger";
+
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
 export class NotificationService {
   async create(userId: string, data: {
@@ -8,13 +13,50 @@ export class NotificationService {
     relatedEntityType?: string;
     relatedEntityId?: string;
   }) {
-    return Notification.create({
+    const notification = await Notification.create({
       userId,
       title: data.title,
       message: data.message,
       type: data.type || "info",
       relatedEntityType: data.relatedEntityType || null,
       relatedEntityId: data.relatedEntityId || null,
+    });
+
+    // Send email in background if configured
+    if (emailService.isConfigured()) {
+      this.sendEmailNotification(userId, data).catch((err) =>
+        logger.error(`Email notification failed for user ${userId}: ${err.message}`)
+      );
+    }
+
+    return notification;
+  }
+
+  private async sendEmailNotification(userId: string, data: {
+    title: string;
+    message: string;
+    type?: string;
+    relatedEntityType?: string;
+    relatedEntityId?: string;
+  }) {
+    const user = await User.findByPk(userId, { attributes: ["id", "email", "firstName"] });
+    if (!user || !user.email) return;
+
+    const entityUrl = data.relatedEntityType && data.relatedEntityId
+      ? `${CLIENT_URL}/${data.relatedEntityType}s/${data.relatedEntityId}`
+      : CLIENT_URL;
+
+    const text = emailService.generateText(data.type || "info", {
+      entity: data.title,
+      message: data.message,
+      url: entityUrl,
+    });
+
+    await emailService.send({
+      to: user.email,
+      subject: `[TrustMaven] ${data.title}`,
+      text,
+      html: `<h2>${data.title}</h2><p>${data.message}</p><p><a href="${entityUrl}">View in TrustMaven</a></p>`,
     });
   }
 

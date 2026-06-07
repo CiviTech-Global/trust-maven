@@ -19,7 +19,7 @@ interface RateLimitConfig {
 const CONFIGS: Record<string, RateLimitConfig> = {
   auth: {
     windowMinutes: 15,
-    maxRequests: 5,
+    maxRequests: 20,
     message: "Too many authentication attempts. Please try again in 15 minutes.",
   },
   fileOperations: {

@@ -15,7 +15,7 @@ export class RiskTreatmentService {
   }
 
   async create(
-    data: { riskId: string; strategy: string; description: string; responsibleId?: string; dueDate?: string },
+    data: { riskId: string; strategy: string; description: string; responsibleId?: string; dueDate?: string; costEstimate?: number; progress?: number },
     organizationId: string,
     userId: string
   ) {
@@ -55,7 +55,7 @@ export class RiskTreatmentService {
 
   async update(
     id: string,
-    data: Partial<{ strategy: string; description: string; status: string; responsibleId: string; dueDate: string }>,
+    data: Partial<{ strategy: string; description: string; status: string; responsibleId: string; dueDate: string; costEstimate: number; progress: number }>,
     organizationId: string,
     userId: string
   ) {

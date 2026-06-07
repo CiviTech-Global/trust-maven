@@ -7,6 +7,8 @@ import dotenv from "dotenv";
 import { sequelize } from "./database/db";
 import { generalApiLimiter, authLimiter } from "./middleware/rateLimit.middleware";
 import authRoutes from "./routes/auth.route";
+import ssoRoutes from "./routes/sso.route";
+import mfaRoutes from "./routes/mfa.route";
 import userRoutes from "./routes/user.route";
 import projectRoutes from "./routes/project.route";
 import riskRoutes from "./routes/risk.route";
@@ -29,6 +31,11 @@ import changeHistoryRoutes from "./routes/changeHistory.route";
 import regulationCatalogRoutes from "./routes/regulationCatalog.route";
 import organizationRegulationRoutes from "./routes/organizationRegulation.route";
 import complianceHubRoutes from "./routes/complianceHub.route";
+import policyRoutes from "./routes/policy.route";
+import fileRoutes from "./routes/file.route";
+import organizationRoutes from "./routes/organization.route";
+import evidenceRoutes from "./routes/evidence.route";
+import coverageRoutes from "./routes/coverage.route";
 import { regulationSeederService } from "./services/regulationSeeder.service";
 import { logger } from "./utils/logger";
 
@@ -76,6 +83,8 @@ app.get("/api/health", async (_req, res) => {
 
 // API routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/auth/sso", ssoRoutes);
+app.use("/api/v1/auth/mfa", mfaRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/risks", riskRoutes);
@@ -97,6 +106,11 @@ app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/change-history", changeHistoryRoutes);
 app.use("/api/v1/regulations", regulationCatalogRoutes);
 app.use("/api/v1/org-regulations", organizationRegulationRoutes);
+app.use("/api/v1/policies", policyRoutes);
+app.use("/api/v1/files", fileRoutes);
+app.use("/api/v1/organizations", organizationRoutes);
+app.use("/api/v1/evidence", evidenceRoutes);
+app.use("/api/v1/coverage", coverageRoutes);
 app.use("/api/v1/compliance-hub", complianceHubRoutes);
 
 // Global error handler

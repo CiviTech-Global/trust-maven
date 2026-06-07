@@ -1,5 +1,6 @@
 import { Op, WhereOptions } from "sequelize";
 import { KRI } from "../domain.layer/models/kri/kri.model";
+import { KriHistory } from "../domain.layer/models/kriHistory/kriHistory.model";
 import { Risk } from "../domain.layer/models/risk/risk.model";
 import { User } from "../domain.layer/models/user/user.model";
 import { auditService } from "./audit.service";
@@ -71,6 +72,8 @@ export class KRIService {
       lastUpdatedValue: new Date().toISOString().split("T")[0],
     });
 
+    await KriHistory.create({ kriId: kri.id, value: data.currentValue });
+
     await auditService.log({
       organizationId,
       userId,
@@ -109,6 +112,7 @@ export class KRIService {
     const updateData: any = { ...data };
     if (data.currentValue !== undefined && data.currentValue !== kri.currentValue) {
       updateData.lastUpdatedValue = new Date().toISOString().split("T")[0];
+      await KriHistory.create({ kriId: id, value: data.currentValue });
     }
 
     await kri.update(updateData);
@@ -143,6 +147,15 @@ export class KRIService {
   async getBreachedKRIs(organizationId: string) {
     const kris = await this.findAll(organizationId);
     return kris.filter((k) => k.status === "red" || k.status === "amber");
+  }
+
+  async getHistory(kriId: string, organizationId: string) {
+    const kri = await KRI.findOne({ where: { id: kriId, organizationId } });
+    if (!kri) throw new Error("KRI not found");
+    return KriHistory.findAll({
+      where: { kriId },
+      order: [["recordedAt", "ASC"]],
+    });
   }
 
   async getSummary(organizationId: string) {

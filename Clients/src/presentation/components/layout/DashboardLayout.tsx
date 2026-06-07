@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import OnboardingWizard from "../onboarding/OnboardingWizard";
 import {
   Box,
   Drawer,
@@ -34,6 +35,7 @@ import {
   TrendingUp as KRIIcon,
   Store as VendorIcon,
   Gavel as FrameworkIcon,
+  Description as PolicyIcon,
   People as UsersIcon,
   History as AuditIcon,
   MonitorHeart as MonitorIcon,
@@ -43,6 +45,8 @@ import {
   LightMode as LightIcon,
   DarkMode as DarkIcon,
   Hub as ComplianceHubIcon,
+  FactCheck as ScorecardIcon,
+  FolderZip as EvidenceIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../application/redux/store";
@@ -62,8 +66,11 @@ const navItems = [
   { label: "KRIs", path: "/kris", icon: <KRIIcon /> },
   { label: "Vendors", path: "/vendors", icon: <VendorIcon /> },
   { label: "Monitoring", path: "/controls/monitoring", icon: <MonitorIcon /> },
+  { label: "Policies", path: "/policies", icon: <PolicyIcon /> },
   { label: "Frameworks", path: "/frameworks", icon: <FrameworkIcon /> },
   { label: "Compliance Hub", path: "/compliance-hub", icon: <ComplianceHubIcon /> },
+  { label: "Scorecard", path: "/compliance-scorecard", icon: <ScorecardIcon /> },
+  { label: "Evidence", path: "/evidence", icon: <EvidenceIcon /> },
   { label: "Audits", path: "/audits", icon: <AuditMgmtIcon /> },
   { label: "Reports", path: "/reports", icon: <ReportsIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
@@ -309,6 +316,8 @@ export default function DashboardLayout() {
           {drawer}
         </Drawer>
       </Box>
+
+      <OnboardingWizard />
 
       <Box
         component="main"

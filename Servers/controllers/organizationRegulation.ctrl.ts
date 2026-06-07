@@ -58,6 +58,47 @@ export class OrganizationRegulationController {
     }
   }
 
+  async bulkDeprecate(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { ids } = req.body;
+      if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        res.status(400).json({ success: false, message: "ids array is required" });
+        return;
+      }
+      const result = await complianceHubService.bulkDeprecateRegulations(
+        req.user!.organizationId,
+        ids,
+        req.user!.userId
+      );
+      res.json({ success: true, data: result });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async bulkUpdateStatus(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { ids, status } = req.body;
+      if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        res.status(400).json({ success: false, message: "ids array is required" });
+        return;
+      }
+      if (!status) {
+        res.status(400).json({ success: false, message: "status is required" });
+        return;
+      }
+      const result = await complianceHubService.bulkUpdateRegulationStatus(
+        req.user!.organizationId,
+        ids,
+        status,
+        req.user!.userId
+      );
+      res.json({ success: true, data: result });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
   async updateImplementation(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const result = await complianceHubService.updateRequirementImplementation(

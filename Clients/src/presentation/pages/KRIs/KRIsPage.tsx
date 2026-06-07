@@ -2,10 +2,11 @@ import { useState } from "react";
 import {
   Box, Typography, Button, TextField, MenuItem,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, Tooltip, Chip, LinearProgress, Alert, Card, CardContent,
+  IconButton, Tooltip, Chip, LinearProgress, Alert, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
-import { useKRIs, useKRISummary, useDeleteKRI, type KRIItem } from "../../../infrastructure/api/kris.api";
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, TrendingUp as TrendIcon } from "@mui/icons-material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
+import { useKRIs, useKRISummary, useDeleteKRI, useKRIHistory, type KRIItem, type KRIHistoryPoint } from "../../../infrastructure/api/kris.api";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import CreateKRIModal from "./CreateKRIModal";
@@ -39,6 +40,7 @@ export default function KRIsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editKRI, setEditKRI] = useState<KRIItem | null>(null);
+  const [trendKRI, setTrendKRI] = useState<KRIItem | null>(null);
 
   const { data: kris, isLoading, error } = useKRIs({
     category: category || undefined,
@@ -47,6 +49,7 @@ export default function KRIsPage() {
   });
   const { data: summary } = useKRISummary();
   const deleteMutation = useDeleteKRI();
+  const { data: historyData } = useKRIHistory(trendKRI?.id || null);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -158,6 +161,11 @@ export default function KRIsPage() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="View Trends">
+                      <IconButton size="small" onClick={() => setTrendKRI(kri)}>
+                        <TrendIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Edit">
                       <IconButton size="small" onClick={() => setEditKRI(kri)}>
                         <EditIcon fontSize="small" />
@@ -181,6 +189,53 @@ export default function KRIsPage() {
       {editKRI && (
         <CreateKRIModal open={true} onClose={() => setEditKRI(null)} editKRI={editKRI} />
       )}
+
+      <Dialog open={!!trendKRI} onClose={() => setTrendKRI(null)} maxWidth="md" fullWidth>
+        <DialogTitle>KRI Trend: {trendKRI?.name}</DialogTitle>
+        <DialogContent>
+          {!historyData || historyData.length === 0 ? (
+            <Typography variant="body1" color="text.secondary" sx={{ textAlign: "center", py: 4 }}>
+              No historical data yet. Values will be tracked automatically as you update the KRI.
+            </Typography>
+          ) : (
+            <Box sx={{ mt: 2 }}>
+              <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+                <Card><CardContent sx={{ textAlign: "center", py: 2 }}>
+                  <Typography variant="h3">{historyData[historyData.length - 1]?.value}{trendKRI?.unit ? ` ${trendKRI.unit}` : ""}</Typography>
+                  <Typography variant="body2" color="text.secondary">Current Value</Typography>
+                </CardContent></Card>
+                <Card><CardContent sx={{ textAlign: "center", py: 2 }}>
+                  <Typography variant="h3">{Math.min(...historyData.map((h: KRIHistoryPoint) => h.value))}</Typography>
+                  <Typography variant="body2" color="text.secondary">Min</Typography>
+                </CardContent></Card>
+                <Card><CardContent sx={{ textAlign: "center", py: 2 }}>
+                  <Typography variant="h3">{Math.max(...historyData.map((h: KRIHistoryPoint) => h.value))}</Typography>
+                  <Typography variant="body2" color="text.secondary">Max</Typography>
+                </CardContent></Card>
+                <Card><CardContent sx={{ textAlign: "center", py: 2 }}>
+                  <Typography variant="h3">{historyData.length}</Typography>
+                  <Typography variant="body2" color="text.secondary">Data Points</Typography>
+                </CardContent></Card>
+              </Box>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={historyData.map((h: KRIHistoryPoint) => ({
+                  date: new Date(h.recordedAt).toLocaleDateString(),
+                  value: h.value,
+                }))}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                  <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <RechartsTooltip />
+                  <Line type="monotone" dataKey="value" stroke="#4338CA" strokeWidth={2} dot={{ fill: "#4338CA", r: 4 }} name="Value" />
+                </LineChart>
+              </ResponsiveContainer>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setTrendKRI(null)}>Close</Button>
+        </DialogActions>
+      </Dialog>
 
       <ConfirmDialog
         open={!!deleteId}

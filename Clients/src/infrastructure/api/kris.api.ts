@@ -92,6 +92,24 @@ export function useUpdateKRI() {
   });
 }
 
+export interface KRIHistoryPoint {
+  id: string;
+  kriId: string;
+  value: number;
+  recordedAt: string;
+}
+
+export function useKRIHistory(kriId: string | null) {
+  return useQuery<KRIHistoryPoint[]>({
+    queryKey: ["kris", "history", kriId],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get(`/kris/${kriId}/history`);
+      return data.data;
+    },
+    enabled: !!kriId,
+  });
+}
+
 export function useDeleteKRI() {
   const queryClient = useQueryClient();
   return useMutation({

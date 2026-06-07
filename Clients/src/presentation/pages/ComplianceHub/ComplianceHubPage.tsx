@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -16,18 +17,72 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Checkbox,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   CheckCircle as CheckIcon,
   Warning as WarningIcon,
   Add as AddIcon,
+  DeleteSweep as BulkDeleteIcon,
 } from "@mui/icons-material";
-import { useComplianceHubDashboard, useAdoptedRegulations } from "../../../infrastructure/api/complianceHub.api";
+import {
+  useComplianceHubDashboard,
+  useAdoptedRegulations,
+  useBulkDeprecateRegulations,
+  useBulkUpdateRegulationStatus,
+} from "../../../infrastructure/api/complianceHub.api";
+import ConfirmDialog from "../../components/common/ConfirmDialog";
 
 export default function ComplianceHubPage() {
   const navigate = useNavigate();
+  const [selected, setSelected] = useState<string[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<"deprecate" | "status" | null>(null);
+  const [pendingStatus, setPendingStatus] = useState<string>("");
   const { data: dashboard, isLoading: dashLoading } = useComplianceHubDashboard();
   const { data: adopted } = useAdoptedRegulations();
+  const bulkDeprecate = useBulkDeprecateRegulations();
+  const bulkUpdateStatus = useBulkUpdateRegulationStatus();
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked && dashboard?.adoptedRegulations) {
+      setSelected(dashboard.adoptedRegulations.map((r) => r.id));
+    } else {
+      setSelected([]);
+    }
+  };
+
+  const handleSelect = (id: string) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDeprecate = async () => {
+    await bulkDeprecate.mutateAsync(selected);
+    setSelected([]);
+    setConfirmOpen(false);
+  };
+
+  const handleBulkStatus = async (status: string) => {
+    await bulkUpdateStatus.mutateAsync({ ids: selected, status });
+    setSelected([]);
+    setConfirmOpen(false);
+  };
+
+  const openConfirm = (action: "deprecate" | "status", status?: string) => {
+    setConfirmAction(action);
+    if (status) setPendingStatus(status);
+    setConfirmOpen(true);
+  };
+
+  const handleBulkConfirm = () => {
+    if (confirmAction === "deprecate") handleBulkDeprecate();
+    else if (confirmAction === "status") handleBulkStatus(pendingStatus);
+  };
 
   if (dashLoading) {
     return (
@@ -137,6 +192,50 @@ export default function ComplianceHubPage() {
         </Grid>
       )}
 
+      {/* Bulk Action Bar */}
+      {selected.length > 0 && (
+        <Card sx={{ mb: 2, backgroundColor: "primary.main", color: "white" }}>
+          <CardContent sx={{ py: 1.5, display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="body2" fontWeight={600}>
+              {selected.length} selected
+            </Typography>
+            <Box sx={{ flex: 1 }} />
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              startIcon={<BulkDeleteIcon />}
+              onClick={() => openConfirm("deprecate")}
+              disabled={bulkDeprecate.isPending}
+            >
+              {bulkDeprecate.isPending ? "Deprecating..." : "Deprecate Selected"}
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+              disabled={bulkUpdateStatus.isPending}
+              sx={{ backgroundColor: "rgba(255,255,255,0.2)", "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" } }}
+            >
+              Set Status
+            </Button>
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+              <MenuItem onClick={() => { setAnchorEl(null); openConfirm("status", "active"); }}>Active</MenuItem>
+              <MenuItem onClick={() => { setAnchorEl(null); openConfirm("status", "planned"); }}>Planned</MenuItem>
+              <MenuItem onClick={() => { setAnchorEl(null); openConfirm("status", "deprecated"); }}>Deprecated</MenuItem>
+            </Menu>
+            <Button
+              size="small"
+              variant="text"
+              onClick={() => setSelected([])}
+              sx={{ color: "rgba(255,255,255,0.7)" }}
+            >
+              Clear
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Adopted Regulations Table */}
       {dashboard && dashboard.adoptedRegulations.length > 0 && (
         <Card sx={{ mb: 3 }}>
@@ -148,6 +247,13 @@ export default function ComplianceHubPage() {
               <Table size="small">
                 <TableHead>
                   <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        indeterminate={selected.length > 0 && selected.length < dashboard.adoptedRegulations.length}
+                        checked={selected.length === dashboard.adoptedRegulations.length}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                      />
+                    </TableCell>
                     <TableCell>Regulation</TableCell>
                     <TableCell>Category</TableCell>
                     <TableCell align="center">Requirements</TableCell>
@@ -158,7 +264,13 @@ export default function ComplianceHubPage() {
                 </TableHead>
                 <TableBody>
                   {dashboard.adoptedRegulations.map((reg) => (
-                    <TableRow key={reg.id} hover>
+                    <TableRow key={reg.id} hover selected={selected.includes(reg.id)}>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={selected.includes(reg.id)}
+                          onChange={() => handleSelect(reg.id)}
+                        />
+                      </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight={600}>{reg.name}</Typography>
                         <Typography variant="caption" color="text.secondary">{reg.code}</Typography>
@@ -192,6 +304,21 @@ export default function ComplianceHubPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Bulk Confirm Dialog */}
+      <ConfirmDialog
+        open={confirmOpen}
+        title={confirmAction === "deprecate" ? "Deprecate Regulations" : "Update Regulation Status"}
+        message={
+          confirmAction === "deprecate"
+            ? `Are you sure you want to deprecate ${selected.length} regulation(s)? This action can be reversed.`
+            : `Are you sure you want to set ${selected.length} regulation(s) status to "${pendingStatus}"?`
+        }
+        confirmLabel={confirmAction === "deprecate" ? "Deprecate" : "Update Status"}
+        onConfirm={handleBulkConfirm}
+        onCancel={() => setConfirmOpen(false)}
+        loading={bulkDeprecate.isPending || bulkUpdateStatus.isPending}
+      />
 
       {/* Top Gaps */}
       {dashboard && dashboard.topGaps.length > 0 && (

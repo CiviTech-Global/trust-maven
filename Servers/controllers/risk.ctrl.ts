@@ -4,6 +4,7 @@ import { riskService } from "../services/risk.service";
 import { riskAssessmentService } from "../services/riskAssessment.service";
 import { riskTreatmentService } from "../services/riskTreatment.service";
 import { riskControlMappingService } from "../services/riskControlMapping.service";
+import { aiService } from "../services/ai.service";
 
 export class RiskController {
   async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
@@ -285,6 +286,58 @@ export class RiskController {
         req.user!.userId
       );
       res.json({ success: true, message: "Control unlinked from risk" });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+  // Bulk operations
+  async bulkUpdate(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { ids, data } = req.body;
+      if (!ids || !Array.isArray(ids) || !ids.length) {
+        res.status(400).json({ success: false, message: "Risk IDs array is required" });
+        return;
+      }
+      const result = await riskService.bulkUpdate(ids, data, req.user!.organizationId, req.user!.userId);
+      res.json({ success: true, data: result });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  // Bulk delete
+  async bulkDelete(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { ids } = req.body;
+      if (!ids || !Array.isArray(ids) || !ids.length) {
+        res.status(400).json({ success: false, message: "Risk IDs array is required" });
+        return;
+      }
+      for (const id of ids) {
+        await riskService.delete(id, req.user!.organizationId, req.user!.userId);
+      }
+      res.json({ success: true, data: { deleted: ids.length } });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  // AI-assisted suggestions
+  async suggestScore(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const riskId = req.params.riskId as string;
+      const suggestion = await aiService.suggestRiskScore(riskId, req.user!.organizationId);
+      res.json({ success: true, data: suggestion });
+    } catch (error: any) {
+      res.status(404).json({ success: false, message: error.message });
+    }
+  }
+
+  async suggestTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const riskId = req.params.riskId as string;
+      const suggestion = await aiService.suggestTreatmentStrategy(riskId, req.user!.organizationId);
+      res.json({ success: true, data: suggestion });
     } catch (error: any) {
       res.status(404).json({ success: false, message: error.message });
     }
