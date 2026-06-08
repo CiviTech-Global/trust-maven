@@ -43,7 +43,7 @@ export default function ConfirmDialog({
     >
       <DialogTitle sx={{ fontSize: "1.125rem", fontWeight: 700, pb: 1 }}>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText sx={{ color: "text.secondary", fontSize: "0.9375rem", lineHeight: 1.6 }}>
+        <DialogContentText sx={{ color: "text.secondary", fontSize: "0.875rem", lineHeight: 1.6 }}>
           {message}
         </DialogContentText>
       </DialogContent>

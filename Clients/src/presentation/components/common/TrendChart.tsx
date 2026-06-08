@@ -28,7 +28,7 @@ export default function TrendChart({ data, height = 250, showArea = true }: Tren
   }));
 
   const tooltipStyle = {
-    borderRadius: 10,
+    borderRadius: 8,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
     background: theme.palette.background.paper,

@@ -70,7 +70,7 @@ export default function StandardModal({
           width: `min(${maxWidth}, calc(100vw - 48px))`,
           maxHeight: "calc(100vh - 48px)",
           bgcolor: "background.paper",
-          borderRadius: 3,
+          borderRadius: "12px",
           boxShadow: "0 25px 60px rgba(0,0,0,0.12)",
           display: "flex",
           flexDirection: "column",

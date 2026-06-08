@@ -173,8 +173,8 @@ export const lightTheme = createTheme({
     h3: { fontSize: "1.25rem", fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.4, color: text.primary },
     h4: { fontSize: "1.125rem", fontWeight: 600, letterSpacing: "-0.01em", lineHeight: 1.4, color: text.primary },
     h5: { fontSize: "1rem", fontWeight: 600, lineHeight: 1.5, color: text.primary },
-    h6: { fontSize: "0.9375rem", fontWeight: 600, lineHeight: 1.5, color: text.primary },
-    body1: { fontSize: "0.9375rem", lineHeight: 1.6, color: text.primary },
+    h6: { fontSize: "0.875rem", fontWeight: 600, lineHeight: 1.5, color: text.primary },
+    body1: { fontSize: "0.875rem", lineHeight: 1.6, color: text.primary },
     body2: { fontSize: "0.875rem", lineHeight: 1.5, color: text.secondary },
     caption: { fontSize: "0.75rem", lineHeight: 1.4, color: text.tertiary },
     overline: { fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: text.tertiary },
@@ -233,7 +233,7 @@ export const lightTheme = createTheme({
           "&:hover": { borderWidth: 1.5, backgroundColor: background.hover },
         },
         sizeSmall: { padding: "5px 12px", fontSize: "0.8125rem", minHeight: 28 },
-        sizeLarge: { padding: "10px 24px", fontSize: "0.9375rem", minHeight: 44 },
+        sizeLarge: { padding: "10px 24px", fontSize: "0.875rem", minHeight: 44 },
       },
     },
     MuiIconButton: {
@@ -245,7 +245,7 @@ export const lightTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
+          borderRadius: 8,
           border: `1px solid ${border.light}`,
           background: `linear-gradient(135deg, ${background.main} 0%, ${background.surface} 100%)`,
           boxShadow: shadows.card,

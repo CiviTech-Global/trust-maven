@@ -35,7 +35,6 @@ const STATUS_LABELS: Record<string, string> = {
   not_monitored: "Not Monitored",
   pass: "Pass",
   fail: "Fail",
-  error: "Error",
   in_progress: "In Progress",
   open: "Open",
   in_remediation: "In Remediation",
@@ -45,55 +44,89 @@ const STATUS_LABELS: Record<string, string> = {
   retired: "Retired",
   reviewed: "Reviewed",
   published: "Published",
-  financial: "Financial",
-  cybersecurity: "Cybersecurity",
-  strategic: "Strategic",
-  operational: "Operational",
-  regulatory: "Regulatory",
-  reputational: "Reputational",
-  dataPrivacy: "Data Privacy",
-  innovation: "Innovation",
-  esg: "ESG",
-  modelMl: "Model/ML",
-  socialMedia: "Social Media",
-  investment: "Investment",
-  enterprise: "Enterprise",
+  resolved: "Resolved",
+  confirmed: "Confirmed",
+  blocked: "Blocked",
+  superseded: "Superseded",
+  expired: "Expired",
+  deferred: "Deferred",
+  mitigated: "Mitigated",
+  investigated: "Investigated",
 };
 
-const AUTO_LABEL_MAP: Record<string, string> = {};
+const LABEL_TO_VARIANT: Record<string, "success" | "warning" | "error" | "info" | "default"> = {
+  approved: "success",
+  completed: "success",
+  confirmed: "success",
+  resolved: "success",
+  active: "success",
+  treated: "success",
+  pass: "success",
+  healthy: "success",
+  mitigated: "success",
+  remediated: "success",
+  published: "success",
+  closed: "info",
+  reviewed: "info",
+  planned: "info",
+  investigated: "info",
+  in_progress: "warning",
+  pending: "warning",
+  on_hold: "warning",
+  deferred: "warning",
+  expired: "warning",
+  at_risk: "warning",
+  assessed: "warning",
+  blocked: "error",
+  rejected: "error",
+  failing: "error",
+  fail: "error",
+  open: "error",
+  cancelled: "error",
+  retired: "error",
+  superseded: "error",
+  draft: "default",
+  archived: "default",
+  identified: "default",
+  accepted: "default",
+  not_monitored: "default",
+  error: "error",
+  in_remediation: "warning",
+};
 
-for (const [key, label] of Object.entries(STATUS_LABELS)) {
-  AUTO_LABEL_MAP[key.toLowerCase()] = key;
-  AUTO_LABEL_MAP[label.toLowerCase()] = key;
+const VARIANT_COLORS: Record<string, { bg: string; color: string; border: string }> = {
+  success: { bg: "#ECFDF5", color: "#059669", border: "#A7F3D0" },
+  warning: { bg: "#FFFBEB", color: "#D97706", border: "#FDE68A" },
+  error: { bg: "#FEF2F2", color: "#DC2626", border: "#FECACA" },
+  info: { bg: "#EFF6FF", color: "#2563EB", border: "#BFDBFE" },
+  default: { bg: "#F3F4F6", color: "#6B7280", border: "#E5E7EB" },
+};
+
+function resolveVariant(value: string): keyof typeof VARIANT_COLORS {
+  const normalized = value.toLowerCase().trim();
+  const exactMatch = LABEL_TO_VARIANT[normalized];
+  if (exactMatch) return exactMatch;
+  for (const [key, variant] of Object.entries(LABEL_TO_VARIANT)) {
+    if (normalized.includes(key)) return variant;
+  }
+  return "default";
 }
 
 interface StatusChipProps extends Omit<ChipProps, "color"> {
   value: string;
   type?: "domain" | "status";
-  variant?: "filled" | "outlined";
 }
 
-function resolveConfig(value: string, type?: "domain" | "status") {
+export default function StatusChip({ value, type, sx, ...props }: StatusChipProps) {
   const normalized = value.toLowerCase();
+
   if (type === "domain" || DOMAIN_CONFIG[normalized]) {
-    return { ...DOMAIN_CONFIG[normalized], label: STATUS_LABELS[normalized] || value };
-  }
-  if (type === "status") {
-    return { label: STATUS_LABELS[normalized] || value };
-  }
-  return { label: STATUS_LABELS[normalized] || value };
-}
-
-export default function StatusChip({ value, type, variant = "outlined", sx, ...props }: StatusChipProps) {
-  const config = resolveConfig(value, type);
-
-  if (type === "domain" || DOMAIN_CONFIG[value?.toLowerCase()]) {
-    const domain = DOMAIN_CONFIG[value?.toLowerCase()];
+    const domain = DOMAIN_CONFIG[normalized];
     if (domain) {
       return (
         <Chip
-          label={config.label}
-          variant={variant}
+          label={STATUS_LABELS[normalized] || value}
+          variant="outlined"
           size="small"
           sx={{
             borderColor: domain.border,
@@ -111,12 +144,17 @@ export default function StatusChip({ value, type, variant = "outlined", sx, ...p
     }
   }
 
+  const variant = resolveVariant(value);
+  const colors = VARIANT_COLORS[variant]!;
+
   return (
     <Chip
-      label={config.label}
-      variant={variant}
+      label={STATUS_LABELS[normalized] || value}
       size="small"
       sx={{
+        backgroundColor: colors.bg,
+        color: colors.color,
+        border: `1px solid ${colors.border}`,
         fontWeight: 600,
         fontSize: "0.6875rem",
         height: 26,
