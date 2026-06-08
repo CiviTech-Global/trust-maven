@@ -116,6 +116,9 @@ const EntityManagerPage = lazy(
 const TrustCenterPage = lazy(
   () => import("../../presentation/pages/TrustCenter/TrustCenterPage")
 );
+const CopilotPage = lazy(
+  () => import("../../presentation/pages/Copilot/CopilotPage")
+);
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -214,6 +217,7 @@ export default function AppRoutes() {
           <Route path="entities" element={<EntityManagerPage />} />
           <Route path="trust-center" element={<TrustCenterPage />} />
           <Route path="workflows" element={<WorkflowBuilderPage />} />
+          <Route path="copilot" element={<CopilotPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

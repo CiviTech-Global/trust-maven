@@ -7,6 +7,7 @@ const router = Router();
 router.use(authenticate, tenantIsolation);
 
 router.get("/available", (req, res) => integrationController.getAvailableConnectors(req, res));
+router.get("/marketplace", (req, res) => integrationController.getMarketplace(req, res));
 router.get("/dashboard/summary", (req, res) => integrationController.getDashboardSummary(req, res));
 router.get("/", (req, res) => integrationController.findAll(req, res));
 router.post("/", (req, res) => integrationController.create(req, res));

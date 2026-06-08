@@ -43,6 +43,7 @@ import { trustCenterPublicRoutes, trustCenterProtectedRoutes } from "./routes/tr
 import fairAnalysisRoutes from "./routes/fairAnalysis.route";
 import tprmRoutes from "./routes/tprm.route";
 import workflowRoutes from "./routes/workflow.route";
+import copilotRoutes from "./routes/copilot.route";
 import { regulationSeederService } from "./services/regulationSeeder.service";
 import { metaframeworkSeeder } from "./services/metaframeworkSeeder.service";
 import { startEvidenceScheduler } from "./services/evidenceCollector.service";
@@ -129,6 +130,7 @@ app.use("/api/v1/trust-center", trustCenterProtectedRoutes);
 app.use("/api/v1/fair-analysis", fairAnalysisRoutes);
 app.use("/api/v1/tprm", tprmRoutes);
 app.use("/api/v1/workflows", workflowRoutes);
+app.use("/api/v1/copilot", copilotRoutes);
 
 // Global error handler
 app.use(

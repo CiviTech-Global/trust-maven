@@ -7,6 +7,11 @@ import {
   Add as AddIcon, Cloud as CloudIcon, Code as CodeIcon, Security as SecurityIcon,
   Public as PublicIcon, Edit as EditIcon, Delete as DeleteIcon,
   Sync as SyncIcon, Science as ScienceIcon, History as HistoryIcon,
+  CloudQueue as CloudQueueIcon, Storage as StorageIcon, Source as SourceIcon,
+  Chat as ChatIcon, MonitorHeart as MonitorHeartIcon, Deblur as DeblurIcon,
+  Inventory2 as Inventory2Icon, Warning as WarningIcon, Construction as ConstructionIcon,
+  BugReport as BugReportIcon, AutoGraph as AutoGraphIcon, Dns as DnsIcon,
+  ConfirmationNumber as ConfirmationNumberIcon, Computer as ComputerIcon,
 } from "@mui/icons-material";
 import {
   useIntegrations, useIntegrationDashboardSummary, useAvailableConnectors,
@@ -22,6 +27,20 @@ const CONNECTOR_ICONS: Record<string, React.ReactNode> = {
   aws: <CloudIcon />,
   github: <CodeIcon />,
   okta: <SecurityIcon />,
+  gcp: <CloudQueueIcon />,
+  azure: <StorageIcon />,
+  gitlab: <SourceIcon />,
+  slack: <ChatIcon />,
+  datadog: <MonitorHeartIcon />,
+  kubernetes: <DeblurIcon />,
+  docker: <Inventory2Icon />,
+  pagerduty: <WarningIcon />,
+  terraform: <ConstructionIcon />,
+  sentry: <BugReportIcon />,
+  circleci: <AutoGraphIcon />,
+  cloudflare: <DnsIcon />,
+  jira: <ConfirmationNumberIcon />,
+  servicenow: <ComputerIcon />,
 };
 
 function getConnectorIcon(type: string) {
@@ -41,6 +60,76 @@ const CONNECTOR_CONFIG_FIELDS: Record<string, { key: string; label: string; type
   okta: [
     { key: "domain", label: "Domain", type: "text" },
     { key: "apiToken", label: "API Token", type: "password" },
+  ],
+  gcp: [
+    { key: "projectId", label: "Project ID", type: "text" },
+    { key: "serviceAccountKey", label: "Service Account Key (JSON)", type: "password" },
+    { key: "region", label: "Region", type: "text" },
+  ],
+  azure: [
+    { key: "tenantId", label: "Tenant ID", type: "text" },
+    { key: "clientId", label: "Client ID", type: "text" },
+    { key: "clientSecret", label: "Client Secret", type: "password" },
+    { key: "subscriptionId", label: "Subscription ID", type: "text" },
+  ],
+  gitlab: [
+    { key: "url", label: "GitLab URL", type: "text" },
+    { key: "accessToken", label: "Access Token", type: "password" },
+    { key: "group", label: "Group/Namespace", type: "text" },
+  ],
+  slack: [
+    { key: "workspaceUrl", label: "Workspace URL", type: "text" },
+    { key: "apiToken", label: "API Token", type: "password" },
+  ],
+  datadog: [
+    { key: "apiKey", label: "API Key", type: "password" },
+    { key: "appKey", label: "Application Key", type: "password" },
+    { key: "site", label: "Site (e.g. datadoghq.com)", type: "text" },
+  ],
+  kubernetes: [
+    { key: "clusterUrl", label: "Cluster URL", type: "text" },
+    { key: "token", label: "Bearer Token", type: "password" },
+    { key: "namespace", label: "Namespace (optional)", type: "text" },
+  ],
+  docker: [
+    { key: "username", label: "Username", type: "text" },
+    { key: "token", label: "Access Token", type: "password" },
+    { key: "registry", label: "Registry URL", type: "text" },
+  ],
+  pagerduty: [
+    { key: "apiToken", label: "API Token", type: "password" },
+    { key: "serviceId", label: "Service ID", type: "text" },
+  ],
+  terraform: [
+    { key: "token", label: "API Token", type: "password" },
+    { key: "organization", label: "Organization", type: "text" },
+    { key: "tfeHost", label: "TFE Host (optional)", type: "text" },
+  ],
+  sentry: [
+    { key: "authToken", label: "Auth Token", type: "password" },
+    { key: "organization", label: "Organization", type: "text" },
+    { key: "dsn", label: "DSN URL", type: "text" },
+  ],
+  circleci: [
+    { key: "apiToken", label: "API Token", type: "password" },
+    { key: "projectSlug", label: "Project Slug", type: "text" },
+    { key: "vcsType", label: "VCS Type (github/bitbucket)", type: "text" },
+  ],
+  cloudflare: [
+    { key: "apiToken", label: "API Token", type: "password" },
+    { key: "zoneId", label: "Zone ID", type: "text" },
+    { key: "email", label: "Email", type: "text" },
+  ],
+  jira: [
+    { key: "url", label: "Jira URL", type: "text" },
+    { key: "email", label: "Email", type: "text" },
+    { key: "apiToken", label: "API Token", type: "password" },
+    { key: "project", label: "Project Key", type: "text" },
+  ],
+  servicenow: [
+    { key: "instanceUrl", label: "Instance URL", type: "text" },
+    { key: "username", label: "Username", type: "text" },
+    { key: "password", label: "Password", type: "password" },
   ],
   generic: [
     { key: "endpoint", label: "Endpoint URL", type: "text" },

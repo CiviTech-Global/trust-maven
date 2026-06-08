@@ -1,0 +1,518 @@
+{
+  "catalog": {
+    "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "metadata": {
+      "title": "CSA Cloud Controls Matrix v4",
+      "version": "4.0",
+      "published": "2024-01-15",
+      "publisher": "Cloud Security Alliance",
+      "description": "The Cloud Controls Matrix (CCM) v4 is a cybersecurity control framework for cloud computing, providing comprehensive controls across 16 domains covering cloud security best practices."
+    },
+    "groups": [
+      {
+        "id": "AIS",
+        "title": "Application & Interface Security",
+        "controls": [
+          {
+            "id": "CCM-AIS-01",
+            "title": "Application Security Lifecycle",
+            "description": "Applications and interfaces must be designed, developed, tested, and maintained using a secure development lifecycle approach.",
+            "parts": [
+              {
+                "id": "CCM-AIS-01_stm",
+                "name": "statement",
+                "prose": "The organization shall implement a secure application development lifecycle for all cloud-based applications and customer-facing interfaces, including requirements gathering, design, development, testing, deployment, and maintenance phases."
+              },
+              {
+                "id": "CCM-AIS-01_gdn",
+                "name": "guidance",
+                "prose": "Implement a formal SDLC policy with security gates at each phase. Use static and dynamic application security testing tools. Conduct code reviews and threat modeling. Key questions: Is there a documented secure SDLC policy? Are security reviews conducted at each phase? Evidence examples: SDLC policy documents, security review signoffs, SAST/DAST reports."
+              }
+            ]
+          },
+          {
+            "id": "CCM-AIS-02",
+            "title": "Customer Access Requirements",
+            "description": "Access to cloud applications and interfaces must be secured through appropriate authentication and authorization controls.",
+            "parts": [
+              {
+                "id": "CCM-AIS-02_stm",
+                "name": "statement",
+                "prose": "The organization shall define and enforce access requirements for customers accessing cloud service applications and interfaces, including authentication mechanisms, session management, and access restrictions."
+              },
+              {
+                "id": "CCM-AIS-02_gdn",
+                "name": "guidance",
+                "prose": "Implement multi-factor authentication for all customer access. Enforce least privilege and role-based access control. Configure session timeouts and secure cookie attributes. Key questions: Is MFA enforced for customer access? Are session management controls implemented? Evidence examples: MFA configuration screenshots, access control policy, session timeout configuration."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AAC",
+        "title": "Audit Assurance & Compliance",
+        "controls": [
+          {
+            "id": "CCM-AAC-01",
+            "title": "Audit Planning",
+            "description": "Audit activities must be planned and conducted in a manner that minimizes disruption to operations while ensuring comprehensive coverage.",
+            "parts": [
+              {
+                "id": "CCM-AAC-01_stm",
+                "name": "statement",
+                "prose": "The organization shall develop and maintain an audit plan that defines the scope, frequency, methodology, and reporting requirements for internal and external audits of cloud services and operations."
+              },
+              {
+                "id": "CCM-AAC-01_gdn",
+                "name": "guidance",
+                "prose": "Maintain a rolling 12-month audit calendar. Coordinate with audit teams to define scope boundaries. Ensure independent auditors are used for compliance certifications. Key questions: Is there a current audit plan? How is auditor independence ensured? Evidence examples: Audit plan document, auditor engagement letters, audit schedule."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "BC",
+        "title": "Business Continuity Management",
+        "controls": [
+          {
+            "id": "CCM-BC-01",
+            "title": "Business Continuity Planning",
+            "description": "Business continuity and disaster recovery plans must be established and tested to ensure resilience of cloud services.",
+            "parts": [
+              {
+                "id": "CCM-BC-01_stm",
+                "name": "statement",
+                "prose": "The organization shall develop, document, and maintain business continuity and disaster recovery plans that address the restoration of cloud services and operations following disruptions or disasters."
+              },
+              {
+                "id": "CCM-BC-01_gdn",
+                "name": "guidance",
+                "prose": "Conduct business impact analysis to identify critical systems. Define RTO and RPO for each service tier. Test plans annually at minimum using tabletop and full-scale exercises. Key questions: Are BCP/DR plans documented? What are the RTO/RPO targets? Evidence examples: BIA report, BCP/DR plans, test exercise reports."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "CCC",
+        "title": "Change Control & Configuration Management",
+        "controls": [
+          {
+            "id": "CCM-CCC-01",
+            "title": "Change Management Process",
+            "description": "Changes to cloud infrastructure, applications, and configurations must follow a formal change management process.",
+            "parts": [
+              {
+                "id": "CCM-CCC-01_stm",
+                "name": "statement",
+                "prose": "The organization shall implement a formal change management process that requires authorization, testing, approval, and documentation for all changes to cloud infrastructure, platforms, applications, and configurations."
+              },
+              {
+                "id": "CCM-CCC-01_gdn",
+                "name": "guidance",
+                "prose": "Use a change management system to track all change requests. Require emergency change procedures for urgent fixes. Segregate duties between developer and approver roles. Key questions: Is there a documented change management policy? Are changes tracked in a system of record? Evidence examples: Change request tickets, CAB meeting minutes, change log reports."
+              }
+            ]
+          },
+          {
+            "id": "CCM-CCC-02",
+            "title": "Configuration Management Database",
+            "description": "A configuration management database must be maintained to track all assets and their configurations.",
+            "parts": [
+              {
+                "id": "CCM-CCC-02_stm",
+                "name": "statement",
+                "prose": "The organization shall maintain a configuration management database or similar repository that records all cloud infrastructure components, their configurations, and relationships between components."
+              },
+              {
+                "id": "CCM-CCC-02_gdn",
+                "name": "guidance",
+                "prose": "Implement automated discovery tools to populate the CMDB. Establish baselines for all system configurations. Regularly audit configurations against baselines. Key questions: Is a CMDB maintained? Are configuration baselines defined? Evidence examples: CMDB reports, baseline configuration documents, configuration audit results."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "DCS",
+        "title": "Data Security & Information Lifecycle Management",
+        "controls": [
+          {
+            "id": "CCM-DCS-01",
+            "title": "Data Classification",
+            "description": "Data must be classified according to sensitivity and criticality to determine appropriate handling controls.",
+            "parts": [
+              {
+                "id": "CCM-DCS-01_stm",
+                "name": "statement",
+                "prose": "The organization shall establish and maintain a data classification policy that defines classification categories, handling requirements, and responsibilities for all data stored, processed, or transmitted in cloud environments."
+              },
+              {
+                "id": "CCM-DCS-01_gdn",
+                "name": "guidance",
+                "prose": "Define at least three classification levels. Label data according to classification. Apply technical controls based on classification tags. Key questions: Is there a data classification policy? How is classified data labeled? Evidence examples: Data classification policy, data labeling samples, classification audit reports."
+              }
+            ]
+          },
+          {
+            "id": "CCM-DCS-02",
+            "title": "Data Retention and Disposal",
+            "description": "Data retention and disposal procedures must be defined and enforced across the data lifecycle.",
+            "parts": [
+              {
+                "id": "CCM-DCS-02_stm",
+                "name": "statement",
+                "prose": "The organization shall define data retention periods and disposal procedures for all data stored in cloud services, ensuring data is retained only as long as required by legal, regulatory, and business requirements."
+              },
+              {
+                "id": "CCM-DCS-02_gdn",
+                "name": "guidance",
+                "prose": "Implement automated retention policies. Use secure deletion methods such as cryptographic erasure or physical destruction. Verify disposal completion through audit trails. Key questions: Are data retention schedules documented? Is secure disposal verified? Evidence examples: Data retention policy, disposal records, verification certificates."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "DS",
+        "title": "Data Center Security",
+        "controls": [
+          {
+            "id": "CCM-DS-01",
+            "title": "Physical Access Controls",
+            "description": "Physical access to data center facilities must be restricted and monitored to prevent unauthorized entry.",
+            "parts": [
+              {
+                "id": "CCM-DS-01_stm",
+                "name": "statement",
+                "prose": "The organization shall implement physical access controls for all data center facilities housing cloud infrastructure, including multi-factor authentication, biometric systems, security personnel, and video surveillance."
+              },
+              {
+                "id": "CCM-DS-01_gdn",
+                "name": "guidance",
+                "prose": "Use mantrap entry systems with biometric and badge authentication. Maintain visitor logs with escrow procedures. Review access rights quarterly. Key questions: Are multi-factor physical controls in place? How are visitors managed? Evidence examples: Physical security policy, access log reviews, visitor records, surveillance footage samples."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "EKM",
+        "title": "Encryption & Key Management",
+        "controls": [
+          {
+            "id": "CCM-EKM-01",
+            "title": "Encryption Standards",
+            "description": "Encryption must be implemented to protect data at rest and in transit using approved cryptographic standards.",
+            "parts": [
+              {
+                "id": "CCM-EKM-01_stm",
+                "name": "statement",
+                "prose": "The organization shall implement encryption for data at rest and data in transit using industry-standard cryptographic algorithms and protocols, with key lengths and cipher suites that meet or exceed current best practices."
+              },
+              {
+                "id": "CCM-EKM-01_gdn",
+                "name": "guidance",
+                "prose": "Use AES-256 for data at rest and TLS 1.3 for data in transit. Disable deprecated protocols and ciphers. Inventory all encryption implementations. Key questions: What encryption standards are used for data at rest and in transit? Are deprecated protocols disabled? Evidence examples: Encryption policy, TLS configuration scans, key inventory lists."
+              }
+            ]
+          },
+          {
+            "id": "CCM-EKM-02",
+            "title": "Key Lifecycle Management",
+            "description": "Cryptographic keys must be managed throughout their lifecycle from generation through destruction.",
+            "parts": [
+              {
+                "id": "CCM-EKM-02_stm",
+                "name": "statement",
+                "prose": "The organization shall implement a key management lifecycle that covers key generation, distribution, storage, rotation, revocation, and destruction, using a hardware security module or certified key management system."
+              },
+              {
+                "id": "CCM-EKM-02_gdn",
+                "name": "guidance",
+                "prose": "Use a dedicated key management service or HSM. Rotate keys annually or upon compromise. Separate encryption keys from encrypted data. Key questions: Is a centralized key management system used? How often are keys rotated? Evidence examples: Key management policy, HSM certificates, key rotation logs."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GRC",
+        "title": "Governance & Risk Management",
+        "controls": [
+          {
+            "id": "CCM-GRC-01",
+            "title": "Information Security Governance",
+            "description": "Information security governance must be established with clear roles, responsibilities, and oversight.",
+            "parts": [
+              {
+                "id": "CCM-GRC-01_stm",
+                "name": "statement",
+                "prose": "The organization shall establish an information security governance framework that defines roles, responsibilities, and accountability for cloud security, with oversight from senior management and a designated security steering committee."
+              },
+              {
+                "id": "CCM-GRC-01_gdn",
+                "name": "guidance",
+                "prose": "Charter a security steering committee with executive sponsorship. Define RACI matrices for security decisions. Report security metrics to the board quarterly. Key questions: Is there a security steering committee? How are security decisions escalated? Evidence examples: Governance charter, committee meeting minutes, RACI matrix."
+              }
+            ]
+          },
+          {
+            "id": "CCM-GRC-02",
+            "title": "Risk Assessment Methodology",
+            "description": "Risk assessments must be conducted using a defined methodology to identify and evaluate cloud security risks.",
+            "parts": [
+              {
+                "id": "CCM-GRC-02_stm",
+                "name": "statement",
+                "prose": "The organization shall define and implement a risk assessment methodology for identifying, analyzing, evaluating, and treating risks associated with cloud services and operations."
+              },
+              {
+                "id": "CCM-GRC-02_gdn",
+                "name": "guidance",
+                "prose": "Use a quantitative or qualitative risk assessment framework. Conduct assessments annually and upon significant changes. Maintain a risk register with treatment plans. Key questions: Is a risk assessment methodology documented? How often are assessments conducted? Evidence examples: Risk assessment policy, risk register, treatment plans."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "HRS",
+        "title": "Human Resources Security",
+        "controls": [
+          {
+            "id": "CCM-HRS-01",
+            "title": "Personnel Background Checks",
+            "description": "Personnel with access to cloud systems must undergo background screening prior to employment.",
+            "parts": [
+              {
+                "id": "CCM-HRS-01_stm",
+                "name": "statement",
+                "prose": "The organization shall conduct background screening for all personnel with access to cloud infrastructure, platforms, or customer data prior to employment and at regular intervals thereafter."
+              },
+              {
+                "id": "CCM-HRS-01_gdn",
+                "name": "guidance",
+                "prose": "Screen employees based on role sensitivity and regulatory requirements. Verify identity, education, criminal history, and credit where permitted. Re-screen every five years. Key questions: What background checks are performed? How often are checks repeated? Evidence examples: Background check policy, screening records, vendor agreements for screening services."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "IAM",
+        "title": "Identity & Access Management",
+        "controls": [
+          {
+            "id": "CCM-IAM-01",
+            "title": "Identity Management",
+            "description": "Digital identities must be provisioned, managed, and de-provisioned through a centralized identity management system.",
+            "parts": [
+              {
+                "id": "CCM-IAM-01_stm",
+                "name": "statement",
+                "prose": "The organization shall implement a centralized identity management system that governs the lifecycle of digital identities, including provisioning, modification, suspension, and de-provisioning of accounts."
+              },
+              {
+                "id": "CCM-IAM-01_gdn",
+                "name": "guidance",
+                "prose": "Integrate with enterprise directory services. Automate de-provisioning upon termination. Conduct quarterly access reviews. Key questions: Is identity management centralized? How quickly are accounts de-provisioned? Evidence examples: IAM policy, access review reports, user lifecycle automation configuration."
+              }
+            ]
+          },
+          {
+            "id": "CCM-IAM-02",
+            "title": "Privileged Access Management",
+            "description": "Privileged accounts must be managed with additional controls to prevent misuse of elevated access.",
+            "parts": [
+              {
+                "id": "CCM-IAM-02_stm",
+                "name": "statement",
+                "prose": "The organization shall implement privileged access management controls including just-in-time access, session monitoring, and approval workflows for all administrative accounts in cloud environments."
+              },
+              {
+                "id": "CCM-IAM-02_gdn",
+                "name": "guidance",
+                "prose": "Use a PAM solution with password vaulting. Require approval for privilege elevation. Record and audit all privileged sessions. Key questions: Is a PAM solution deployed? Are privileged sessions recorded? Evidence examples: PAM policy, session recordings, privilege elevation requests."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "IVS",
+        "title": "Infrastructure & Virtualization Security",
+        "controls": [
+          {
+            "id": "CCM-IVS-01",
+            "title": "Hypervisor Security",
+            "description": "Hypervisors and virtualization platforms must be hardened and monitored to prevent escape attacks.",
+            "parts": [
+              {
+                "id": "CCM-IVS-01_stm",
+                "name": "statement",
+                "prose": "The organization shall harden hypervisors and virtualization platforms by disabling unnecessary services, applying security patches, and implementing isolation controls between virtual machines."
+              },
+              {
+                "id": "CCM-IVS-01_gdn",
+                "name": "guidance",
+                "prose": "Follow vendor hardening guides. Disable unused virtual hardware components. Monitor for unauthorized VM creation or migration. Key questions: Are hypervisors hardened? What controls prevent VM escape? Evidence examples: Hypervisor hardening checklist, vulnerability scans, isolation test results."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "IPY",
+        "title": "Interoperability & Portability",
+        "controls": [
+          {
+            "id": "CCM-IPY-01",
+            "title": "Data Portability",
+            "description": "Customer data must be portable to enable migration between cloud providers without vendor lock-in.",
+            "parts": [
+              {
+                "id": "CCM-IPY-01_stm",
+                "name": "statement",
+                "prose": "The organization shall ensure that customer data can be exported in industry-standard, non-proprietary formats to facilitate portability and prevent vendor lock-in."
+              },
+              {
+                "id": "CCM-IPY-01_gdn",
+                "name": "guidance",
+                "prose": "Support open data formats such as CSV, JSON, and XML. Provide self-service export capabilities. Document data schemas and APIs. Key questions: What export formats are supported? Can customers export all data without assistance? Evidence examples: Data portability documentation, export feature test results, API specifications."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "LOG",
+        "title": "Logging & Monitoring",
+        "controls": [
+          {
+            "id": "CCM-LOG-01",
+            "title": "Security Logging",
+            "description": "Security-relevant events must be logged and retained to support audit and investigation activities.",
+            "parts": [
+              {
+                "id": "CCM-LOG-01_stm",
+                "name": "statement",
+                "prose": "The organization shall generate, collect, and retain security-relevant logs for all cloud infrastructure components, applications, and access events, with log retention periods defined by regulatory and business requirements."
+              },
+              {
+                "id": "CCM-LOG-01_gdn",
+                "name": "guidance",
+                "prose": "Centralize logs using a SIEM or log management platform. Protect logs from tampering with write-once storage. Retain logs for minimum 12 months. Key questions: Are logs centralized? How are logs protected from modification? Evidence examples: SIEM architecture diagram, log retention policy, tamper-proof storage configuration."
+              }
+            ]
+          },
+          {
+            "id": "CCM-LOG-02",
+            "title": "Monitoring and Alerting",
+            "description": "Continuous monitoring and alerting must be implemented to detect security incidents in real time.",
+            "parts": [
+              {
+                "id": "CCM-LOG-02_stm",
+                "name": "statement",
+                "prose": "The organization shall implement continuous monitoring and alerting capabilities to detect, analyze, and respond to security events in real time across all cloud environments."
+              },
+              {
+                "id": "CCM-LOG-02_gdn",
+                "name": "guidance",
+                "prose": "Define alert thresholds for critical events. Integrate with incident response workflows. Test alerting mechanisms monthly. Key questions: What monitoring tools are used? How are alerts triaged? Evidence examples: Alert configuration screenshots, monitoring dashboard, alert response runbooks."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SEF",
+        "title": "Security Incident Management",
+        "controls": [
+          {
+            "id": "CCM-SEF-01",
+            "title": "Incident Response Plan",
+            "description": "An incident response plan must be established to handle security incidents effectively and minimize impact.",
+            "parts": [
+              {
+                "id": "CCM-SEF-01_stm",
+                "name": "statement",
+                "prose": "The organization shall develop, document, and maintain an incident response plan that defines roles, procedures, and communication protocols for detecting, containing, eradicating, and recovering from security incidents."
+              },
+              {
+                "id": "CCM-SEF-01_gdn",
+                "name": "guidance",
+                "prose": "Establish a CSIRT with defined roles. Conduct tabletop exercises quarterly. Integrate with law enforcement and legal teams. Key questions: Is an incident response plan documented? How often is it tested? Evidence examples: Incident response plan, exercise after-action reports, CSIRT roster."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "STA",
+        "title": "Supply Chain & Third Party",
+        "controls": [
+          {
+            "id": "CCM-STA-01",
+            "title": "Third Party Risk Assessment",
+            "description": "Third party vendors must be assessed for security risks prior to engagement and monitored continuously.",
+            "parts": [
+              {
+                "id": "CCM-STA-01_stm",
+                "name": "statement",
+                "prose": "The organization shall assess and monitor third-party vendors and supply chain partners for information security risks, including security posture, data handling practices, and compliance certifications."
+              },
+              {
+                "id": "CCM-STA-01_gdn",
+                "name": "guidance",
+                "prose": "Use vendor risk questionnaires and independent audit reports. Classify vendors by criticality. Reassess annually and upon significant changes. Key questions: Are vendor risk assessments conducted? How are vendors classified by risk? Evidence examples: Vendor risk assessment reports, due diligence records, vendor contract security addenda."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "TVM",
+        "title": "Threat & Vulnerability Management",
+        "controls": [
+          {
+            "id": "CCM-TVM-01",
+            "title": "Vulnerability Scanning",
+            "description": "Regular vulnerability scanning must be performed to identify and remediate security weaknesses.",
+            "parts": [
+              {
+                "id": "CCM-TVM-01_stm",
+                "name": "statement",
+                "prose": "The organization shall perform regular vulnerability scanning of all cloud infrastructure components, applications, and network assets, using up-to-date vulnerability databases and scanning tools."
+              },
+              {
+                "id": "CCM-TVM-01_gdn",
+                "name": "guidance",
+                "prose": "Scan weekly for critical vulnerabilities and monthly for all others. Use authenticated scanning where possible. Remediate critical vulnerabilities within 7 days. Key questions: How often are vulnerability scans performed? What is the SLA for remediation? Evidence examples: Scan reports, remediation tracking, vulnerability management policy."
+              }
+            ]
+          },
+          {
+            "id": "CCM-TVM-02",
+            "title": "Threat Intelligence",
+            "description": "Threat intelligence must be gathered and used to inform security controls and prioritization.",
+            "parts": [
+              {
+                "id": "CCM-TVM-02_stm",
+                "name": "statement",
+                "prose": "The organization shall gather and analyze threat intelligence from relevant sources to identify emerging threats, vulnerabilities, and attack patterns that may affect cloud services."
+              },
+              {
+                "id": "CCM-TVM-02_gdn",
+                "name": "guidance",
+                "prose": "Subscribe to industry ISACs and threat feeds. Correlate threat intelligence with asset inventory. Share relevant intelligence with customers. Key questions: What threat intelligence sources are used? How is intelligence operationalized? Evidence examples: Threat intelligence feeds, threat analysis reports, intelligence sharing agreements."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

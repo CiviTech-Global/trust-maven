@@ -1,0 +1,608 @@
+{
+  "catalog": {
+    "uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "metadata": {
+      "title": "NIST SP 800-171 Rev 2",
+      "version": "2.0",
+      "published": "2020-02-14",
+      "publisher": "NIST",
+      "description": "NIST Special Publication 800-171 provides security requirements for protecting Controlled Unclassified Information in non-federal systems and organizations."
+    },
+    "groups": [
+      {
+        "id": "AC",
+        "title": "Access Control",
+        "controls": [
+          {
+            "id": "3.1.1",
+            "title": "Limit system access to authorized users",
+            "description": "Limit system access to authorized users, processes acting on behalf of authorized users, and devices.",
+            "parts": [
+              {
+                "id": "3.1.1_stm",
+                "name": "statement",
+                "prose": "Authorize access to systems and services based on valid user identification and authentication. Limit system access to authorized users, processes acting on behalf of authorized users, and authorized devices."
+              },
+              {
+                "id": "3.1.1_gdn",
+                "name": "guidance",
+                "prose": "Implement role-based access control with least privilege principles. Use account management procedures for provisioning and de-provisioning. Review access authorizations quarterly. Key questions: How are users authorized to access systems? Are access reviews conducted periodically? Evidence examples: Access control policy, user access lists, access review reports."
+              }
+            ]
+          },
+          {
+            "id": "3.1.2",
+            "title": "Limit system access to authorized transactions and functions",
+            "description": "Limit system access to the types of transactions and functions that authorized users are permitted to execute.",
+            "parts": [
+              {
+                "id": "3.1.2_stm",
+                "name": "statement",
+                "prose": "Limit system access to the types of transactions and functions that authorized users are permitted to execute, and control the flow of information between interconnected systems."
+              },
+              {
+                "id": "3.1.2_gdn",
+                "name": "guidance",
+                "prose": "Define permitted transaction types per role. Implement application-level access controls. Use data loss prevention tools to monitor data flows. Key questions: Are transaction types mapped to roles? Is information flow control implemented? Evidence examples: Role-permission matrices, application access control configurations, DLP policies."
+              }
+            ]
+          },
+          {
+            "id": "3.1.3",
+            "title": "Control remote access",
+            "description": "Control and restrict remote access to organizational systems and data.",
+            "parts": [
+              {
+                "id": "3.1.3_stm",
+                "name": "statement",
+                "prose": "Establish and document usage restrictions and configuration requirements for remote access to organizational systems containing CUI, and monitor and control all remote access sessions."
+              },
+              {
+                "id": "3.1.3_gdn",
+                "name": "guidance",
+                "prose": "Use VPN with encryption for all remote connections. Enforce multi-factor authentication for remote access. Log and monitor remote access sessions. Key questions: What remote access methods are permitted? Is MFA required for remote access? Evidence examples: Remote access policy, VPN configuration, remote access logs."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AU",
+        "title": "Audit and Accountability",
+        "controls": [
+          {
+            "id": "3.3.1",
+            "title": "Create and retain system audit records",
+            "description": "Create and retain system audit records to enable monitoring, analysis, investigation, and reporting of unlawful, unauthorized, or inappropriate system activity.",
+            "parts": [
+              {
+                "id": "3.3.1_stm",
+                "name": "statement",
+                "prose": "Create and retain system audit records to enable monitoring, analysis, investigation, and reporting of unlawful, unauthorized, or inappropriate system activity, and ensure audit records are protected from modification and unauthorized access."
+              },
+              {
+                "id": "3.3.1_gdn",
+                "name": "guidance",
+                "prose": "Log authentication events, access attempts, privilege changes, and system administrative actions. Store logs in a centralized, tamper-protected repository. Retain audit records for a minimum of 12 months. Key questions: What events are audited? How are audit logs protected? Evidence examples: Audit policy, log retention schedule, SIEM configuration."
+              }
+            ]
+          },
+          {
+            "id": "3.3.2",
+            "title": "Ensure actions of individual users can be uniquely traced",
+            "description": "Ensure that the actions of individual system users can be uniquely traced to those users so they can be held accountable for their actions.",
+            "parts": [
+              {
+                "id": "3.3.2_stm",
+                "name": "statement",
+                "prose": "Ensure that the actions of individual system users can be uniquely traced to those users so they can be held accountable for their actions, and correlate audit records with user identities."
+              },
+              {
+                "id": "3.3.2_gdn",
+                "name": "guidance",
+                "prose": "Use unique user IDs for all personnel. Avoid shared and generic accounts. Implement session recording for privileged users. Key questions: Are all users assigned unique credentials? Are shared accounts prohibited? Evidence examples: Account management policy, unique user ID records, session recording logs."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AT",
+        "title": "Awareness and Training",
+        "controls": [
+          {
+            "id": "3.2.1",
+            "title": "Security awareness training",
+            "description": "Provide basic security awareness training to all system users on recognizing and reporting potential threats.",
+            "parts": [
+              {
+                "id": "3.2.1_stm",
+                "name": "statement",
+                "prose": "Provide basic security awareness training to all system users on recognizing and reporting potential insider threats, social engineering, phishing, and other information security risks."
+              },
+              {
+                "id": "3.2.1_gdn",
+                "name": "guidance",
+                "prose": "Conduct annual security awareness training for all employees. Include phishing simulations as part of training. Tailor content to roles and risk levels. Key questions: How often is training conducted? Is phishing simulation included? Evidence examples: Training records, phishing simulation results, awareness program materials."
+              }
+            ]
+          },
+          {
+            "id": "3.2.2",
+            "title": "Role-based security training",
+            "description": "Provide role-based security training to personnel with specific security responsibilities.",
+            "parts": [
+              {
+                "id": "3.2.2_stm",
+                "name": "statement",
+                "prose": "Provide role-based security training to personnel with assigned information security roles and responsibilities, covering their specific duties, applicable laws and policies, and reporting procedures."
+              },
+              {
+                "id": "3.2.2_gdn",
+                "name": "guidance",
+                "prose": "Identify personnel with security roles. Provide specialized training on incident response, system administration, and compliance. Update training when responsibilities change. Key questions: Are role-based training programs defined? How is training effectiveness measured? Evidence examples: Role-based training curriculum, completion certificates, training assessments."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "CM",
+        "title": "Configuration Management",
+        "controls": [
+          {
+            "id": "3.4.1",
+            "title": "Establish and maintain baseline configurations",
+            "description": "Establish and maintain baseline configurations and inventories of organizational systems.",
+            "parts": [
+              {
+                "id": "3.4.1_stm",
+                "name": "statement",
+                "prose": "Establish and maintain baseline configurations and inventories of organizational systems including hardware, software, firmware, and documentation throughout the system development lifecycle."
+              },
+              {
+                "id": "3.4.1_gdn",
+                "name": "guidance",
+                "prose": "Define secure baseline images for all system types. Use configuration management tools to enforce baselines. Conduct automated compliance scanning. Key questions: Are system baseline configurations documented? How are deviations detected? Evidence examples: Baseline configuration documents, CMDB reports, compliance scan results."
+              }
+            ]
+          },
+          {
+            "id": "3.4.2",
+            "title": "Control changes to systems",
+            "description": "Establish and enforce change control processes for organizational systems.",
+            "parts": [
+              {
+                "id": "3.4.2_stm",
+                "name": "statement",
+                "prose": "Establish and enforce a change control process that requires authorization, testing, approval, and documentation for changes to organizational systems, including emergency changes."
+              },
+              {
+                "id": "3.4.2_gdn",
+                "name": "guidance",
+                "prose": "Implement a formal change advisory board. Test all changes in a non-production environment before deployment. Maintain an audit trail of all changes. Key questions: Is a formal change management process in place? Are emergency change procedures defined? Evidence examples: CAB meeting minutes, change request tickets, change logs."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "IA",
+        "title": "Identification and Authentication",
+        "controls": [
+          {
+            "id": "3.5.1",
+            "title": "Identify system users and authenticate",
+            "description": "Identify system users, processes acting on behalf of users, and devices, and authenticate them before access.",
+            "parts": [
+              {
+                "id": "3.5.1_stm",
+                "name": "statement",
+                "prose": "Identify system users, processes acting on behalf of users, and devices before allowing access to organizational systems containing CUI, and authenticate using approved mechanisms."
+              },
+              {
+                "id": "3.5.1_gdn",
+                "name": "guidance",
+                "prose": "Enforce strong password policies with minimum length and complexity. Implement multi-factor authentication for all user access. Use device certificates for machine authentication. Key questions: What authentication mechanisms are used? Is MFA enforced? Evidence examples: Authentication policy, MFA configuration, password policy documentation."
+              }
+            ]
+          },
+          {
+            "id": "3.5.2",
+            "title": "Manage identifiers and authenticators",
+            "description": "Manage system identifiers and authenticators throughout their lifecycle.",
+            "parts": [
+              {
+                "id": "3.5.2_stm",
+                "name": "statement",
+                "prose": "Manage system identifiers and authenticators throughout their lifecycle including issuance, modification, suspension, and revocation, and disable inactive accounts within defined timeframes."
+              },
+              {
+                "id": "3.5.2_gdn",
+                "name": "guidance",
+                "prose": "Disable inactive accounts after 35 days. Revoke access immediately upon termination. Enforce password expiration and history policies. Key questions: How often are passwords changed? How quickly are terminated accounts disabled? Evidence examples: Account management procedures, inactive account reports, termination checklists."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "IR",
+        "title": "Incident Response",
+        "controls": [
+          {
+            "id": "3.6.1",
+            "title": "Establish incident response capabilities",
+            "description": "Establish and maintain incident response capabilities to handle security incidents effectively.",
+            "parts": [
+              {
+                "id": "3.6.1_stm",
+                "name": "statement",
+                "prose": "Establish and maintain operational incident response capabilities for organizational systems containing CUI, including preparation, detection, analysis, containment, eradication, and recovery activities."
+              },
+              {
+                "id": "3.6.1_gdn",
+                "name": "guidance",
+                "prose": "Develop an incident response plan with defined roles and procedures. Establish a CSIRT with trained personnel. Conduct incident response exercises at least annually. Key questions: Is an incident response plan documented? How often is it tested? Evidence examples: Incident response plan, CSIRT charter, exercise reports."
+              }
+            ]
+          },
+          {
+            "id": "3.6.2",
+            "title": "Track and report incidents",
+            "description": "Track, document, and report security incidents to appropriate authorities and stakeholders.",
+            "parts": [
+              {
+                "id": "3.6.2_stm",
+                "name": "statement",
+                "prose": "Track, document, and report security incidents to designated organizational officials and authorities, including law enforcement if required by applicable laws or regulations."
+              },
+              {
+                "id": "3.6.2_gdn",
+                "name": "guidance",
+                "prose": "Use a ticketing system for incident tracking. Report incidents to relevant stakeholders within defined timeframes. Notify affected parties as required by law. Key questions: How are incidents tracked? What are the reporting timeframes? Evidence examples: Incident ticket records, incident notification procedures, breach notification letters."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MA",
+        "title": "Maintenance",
+        "controls": [
+          {
+            "id": "3.7.1",
+            "title": "Perform system maintenance",
+            "description": "Perform timely maintenance on organizational systems and maintain records of maintenance activities.",
+            "parts": [
+              {
+                "id": "3.7.1_stm",
+                "name": "statement",
+                "prose": "Perform maintenance on organizational systems containing CUI in a timely manner, and maintain records of maintenance activities including date, personnel, and actions taken."
+              },
+              {
+                "id": "3.7.1_gdn",
+                "name": "guidance",
+                "prose": "Establish a preventive maintenance schedule. Document all maintenance actions in a work order system. Verify completion of scheduled maintenance. Key questions: Is there a maintenance schedule? Are maintenance records retained? Evidence examples: Maintenance logs, work order records, preventive maintenance schedule."
+              }
+            ]
+          },
+          {
+            "id": "3.7.2",
+            "title": "Control maintenance tools and personnel",
+            "description": "Control maintenance tools and non-escorted personnel performing maintenance on systems containing CUI.",
+            "parts": [
+              {
+                "id": "3.7.2_stm",
+                "name": "statement",
+                "prose": "Control and manage maintenance tools and approve, monitor, and escort non-organizational personnel performing maintenance on systems containing CUI."
+              },
+              {
+                "id": "3.7.2_gdn",
+                "name": "guidance",
+                "prose": "Require escorts for third-party maintenance personnel. Inspect maintenance tools before use. Clear all data from tools after maintenance. Key questions: Are third-party maintenance personnel escorted? Are tools inspected before and after use? Evidence examples: Escort procedures, tool inspection logs, maintenance access records."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MP",
+        "title": "Media Protection",
+        "controls": [
+          {
+            "id": "3.8.1",
+            "title": "Protect media containing CUI",
+            "description": "Protect media containing Controlled Unclassified Information physically and digitally.",
+            "parts": [
+              {
+                "id": "3.8.1_stm",
+                "name": "statement",
+                "prose": "Protect media containing CUI both physically and digitally, including paper, digital media, and portable storage devices, using access controls and encryption."
+              },
+              {
+                "id": "3.8.1_gdn",
+                "name": "guidance",
+                "prose": "Encrypt all removable media containing CUI. Maintain an inventory of media assets. Restrict use of personal portable storage devices. Key questions: Is media containing CUI encrypted? How is media inventory tracked? Evidence examples: Media protection policy, media inventory logs, encryption configuration."
+              }
+            ]
+          },
+          {
+            "id": "3.8.2",
+            "title": "Sanitize or destroy media",
+            "description": "Sanitize or destroy media containing CUI before disposal or reuse.",
+            "parts": [
+              {
+                "id": "3.8.2_stm",
+                "name": "statement",
+                "prose": "Sanitize or destroy media containing CUI before disposal, release for reuse, or release outside of organizational control, using approved methods based on media type."
+              },
+              {
+                "id": "3.8.2_gdn",
+                "name": "guidance",
+                "prose": "Use NIST SP 800-88 guidelines for media sanitization. Clear, purge, or destroy media based on classification. Obtain certificates of destruction. Key questions: What media sanitization methods are used? Are destruction certificates obtained? Evidence examples: Sanitization policy, destruction certificates, media disposal logs."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PS",
+        "title": "Personnel Security",
+        "controls": [
+          {
+            "id": "3.9.1",
+            "title": "Screen personnel before access",
+            "description": "Screen personnel before authorizing access to systems containing CUI.",
+            "parts": [
+              {
+                "id": "3.9.1_stm",
+                "name": "statement",
+                "prose": "Screen individuals before authorizing access to organizational systems containing CUI, and re-screen individuals periodically as defined by organizational policy."
+              },
+              {
+                "id": "3.9.1_gdn",
+                "name": "guidance",
+                "prose": "Conduct background checks commensurate with risk. Verify identity, criminal history, and employment references. Re-screen every five years. Key questions: What screening is conducted prior to access? How often is re-screening performed? Evidence examples: Personnel screening policy, background check results, re-screening schedules."
+              }
+            ]
+          },
+          {
+            "id": "3.9.2",
+            "title": "Protect against insider threats",
+            "description": "Establish procedures to protect against insider threats and personnel actions after termination or transfer.",
+            "parts": [
+              {
+                "id": "3.9.2_stm",
+                "name": "statement",
+                "prose": "Establish procedures to protect against insider threats, including termination and transfer processes that ensure timely removal of access rights, recovery of assets, and debriefing on confidentiality obligations."
+              },
+              {
+                "id": "3.9.2_gdn",
+                "name": "guidance",
+                "prose": "Implement automated de-provisioning upon termination. Conduct exit interviews with security reminder. Recover badges, keys, and devices. Key questions: How quickly is access revoked upon termination? Are exit interviews conducted? Evidence examples: Termination checklist, de-provisioning automation logs, exit interview records."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PE",
+        "title": "Physical Protection",
+        "controls": [
+          {
+            "id": "3.10.1",
+            "title": "Limit physical access to facilities",
+            "description": "Limit physical access to organizational facilities, systems, and equipment containing CUI.",
+            "parts": [
+              {
+                "id": "3.10.1_stm",
+                "name": "statement",
+                "prose": "Limit physical access to organizational facilities containing systems that process, store, or transmit CUI, using physical access controls such as locks, badges, and surveillance."
+              },
+              {
+                "id": "3.10.1_gdn",
+                "name": "guidance",
+                "prose": "Implement multi-factor physical access controls. Use video surveillance at entry points. Maintain visitor logs with escort requirements. Key questions: What physical access controls are in place? How are visitors managed? Evidence examples: Physical security policy, access card audit logs, visitor records."
+              }
+            ]
+          },
+          {
+            "id": "3.10.2",
+            "title": "Protect physical environment",
+            "description": "Protect the physical environment of systems containing CUI from environmental hazards.",
+            "parts": [
+              {
+                "id": "3.10.2_stm",
+                "name": "statement",
+                "prose": "Protect the physical plant and support infrastructure for systems containing CUI from environmental hazards including fire, flood, power loss, and temperature extremes."
+              },
+              {
+                "id": "3.10.2_gdn",
+                "name": "guidance",
+                "prose": "Install fire suppression and detection systems. Use UPS and backup generators. Monitor environmental conditions with sensors. Key questions: Is fire suppression installed? Are environmental monitoring systems in place? Evidence examples: Environmental monitoring reports, generator test records, fire suppression inspection certificates."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "RA",
+        "title": "Risk Assessment",
+        "controls": [
+          {
+            "id": "3.11.1",
+            "title": "Assess risk to organizational operations",
+            "description": "Assess risk to organizational operations, assets, and individuals from the use of systems containing CUI.",
+            "parts": [
+              {
+                "id": "3.11.1_stm",
+                "name": "statement",
+                "prose": "Assess risk to organizational operations, organizational assets, and individuals resulting from the operation of organizational systems containing CUI, and document risk assessment results."
+              },
+              {
+                "id": "3.11.1_gdn",
+                "name": "guidance",
+                "prose": "Conduct risk assessments annually and upon significant changes. Use NIST SP 800-30 methodology or equivalent. Maintain a risk register with treatment plans. Key questions: How often are risk assessments conducted? What methodology is used? Evidence examples: Risk assessment reports, risk register, risk treatment plans."
+              }
+            ]
+          },
+          {
+            "id": "3.11.2",
+            "title": "Remediate identified risks",
+            "description": "Remediate identified risks in a timely manner based on risk prioritization.",
+            "parts": [
+              {
+                "id": "3.11.2_stm",
+                "name": "statement",
+                "prose": "Remediate identified security risks in accordance with organizational risk assessments, prioritization, and available resources, and track remediation activities through closure."
+              },
+              {
+                "id": "3.11.2_gdn",
+                "name": "guidance",
+                "prose": "Establish risk acceptance criteria and remediation timelines. Track remediation in a risk register. Report remediation status to management. Key questions: Are remediation timelines defined? How is remediation tracked? Evidence examples: Remediation tracking reports, risk acceptance records, management review minutes."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "CA",
+        "title": "Security Assessment",
+        "controls": [
+          {
+            "id": "3.12.1",
+            "title": "Assess security controls",
+            "description": "Periodically assess security controls to determine if they are implemented correctly and effective.",
+            "parts": [
+              {
+                "id": "3.12.1_stm",
+                "name": "statement",
+                "prose": "Periodically assess security controls in organizational systems containing CUI to determine if the controls are implemented correctly, operating as intended, and producing the desired outcome."
+              },
+              {
+                "id": "3.12.1_gdn",
+                "name": "guidance",
+                "prose": "Develop a Plan of Action and Milestones for control deficiencies. Use independent assessors for key systems. Conduct assessments annually. Key questions: How often are security controls assessed? Are assessors independent? Evidence examples: Assessment reports, POAM documents, independence declarations."
+              }
+            ]
+          },
+          {
+            "id": "3.12.2",
+            "title": "Develop and implement plans of action",
+            "description": "Develop and implement plans of action to correct deficiencies and reduce or eliminate vulnerabilities.",
+            "parts": [
+              {
+                "id": "3.12.2_stm",
+                "name": "statement",
+                "prose": "Develop and implement plans of action designed to correct deficiencies and reduce or eliminate known vulnerabilities in organizational systems containing CUI."
+              },
+              {
+                "id": "3.12.2_gdn",
+                "name": "guidance",
+                "prose": "Document all findings requiring remediation in the POAM. Assign responsible parties and target dates. Track progress and update POAM status monthly. Key questions: Is a POAM maintained for all findings? How is remediation progress tracked? Evidence examples: POAM documents, status reports, closure records."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SC",
+        "title": "System and Communications Protection",
+        "controls": [
+          {
+            "id": "3.13.1",
+            "title": "Protect communications boundaries",
+            "description": "Monitor and control communications at the external boundary and key internal boundaries.",
+            "parts": [
+              {
+                "id": "3.13.1_stm",
+                "name": "statement",
+                "prose": "Monitor and control communications at the external boundary of the system and at key internal boundaries within the system using boundary protection devices and technologies."
+              },
+              {
+                "id": "3.13.1_gdn",
+                "name": "guidance",
+                "prose": "Deploy firewalls at network boundaries. Use intrusion detection and prevention systems. Segment networks based on data classification. Key questions: Are boundary protection devices deployed? Is network segmentation implemented? Evidence examples: Network architecture diagram, firewall rule sets, IDS/IPS configuration."
+              }
+            ]
+          },
+          {
+            "id": "3.13.2",
+            "title": "Encrypt CUI in transit",
+            "description": "Encrypt Controlled Unclassified Information in transit using cryptography.",
+            "parts": [
+              {
+                "id": "3.13.2_stm",
+                "name": "statement",
+                "prose": "Encrypt Controlled Unclassified Information in transit to protect it from unauthorized disclosure and modification, using cryptographic mechanisms that comply with federal standards."
+              },
+              {
+                "id": "3.13.2_gdn",
+                "name": "guidance",
+                "prose": "Use TLS 1.3 for web communications. Disable SSL and early TLS versions. Encrypt email containing CUI using approved protocols. Key questions: What encryption is used for data in transit? Are deprecated protocols disabled? Evidence examples: TLS configuration scans, encryption policy, network traffic analysis reports."
+              }
+            ]
+          },
+          {
+            "id": "3.13.3",
+            "title": "Protect CUI at rest",
+            "description": "Protect Controlled Unclassified Information at rest using cryptographic mechanisms.",
+            "parts": [
+              {
+                "id": "3.13.3_stm",
+                "name": "statement",
+                "prose": "Protect Controlled Unclassified Information at rest using cryptographic mechanisms that prevent unauthorized disclosure and detect unauthorized modification."
+              },
+              {
+                "id": "3.13.3_gdn",
+                "name": "guidance",
+                "prose": "Encrypt all CUI at rest using AES-256. Use full disk encryption on portable devices. Manage encryption keys using a centralized key management system. Key questions: Is CUI at rest encrypted? What encryption algorithm is used? Evidence examples: Encryption configuration, key management policy, disk encryption verification reports."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SI",
+        "title": "System and Information Integrity",
+        "controls": [
+          {
+            "id": "3.14.1",
+            "title": "Identify and manage system flaws",
+            "description": "Identify, report, and correct system flaws in a timely manner.",
+            "parts": [
+              {
+                "id": "3.14.1_stm",
+                "name": "statement",
+                "prose": "Identify, report, and correct information system flaws in a timely manner, and install security-relevant software and firmware updates within organizational timelines."
+              },
+              {
+                "id": "3.14.1_gdn",
+                "name": "guidance",
+                "prose": "Establish a patch management program. Apply critical patches within 30 days. Test patches before production deployment. Key questions: What is the patch management process? How quickly are critical patches applied? Evidence examples: Patch management policy, patch deployment records, vulnerability scan reports."
+              }
+            ]
+          },
+          {
+            "id": "3.14.2",
+            "title": "Protect against malware",
+            "description": "Protect systems and information from malware using anti-malware tools and threat intelligence.",
+            "parts": [
+              {
+                "id": "3.14.2_stm",
+                "name": "statement",
+                "prose": "Protect organizational systems containing CUI from malicious code at appropriate locations, using anti-malware tools, signature updates, and automated scanning."
+              },
+              {
+                "id": "3.14.2_gdn",
+                "name": "guidance",
+                "prose": "Deploy endpoint detection and response on all endpoints. Keep malware signatures current. Scan email and web traffic for malicious content. Key questions: Is anti-malware deployed on all endpoints? How are signature updates managed? Evidence examples: Anti-malware policy, EDR configuration, malware detection reports."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

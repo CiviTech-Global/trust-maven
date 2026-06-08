@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { integrationService } from "../services/integration.service";
-import { getAllConnectors } from "../services/connectors/connector.registry";
+import { getAllConnectors, getConnectorHealth } from "../services/connectors/connector.registry";
 
 function ensureUser(req: AuthenticatedRequest) {
   if (!req.user) throw new Error("Authentication required");
@@ -132,6 +132,23 @@ export class IntegrationController {
         supportedControls: c.getSupportedControls(),
       }));
       res.json({ success: true, data: connectors });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  async getMarketplace(_req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const health = getConnectorHealth();
+      res.json({ 
+        success: true, 
+        data: {
+          total: health.length,
+          connectors: health,
+          communityUrl: "https://github.com/anomalyco/trust-maven-connectors",
+          generatorScript: "node Servers/scripts/generateConnector.js",
+        }
+      });
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message });
     }

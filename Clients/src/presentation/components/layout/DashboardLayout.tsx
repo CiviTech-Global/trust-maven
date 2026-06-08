@@ -18,6 +18,7 @@ import {
   Hub as ComplianceHubIcon, FactCheck as ScorecardIcon, FolderZip as EvidenceIcon,
   ShieldOutlined, AltRoute as WorkflowIcon, Lan as LanIcon,
   AccountTree as TreeIcon, Verified as VerifiedIcon,
+  AutoAwesome as AiIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../application/redux/store";
@@ -59,6 +60,7 @@ const secondaryNav = [
   { label: "Audits", path: "/audits", icon: <AuditMgmtIcon /> },
   { label: "Reports", path: "/reports", icon: <ReportsIcon /> },
   { label: "Workflows", path: "/workflows", icon: <WorkflowIcon /> },
+  { label: "GRC Assistant", path: "/copilot", icon: <AiIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
 ];
 

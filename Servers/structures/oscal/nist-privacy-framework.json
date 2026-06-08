@@ -1,0 +1,384 @@
+{
+  "catalog": {
+    "uuid": "d4e5f6a7-b8c9-0123-defa-234567890123",
+    "metadata": {
+      "title": "NIST Privacy Framework v1.0",
+      "version": "1.0",
+      "published": "2020-01-16",
+      "publisher": "NIST",
+      "description": "The NIST Privacy Framework v1.0 is a voluntary tool for improving privacy outcomes through a risk-based approach to managing privacy risks in systems, products, and services."
+    },
+    "groups": [
+      {
+        "id": "IDENTIFY-P",
+        "title": "Identify-P - Identify (Privacy)",
+        "controls": [
+          {
+            "id": "ID-P-1",
+            "title": "Privacy Risk Assessment",
+            "description": "Assess privacy risks to individuals from data processing activities and system operations.",
+            "parts": [
+              {
+                "id": "ID-P-1_stm",
+                "name": "statement",
+                "prose": "The organization shall assess privacy risks associated with data processing activities, including the collection, use, sharing, retention, and disposal of personally identifiable information."
+              },
+              {
+                "id": "ID-P-1_gdn",
+                "name": "guidance",
+                "prose": "Conduct privacy impact assessments for new systems and processes. Use NIST IR 8062 methodology for privacy risk assessment. Document risk factors and mitigation strategies. Key questions: Are privacy impact assessments conducted? How are privacy risks quantified? Evidence examples: PIA reports, privacy risk register, risk assessment methodology."
+              }
+            ]
+          },
+          {
+            "id": "ID-P-2",
+            "title": "Data Inventory and Mapping",
+            "description": "Maintain an inventory of data processing activities and map data flows throughout the system lifecycle.",
+            "parts": [
+              {
+                "id": "ID-P-2_stm",
+                "name": "statement",
+                "prose": "The organization shall develop and maintain an inventory of data processing activities that identifies what PII is collected, why it is collected, how it is used, who it is shared with, and how long it is retained."
+              },
+              {
+                "id": "ID-P-2_gdn",
+                "name": "guidance",
+                "prose": "Create data flow diagrams for all systems processing PII. Maintain a data inventory with classification, purpose, and retention. Review and update quarterly. Key questions: Is a data inventory maintained? Are data flows documented? Evidence examples: Data inventory records, data flow diagrams, data mapping reports."
+              }
+            ]
+          },
+          {
+            "id": "ID-P-3",
+            "title": "Legal and Regulatory Obligations",
+            "description": "Identify and document legal and regulatory privacy obligations applicable to data processing.",
+            "parts": [
+              {
+                "id": "ID-P-3_stm",
+                "name": "statement",
+                "prose": "The organization shall identify and document all applicable legal, regulatory, and contractual privacy obligations related to the collection, use, and sharing of personally identifiable information."
+              },
+              {
+                "id": "ID-P-3_gdn",
+                "name": "guidance",
+                "prose": "Maintain a privacy compliance register covering GDPR, CCPA, HIPAA, and other applicable laws. Monitor regulatory changes. Conduct gap analyses when new obligations arise. Key questions: What privacy regulations apply to the organization? How are regulatory changes tracked? Evidence examples: Privacy compliance register, regulatory monitoring procedures, gap analysis reports."
+              }
+            ]
+          },
+          {
+            "id": "ID-P-4",
+            "title": "Business Environment and Stakeholders",
+            "description": "Identify the organizations business environment, stakeholders, and their privacy interests.",
+            "parts": [
+              {
+                "id": "ID-P-4_stm",
+                "name": "statement",
+                "prose": "The organization shall identify the business environment, stakeholder privacy interests, and privacy roles and responsibilities within the organizational structure."
+              },
+              {
+                "id": "ID-P-4_gdn",
+                "name": "guidance",
+                "prose": "Document privacy roles including data protection officer. Identify stakeholders with privacy interests. Establish communication channels for privacy concerns. Key questions: Who is responsible for privacy within the organization? How are stakeholder privacy interests identified? Evidence examples: Privacy roles and responsibilities documents, stakeholder analysis, DPO appointment records."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GOVERN-P",
+        "title": "Govern-P - Govern (Privacy)",
+        "controls": [
+          {
+            "id": "GOV-P-1",
+            "title": "Privacy Governance Structure",
+            "description": "Establish and maintain a privacy governance structure with clear roles and accountability.",
+            "parts": [
+              {
+                "id": "GOV-P-1_stm",
+                "name": "statement",
+                "prose": "The organization shall establish a privacy governance structure that defines roles, responsibilities, and accountability for privacy management across the organization."
+              },
+              {
+                "id": "GOV-P-1_gdn",
+                "name": "guidance",
+                "prose": "Designate a privacy officer or data protection officer. Establish a privacy steering committee. Define reporting lines for privacy decisions. Key questions: Is a privacy officer designated? Is there oversight of privacy activities? Evidence examples: Privacy governance charter, DPO designation, committee meeting minutes."
+              }
+            ]
+          },
+          {
+            "id": "GOV-P-2",
+            "title": "Privacy Policies and Procedures",
+            "description": "Develop, document, and communicate privacy policies and procedures.",
+            "parts": [
+              {
+                "id": "GOV-P-2_stm",
+                "name": "statement",
+                "prose": "The organization shall develop, document, and communicate privacy policies and procedures that govern the processing of personally identifiable information throughout its lifecycle."
+              },
+              {
+                "id": "GOV-P-2_gdn",
+                "name": "guidance",
+                "prose": "Maintain a comprehensive privacy policy covering all data processing activities. Review and update policies annually. Communicate policies to all personnel and affected stakeholders. Key questions: Is a privacy policy documented? How is it communicated to stakeholders? Evidence examples: Privacy policy documents, policy acknowledgement records, policy review schedule."
+              }
+            ]
+          },
+          {
+            "id": "GOV-P-3",
+            "title": "Privacy Monitoring and Oversight",
+            "description": "Monitor and oversee compliance with privacy policies and regulatory obligations.",
+            "parts": [
+              {
+                "id": "GOV-P-3_stm",
+                "name": "statement",
+                "prose": "The organization shall monitor and oversee compliance with privacy policies, procedures, and regulatory obligations through regular reviews, audits, and reporting mechanisms."
+              },
+              {
+                "id": "GOV-P-3_gdn",
+                "name": "guidance",
+                "prose": "Conduct annual privacy audits. Monitor privacy metrics and key risk indicators. Report privacy program status to senior management. Key questions: How is privacy compliance monitored? What privacy metrics are tracked? Evidence examples: Privacy audit reports, privacy dashboards, management reporting records."
+              }
+            ]
+          },
+          {
+            "id": "GOV-P-4",
+            "title": "Privacy Training and Awareness",
+            "description": "Provide privacy training and awareness to personnel to foster a culture of privacy.",
+            "parts": [
+              {
+                "id": "GOV-P-4_stm",
+                "name": "statement",
+                "prose": "The organization shall provide privacy training and awareness programs to ensure all personnel understand their privacy responsibilities and applicable privacy obligations."
+              },
+              {
+                "id": "GOV-P-4_gdn",
+                "name": "guidance",
+                "prose": "Conduct annual privacy training for all employees. Tailor training for roles handling PII. Cover relevant privacy laws and organizational policies. Key questions: How often is privacy training conducted? Is training role-based? Evidence examples: Training materials, completion records, training effectiveness assessments."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "CONTROL-P",
+        "title": "Control-P - Control (Privacy)",
+        "controls": [
+          {
+            "id": "CTRL-P-1",
+            "title": "Consent and Choice",
+            "description": "Manage individual consent and choice regarding data processing activities.",
+            "parts": [
+              {
+                "id": "CTRL-P-1_stm",
+                "name": "statement",
+                "prose": "The organization shall provide individuals with mechanisms to exercise consent and choice regarding the collection, use, and sharing of their personally identifiable information."
+              },
+              {
+                "id": "CTRL-P-1_gdn",
+                "name": "guidance",
+                "prose": "Implement consent management platforms. Record and honor consent preferences. Provide granular choices for data processing purposes. Key questions: How is consent obtained and recorded? Can individuals withdraw consent? Evidence examples: Consent management system configuration, consent records, preference center screenshots."
+              }
+            ]
+          },
+          {
+            "id": "CTRL-P-2",
+            "title": "Data Quality and Accuracy",
+            "description": "Maintain accurate and up-to-date personally identifiable information.",
+            "parts": [
+              {
+                "id": "CTRL-P-2_stm",
+                "name": "statement",
+                "prose": "The organization shall implement controls to maintain the accuracy, completeness, and timeliness of personally identifiable information throughout its lifecycle."
+              },
+              {
+                "id": "CTRL-P-2_gdn",
+                "name": "guidance",
+                "prose": "Provide mechanisms for individuals to correct inaccurate data. Validate data at collection points. Periodically audit data quality. Key questions: How can individuals correct their data? What data quality checks are in place? Evidence examples: Data correction procedures, data quality reports, audit results."
+              }
+            ]
+          },
+          {
+            "id": "CTRL-P-3",
+            "title": "Data Minimization",
+            "description": "Limit data collection and processing to what is necessary for specified purposes.",
+            "parts": [
+              {
+                "id": "CTRL-P-3_stm",
+                "name": "statement",
+                "prose": "The organization shall implement data minimization practices that limit the collection and processing of personally identifiable information to what is directly relevant and necessary for the specified purpose."
+              },
+              {
+                "id": "CTRL-P-3_gdn",
+                "name": "guidance",
+                "prose": "Review data collection forms and fields for necessity. Implement data retention limits. Avoid collecting sensitive data unless required. Key questions: Is data minimization practiced? How is necessity determined for each data element? Evidence examples: Data collection reviews, minimization assessments, data field inventories."
+              }
+            ]
+          },
+          {
+            "id": "CTRL-P-4",
+            "title": "Access and Correction Rights",
+            "description": "Enable individual access to their data and the ability to correct inaccuracies.",
+            "parts": [
+              {
+                "id": "CTRL-P-4_stm",
+                "name": "statement",
+                "prose": "The organization shall establish processes to enable individuals to access their personally identifiable information and request corrections to inaccurate or incomplete data."
+              },
+              {
+                "id": "CTRL-P-4_gdn",
+                "name": "guidance",
+                "prose": "Implement self-service portals for data access. Respond to access requests within regulatory timeframes. Verify identity before processing requests. Key questions: How do individuals access their data? What are response SLAs for access requests? Evidence examples: Data subject access request procedures, request tracking logs, portal screenshots."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "COMMUNICATE-P",
+        "title": "Communicate-P - Communicate (Privacy)",
+        "controls": [
+          {
+            "id": "COM-P-1",
+            "title": "Transparency Notices",
+            "description": "Provide clear and conspicuous privacy notices to individuals about data processing practices.",
+            "parts": [
+              {
+                "id": "COM-P-1_stm",
+                "name": "statement",
+                "prose": "The organization shall provide clear, conspicuous, and timely privacy notices to individuals that describe what PII is collected, why it is collected, how it is used, and with whom it is shared."
+              },
+              {
+                "id": "COM-P-1_gdn",
+                "name": "guidance",
+                "prose": "Publish privacy notices at collection points. Use plain language and avoid legal jargon. Translate notices for relevant audiences. Key questions: Where are privacy notices displayed? Are notices written in plain language? Evidence examples: Privacy notice content, notice placement screenshots, readability assessments."
+              }
+            ]
+          },
+          {
+            "id": "COM-P-2",
+            "title": "Breach Notification",
+            "description": "Notify affected individuals and regulators in the event of a privacy breach.",
+            "parts": [
+              {
+                "id": "COM-P-2_stm",
+                "name": "statement",
+                "prose": "The organization shall establish procedures to notify affected individuals, regulators, and other relevant parties in the event of a privacy breach involving personally identifiable information."
+              },
+              {
+                "id": "COM-P-2_gdn",
+                "name": "guidance",
+                "prose": "Define breach notification thresholds and timelines per applicable regulations. Prepare notification templates. Document breach response procedures. Key questions: What are the breach notification requirements? How quickly are individuals notified? Evidence examples: Breach notification policy, notification templates, breach response procedures."
+              }
+            ]
+          },
+          {
+            "id": "COM-P-3",
+            "title": "Communication with Stakeholders",
+            "description": "Communicate privacy practices and incidents to relevant stakeholders.",
+            "parts": [
+              {
+                "id": "COM-P-3_stm",
+                "name": "statement",
+                "prose": "The organization shall communicate privacy practices, policies, and incidents to relevant stakeholders including individuals, partners, and regulators in a timely and transparent manner."
+              },
+              {
+                "id": "COM-P-3_gdn",
+                "name": "guidance",
+                "prose": "Establish communication channels for privacy inquiries. Report privacy metrics to management. Coordinate with public relations for incident communications. Key questions: How are privacy matters communicated to stakeholders? Are there procedures for incident communications? Evidence examples: Communication procedures, privacy inquiry logs, stakeholder communication records."
+              }
+            ]
+          },
+          {
+            "id": "COM-P-4",
+            "title": "Third Party Privacy Disclosures",
+            "description": "Disclose privacy practices to third parties and ensure contractual privacy protections.",
+            "parts": [
+              {
+                "id": "COM-P-4_stm",
+                "name": "statement",
+                "prose": "The organization shall disclose relevant privacy practices to third parties that process PII on its behalf and ensure contractual protections are in place for data processing activities."
+              },
+              {
+                "id": "COM-P-4_gdn",
+                "name": "guidance",
+                "prose": "Include privacy and data protection clauses in vendor contracts. Conduct third party privacy assessments. Ensure third parties provide transparency to data subjects. Key questions: Are privacy requirements included in third party contracts? How are third party privacy practices assessed? Evidence examples: Contract privacy clauses, vendor privacy assessments, data processing agreements."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PROTECT-P",
+        "title": "Protect-P - Protect (Privacy)",
+        "controls": [
+          {
+            "id": "PRO-P-1",
+            "title": "Data Security Safeguards",
+            "description": "Implement security safeguards to protect PII from unauthorized access, use, or disclosure.",
+            "parts": [
+              {
+                "id": "PRO-P-1_stm",
+                "name": "statement",
+                "prose": "The organization shall implement appropriate technical and organizational security safeguards to protect personally identifiable information against unauthorized access, use, disclosure, alteration, or destruction."
+              },
+              {
+                "id": "PRO-P-1_gdn",
+                "name": "guidance",
+                "prose": "Apply encryption, access controls, and intrusion detection to systems processing PII. Conduct security assessments of privacy systems. Align with NIST cybersecurity framework. Key questions: What security controls protect PII? How are privacy systems assessed? Evidence examples: Data security policy, security assessment reports, encryption configuration."
+              }
+            ]
+          },
+          {
+            "id": "PRO-P-2",
+            "title": "Privacy by Design",
+            "description": "Integrate privacy considerations into the design and development of systems, products, and services.",
+            "parts": [
+              {
+                "id": "PRO-P-2_stm",
+                "name": "statement",
+                "prose": "The organization shall integrate privacy considerations into the design and development of systems, products, and services through privacy-by-design principles and methodologies."
+              },
+              {
+                "id": "PRO-P-2_gdn",
+                "name": "guidance",
+                "prose": "Conduct privacy reviews during system design phases. Use privacy design patterns and privacy-enhancing technologies. Perform privacy impact assessments before launch. Key questions: Are privacy reviews conducted during system design? What privacy-by-design practices are followed? Evidence examples: Privacy design reviews, privacy impact assessments, privacy architecture documentation."
+              }
+            ]
+          },
+          {
+            "id": "PRO-P-3",
+            "title": "Data Retention and Disposal",
+            "description": "Securely retain and dispose of PII in accordance with privacy policies and legal obligations.",
+            "parts": [
+              {
+                "id": "PRO-P-3_stm",
+                "name": "statement",
+                "prose": "The organization shall retain personally identifiable information only for the duration necessary to fulfill the specified purpose, and securely dispose of data when no longer needed."
+              },
+              {
+                "id": "PRO-P-3_gdn",
+                "name": "guidance",
+                "prose": "Define retention schedules for all PII categories. Automate retention enforcement where possible. Use secure deletion methods that prevent reconstruction. Key questions: Are retention schedules defined for all PII? How is secure disposal performed? Evidence examples: Data retention schedules, disposal procedures, deletion verification reports."
+              }
+            ]
+          },
+          {
+            "id": "PRO-P-4",
+            "title": "Privacy Incident Response",
+            "description": "Establish capability to respond to and manage privacy incidents and breaches.",
+            "parts": [
+              {
+                "id": "PRO-P-4_stm",
+                "name": "statement",
+                "prose": "The organization shall establish and maintain a privacy incident response capability to detect, respond to, and mitigate privacy incidents involving personally identifiable information."
+              },
+              {
+                "id": "PRO-P-4_gdn",
+                "name": "guidance",
+                "prose": "Integrate privacy incident response with security incident response. Include privacy legal counsel in response team. Test privacy incident procedures annually. Key questions: Is privacy incident response integrated with security? How are privacy incidents escalated? Evidence examples: Privacy incident response procedures, tabletop exercise records, incident report logs."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

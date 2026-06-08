@@ -1,0 +1,608 @@
+{
+  "catalog": {
+    "uuid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "metadata": {
+      "title": "HITRUST CSF v9.6",
+      "version": "9.6",
+      "published": "2023-06-01",
+      "publisher": "HITRUST Alliance",
+      "description": "The HITRUST Common Security Framework v9.6 provides a comprehensive, certifiable framework for healthcare information security, combining HIPAA, ISO, NIST, and PCI requirements."
+    },
+    "groups": [
+      {
+        "id": "ISM",
+        "title": "Information Security Management Program",
+        "controls": [
+          {
+            "id": "HITRUST-01.a",
+            "title": "Information Security Policy",
+            "description": "Establish and maintain an information security policy that governs the protection of healthcare information.",
+            "parts": [
+              {
+                "id": "HITRUST-01.a_stm",
+                "name": "statement",
+                "prose": "The organization shall establish, document, and maintain an information security policy approved by management that defines the approach to managing information security for protected health information and other sensitive data."
+              },
+              {
+                "id": "HITRUST-01.a_gdn",
+                "name": "guidance",
+                "prose": "Review and approve the policy annually. Communicate to all employees and relevant third parties. Include scope, objectives, roles, and compliance obligations. Key questions: Is the security policy reviewed annually? How is policy communicated to staff? Evidence examples: Approved policy document, policy acknowledgement forms, review meeting minutes."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-01.b",
+            "title": "Information Security Roles and Responsibilities",
+            "description": "Define and assign information security roles and responsibilities across the organization.",
+            "parts": [
+              {
+                "id": "HITRUST-01.b_stm",
+                "name": "statement",
+                "prose": "The organization shall define and assign information security roles and responsibilities to key personnel, including a designated information security officer responsible for oversight of the security program."
+              },
+              {
+                "id": "HITRUST-01.b_gdn",
+                "name": "guidance",
+                "prose": "Designate a CISO or equivalent role. Define security responsibilities in job descriptions. Establish a security steering committee. Key questions: Is a security officer designated? Are security responsibilities documented in job descriptions? Evidence examples: Organization chart with security roles, job descriptions, committee charter."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "AC",
+        "title": "Access Control",
+        "controls": [
+          {
+            "id": "HITRUST-02.a",
+            "title": "User Access Management",
+            "description": "Manage user access to healthcare information systems through formal provisioning and de-provisioning processes.",
+            "parts": [
+              {
+                "id": "HITRUST-02.a_stm",
+                "name": "statement",
+                "prose": "The organization shall implement formal user registration and de-registration procedures for granting and revoking access to healthcare information systems and protected health information."
+              },
+              {
+                "id": "HITRUST-02.a_gdn",
+                "name": "guidance",
+                "prose": "Use unique user IDs for all users. Remove access immediately upon termination. Review access rights quarterly for clinical systems. Key questions: How are user accounts provisioned and de-provisioned? How often are access rights reviewed? Evidence examples: Account management procedures, access review reports, termination checklists."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-02.b",
+            "title": "Privileged Access Management",
+            "description": "Control and monitor privileged access to healthcare systems containing protected health information.",
+            "parts": [
+              {
+                "id": "HITRUST-02.b_stm",
+                "name": "statement",
+                "prose": "The organization shall restrict and control the allocation and use of privileged access rights to healthcare information systems, including administrative and clinical administrator accounts."
+              },
+              {
+                "id": "HITRUST-02.b_gdn",
+                "name": "guidance",
+                "prose": "Implement just-in-time privileged access. Monitor all privileged user activity. Require approval for privilege escalation. Key questions: Are privileged accounts managed with PAM? Is privileged activity monitored? Evidence examples: PAM configuration, privilege access requests, privileged session recordings."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-02.c",
+            "title": "Access Control for Mobile and Remote Access",
+            "description": "Secure mobile and remote access to healthcare information and systems.",
+            "parts": [
+              {
+                "id": "HITRUST-02.c_stm",
+                "name": "statement",
+                "prose": "The organization shall implement secure access controls for mobile devices and remote access to healthcare information systems, including encryption, multi-factor authentication, and device management."
+              },
+              {
+                "id": "HITRUST-02.c_gdn",
+                "name": "guidance",
+                "prose": "Require MFA for all remote access to PHI. Use VPN with strong encryption. Implement mobile device management for clinical devices. Key questions: Is MFA required for remote access? Are mobile devices managed centrally? Evidence examples: MDM policy, MFA configuration, remote access logs."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ES",
+        "title": "Employee Security",
+        "controls": [
+          {
+            "id": "HITRUST-03.a",
+            "title": "Background Screening",
+            "description": "Conduct background screening for personnel with access to healthcare information.",
+            "parts": [
+              {
+                "id": "HITRUST-03.a_stm",
+                "name": "statement",
+                "prose": "The organization shall conduct background verification screening for all personnel with access to protected health information prior to employment, in accordance with applicable laws and regulations."
+              },
+              {
+                "id": "HITRUST-03.a_gdn",
+                "name": "guidance",
+                "prose": "Screen based on role sensitivity including criminal history and professional references. Re-screen at appropriate intervals. Document screening results confidentially. Key questions: What background checks are performed? Are healthcare role-specific checks conducted? Evidence examples: Background check policy, screening records, role sensitivity classifications."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-03.b",
+            "title": "Security Awareness Training",
+            "description": "Provide security awareness training covering healthcare-specific privacy and security obligations.",
+            "parts": [
+              {
+                "id": "HITRUST-03.b_stm",
+                "name": "statement",
+                "prose": "The organization shall provide security awareness and training programs to ensure all personnel understand their information security and privacy responsibilities, including HIPAA and HITECH obligations."
+              },
+              {
+                "id": "HITRUST-03.b_gdn",
+                "name": "guidance",
+                "prose": "Conduct annual HIPAA privacy and security training. Include phishing awareness. Tailor training for clinical staff handling PHI. Key questions: Is HIPAA training conducted annually? How is training effectiveness measured? Evidence examples: Training records, completion certificates, phishing simulation results."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PS",
+        "title": "Physical Security",
+        "controls": [
+          {
+            "id": "HITRUST-04.a",
+            "title": "Physical Access Controls",
+            "description": "Restrict physical access to facilities housing healthcare information systems.",
+            "parts": [
+              {
+                "id": "HITRUST-04.a_stm",
+                "name": "statement",
+                "prose": "The organization shall implement physical security controls to prevent unauthorized physical access, damage, and interference to facilities housing healthcare information systems and protected health information."
+              },
+              {
+                "id": "HITRUST-04.a_gdn",
+                "name": "guidance",
+                "prose": "Secure server rooms and clinical areas with electronic access control. Maintain visitor logs. Use video surveillance at access points. Key questions: What physical controls protect healthcare data? How are visitors managed in clinical areas? Evidence examples: Physical access policy, access log audits, surveillance records."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-04.b",
+            "title": "Workstation Security",
+            "description": "Secure workstations and devices that access protected health information.",
+            "parts": [
+              {
+                "id": "HITRUST-04.b_stm",
+                "name": "statement",
+                "prose": "The organization shall implement controls to secure workstations and devices that access, process, or store protected health information, including automatic timeouts and screen locks."
+              },
+              {
+                "id": "HITRUST-04.b_gdn",
+                "name": "guidance",
+                "prose": "Enable automatic screen lock after 15 minutes of inactivity. Position screens to prevent shoulder surfing. Prohibit unauthorized software installation. Key questions: What workstation security controls are in place? Is automatic locking enabled? Evidence examples: Workstation security policy, screen lock configuration, workstation audits."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "NM",
+        "title": "Network Management",
+        "controls": [
+          {
+            "id": "HITRUST-05.a",
+            "title": "Network Segmentation",
+            "description": "Segment networks to protect healthcare information systems from unauthorized access.",
+            "parts": [
+              {
+                "id": "HITRUST-05.a_stm",
+                "name": "statement",
+                "prose": "The organization shall segment networks to isolate healthcare information systems, clinical devices, and systems containing protected health information from untrusted networks."
+              },
+              {
+                "id": "HITRUST-05.a_gdn",
+                "name": "guidance",
+                "prose": "Implement VLAN segmentation between clinical and corporate networks. Use firewalls to control inter-segment traffic. Isolate medical devices on separate network segments. Key questions: Is the clinical network segmented? How are medical devices isolated? Evidence examples: Network architecture diagram, firewall rule sets, segmentation test results."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-05.b",
+            "title": "Network Monitoring",
+            "description": "Monitor networks for unauthorized access and anomalous activity.",
+            "parts": [
+              {
+                "id": "HITRUST-05.b_stm",
+                "name": "statement",
+                "prose": "The organization shall monitor networks for unauthorized access, anomalous activity, and potential security incidents affecting healthcare information systems."
+              },
+              {
+                "id": "HITRUST-05.b_gdn",
+                "name": "guidance",
+                "prose": "Deploy network intrusion detection systems. Monitor for data exfiltration attempts. Correlate network alerts with healthcare system logs. Key questions: Are network monitoring tools deployed? How are anomalies escalated? Evidence examples: NIDS configuration, monitoring dashboards, incident escalation procedures."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "IM",
+        "title": "Incident Management",
+        "controls": [
+          {
+            "id": "HITRUST-06.a",
+            "title": "Incident Response Capability",
+            "description": "Establish incident response capabilities for healthcare security and privacy incidents.",
+            "parts": [
+              {
+                "id": "HITRUST-06.a_stm",
+                "name": "statement",
+                "prose": "The organization shall establish incident management capabilities to detect, respond to, and recover from information security and privacy incidents involving protected health information."
+              },
+              {
+                "id": "HITRUST-06.a_gdn",
+                "name": "guidance",
+                "prose": "Develop incident response procedures covering breach notification per HIPAA requirements. Test response plans semiannually. Coordinate with legal and compliance teams. Key questions: Is there an incident response plan covering PHI breaches? How often is it tested? Evidence examples: Incident response plan, breach notification procedures, test exercise reports."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-06.b",
+            "title": "Breach Notification",
+            "description": "Notify affected individuals and regulators in accordance with breach notification requirements.",
+            "parts": [
+              {
+                "id": "HITRUST-06.b_stm",
+                "name": "statement",
+                "prose": "The organization shall notify affected individuals, regulators, and other stakeholders in accordance with applicable breach notification laws and regulations, including HIPAA breach notification requirements."
+              },
+              {
+                "id": "HITRUST-06.b_gdn",
+                "name": "guidance",
+                "prose": "Notify affected individuals without unreasonable delay and within 60 days. Notify HHS for breaches affecting 500 or more individuals. Maintain breach log. Key questions: What are breach notification timelines? How are breaches reported to regulators? Evidence examples: Breach notification procedures, notification letters, HHS breach reports."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "BC",
+        "title": "Business Continuity",
+        "controls": [
+          {
+            "id": "HITRUST-07.a",
+            "title": "Business Continuity Planning for Healthcare",
+            "description": "Ensure continuity of healthcare services and protection of health information during disruptions.",
+            "parts": [
+              {
+                "id": "HITRUST-07.a_stm",
+                "name": "statement",
+                "prose": "The organization shall develop and maintain business continuity plans that ensure the continued availability of healthcare services and protection of health information during and after disruptions."
+              },
+              {
+                "id": "HITRUST-07.a_gdn",
+                "name": "guidance",
+                "prose": "Conduct business impact analysis for clinical systems. Define RTO and RPO for patient care systems. Test plans annually including clinical scenarios. Key questions: Are BCPs in place for clinical systems? What are RTO/RPO for patient data? Evidence examples: BIA reports, BCP documents, continuity test results."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-07.b",
+            "title": "Data Backup and Restoration",
+            "description": "Back up healthcare data and test restoration procedures regularly.",
+            "parts": [
+              {
+                "id": "HITRUST-07.b_stm",
+                "name": "statement",
+                "prose": "The organization shall back up protected health information and healthcare system data regularly, and test restoration procedures to ensure data can be recovered within required timeframes."
+              },
+              {
+                "id": "HITRUST-07.b_gdn",
+                "name": "guidance",
+                "prose": "Perform daily incremental and weekly full backups. Test restoration quarterly. Store backups offsite encrypted. Key questions: How often are backups performed? Are restoration tests conducted? Evidence examples: Backup schedules, restoration test reports, offsite backup inventory."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "CO",
+        "title": "Compliance",
+        "controls": [
+          {
+            "id": "HITRUST-08.a",
+            "title": "Regulatory Compliance",
+            "description": "Identify and comply with applicable healthcare privacy and security regulations.",
+            "parts": [
+              {
+                "id": "HITRUST-08.a_stm",
+                "name": "statement",
+                "prose": "The organization shall identify and comply with all applicable legal, regulatory, and contractual requirements related to healthcare information security and privacy, including HIPAA, HITECH, and state privacy laws."
+              },
+              {
+                "id": "HITRUST-08.a_gdn",
+                "name": "guidance",
+                "prose": "Maintain a compliance register of applicable laws and regulations. Conduct compliance reviews annually. Update policies when regulations change. Key questions: How are regulatory changes tracked? How often is compliance assessed? Evidence examples: Compliance register, regulatory tracking processes, compliance assessment reports."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-08.b",
+            "title": "Internal Audit",
+            "description": "Conduct internal audits to verify compliance with security policies and regulatory requirements.",
+            "parts": [
+              {
+                "id": "HITRUST-08.b_stm",
+                "name": "statement",
+                "prose": "The organization shall conduct internal audits at planned intervals to verify compliance with information security policies, procedures, and regulatory requirements for healthcare information protection."
+              },
+              {
+                "id": "HITRUST-08.b_gdn",
+                "name": "guidance",
+                "prose": "Develop an annual audit plan covering all healthcare systems. Use independent auditors. Report findings to management with remediation plans. Key questions: Is an audit plan in place? Are audit findings tracked to closure? Evidence examples: Audit plan, audit reports, remediation tracking."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "DP",
+        "title": "Data Protection",
+        "controls": [
+          {
+            "id": "HITRUST-09.a",
+            "title": "Data Classification and Handling",
+            "description": "Classify and handle healthcare data according to its sensitivity and regulatory requirements.",
+            "parts": [
+              {
+                "id": "HITRUST-09.a_stm",
+                "name": "statement",
+                "prose": "The organization shall classify data according to its sensitivity, including protected health information, and implement appropriate handling controls based on classification levels."
+              },
+              {
+                "id": "HITRUST-09.a_gdn",
+                "name": "guidance",
+                "prose": "Define classification levels including PHI, PII, and confidential business data. Label data with classification metadata. Apply controls based on classification. Key questions: Is data classification defined? How is PHI identified and labeled? Evidence examples: Data classification policy, labeling procedures, classification audit reports."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-09.b",
+            "title": "Encryption of PHI",
+            "description": "Encrypt protected health information at rest and in transit to prevent unauthorized access.",
+            "parts": [
+              {
+                "id": "HITRUST-09.b_stm",
+                "name": "statement",
+                "prose": "The organization shall encrypt protected health information when stored and during transmission over public or untrusted networks, using approved cryptographic algorithms and key management practices."
+              },
+              {
+                "id": "HITRUST-09.b_gdn",
+                "name": "guidance",
+                "prose": "Use AES-256 for data at rest. Encrypt all ePHI in transit with TLS 1.3. Manage keys using a centralized KMS. Key questions: Is PHI encrypted at rest? Is encryption used for all PHI transmissions? Evidence examples: Encryption policy, key management procedures, encryption verification reports."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-09.c",
+            "title": "Data Retention and Disposal",
+            "description": "Retain and dispose of healthcare data in accordance with legal and regulatory requirements.",
+            "parts": [
+              {
+                "id": "HITRUST-09.c_stm",
+                "name": "statement",
+                "prose": "The organization shall retain healthcare data in accordance with legal and regulatory requirements and securely dispose of data when no longer needed, using methods that prevent reconstruction."
+              },
+              {
+                "id": "HITRUST-09.c_gdn",
+                "name": "guidance",
+                "prose": "Follow HIPAA record retention requirements of minimum 6 years. Use secure destruction methods for paper and electronic media. Obtain certificates of destruction. Key questions: What are data retention periods? Are destruction methods certified? Evidence examples: Retention schedule, destruction policies, disposal certificates."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PP",
+        "title": "Privacy Practices",
+        "controls": [
+          {
+            "id": "HITRUST-10.a",
+            "title": "Notice of Privacy Practices",
+            "description": "Provide notice of privacy practices to patients and handle requests for PHI access.",
+            "parts": [
+              {
+                "id": "HITRUST-10.a_stm",
+                "name": "statement",
+                "prose": "The organization shall provide a notice of privacy practices to individuals describing how their protected health information may be used and disclosed, and their rights regarding their health information."
+              },
+              {
+                "id": "HITRUST-10.a_gdn",
+                "name": "guidance",
+                "prose": "Post the notice of privacy practices prominently. Provide notice at first service encounter. Update notice when practices change. Key questions: Is a notice of privacy practices provided? How are individuals informed of their rights? Evidence examples: Notice of privacy practices document, posting locations, distribution records."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-10.b",
+            "title": "Individual Rights",
+            "description": "Support individual rights to access, amend, and request accounting of disclosures of their health information.",
+            "parts": [
+              {
+                "id": "HITRUST-10.b_stm",
+                "name": "statement",
+                "prose": "The organization shall establish procedures to support individual rights to access, request amendment of, and receive an accounting of disclosures of their protected health information."
+              },
+              {
+                "id": "HITRUST-10.b_gdn",
+                "name": "guidance",
+                "prose": "Respond to access requests within 30 days. Provide accounting of disclosures for the past 6 years. Document all requests and responses. Key questions: How are individual rights requests handled? What are the response timelines? Evidence examples: Rights request procedures, request tracking logs, response records."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "TP",
+        "title": "Third Party Assurance",
+        "controls": [
+          {
+            "id": "HITRUST-11.a",
+            "title": "Third Party Risk Management",
+            "description": "Assess and monitor third parties that access or process protected health information.",
+            "parts": [
+              {
+                "id": "HITRUST-11.a_stm",
+                "name": "statement",
+                "prose": "The organization shall assess and monitor the security and privacy practices of third parties and business associates that access, process, or store protected health information."
+              },
+              {
+                "id": "HITRUST-11.a_gdn",
+                "name": "guidance",
+                "prose": "Execute business associate agreements with all third parties handling PHI. Conduct initial and annual risk assessments of business associates. Review independent audit reports. Key questions: Are business associate agreements in place? How are third parties monitored? Evidence examples: BAA agreements, vendor assessment reports, SOC 2 reports."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-11.b",
+            "title": "Third Party Agreements",
+            "description": "Include security and privacy requirements in contracts with third parties handling healthcare data.",
+            "parts": [
+              {
+                "id": "HITRUST-11.b_stm",
+                "name": "statement",
+                "prose": "The organization shall include information security and privacy requirements in contractual agreements with third parties, including business associate agreements as required by HIPAA."
+              },
+              {
+                "id": "HITRUST-11.b_gdn",
+                "name": "guidance",
+                "prose": "Define security requirements, breach notification obligations, and audit rights in contracts. Review contracts at renewal. Maintain a contract inventory. Key questions: Do contracts include security and privacy requirements? Are BAAs in place for all PHI disclosures? Evidence examples: Contract templates, signed BAAs, contract review records."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "MD",
+        "title": "Mobile Device Security",
+        "controls": [
+          {
+            "id": "HITRUST-12.a",
+            "title": "Mobile Device Management",
+            "description": "Manage and secure mobile devices that access, process, or store healthcare data.",
+            "parts": [
+              {
+                "id": "HITRUST-12.a_stm",
+                "name": "statement",
+                "prose": "The organization shall implement mobile device management controls to secure mobile devices that access, process, or store protected health information, including encryption, remote wipe, and device passcode requirements."
+              },
+              {
+                "id": "HITRUST-12.a_gdn",
+                "name": "guidance",
+                "prose": "Deploy MDM solution for all mobile devices accessing organizational data. Enforce device encryption and screen locks. Enable remote wipe capability. Key questions: Is MDM deployed? Can devices be remotely wiped? Evidence examples: MDM policy, device inventory, remote wipe test results."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-12.b",
+            "title": "BYOD Policy",
+            "description": "Define and enforce a policy for bring-your-own-device access to healthcare information.",
+            "parts": [
+              {
+                "id": "HITRUST-12.b_stm",
+                "name": "statement",
+                "prose": "The organization shall define and enforce a bring-your-own-device policy that addresses security controls, acceptable use, and data segregation for personally owned devices accessing healthcare information."
+              },
+              {
+                "id": "HITRUST-12.b_gdn",
+                "name": "guidance",
+                "prose": "Require containerization or workspace separation for corporate data. Prohibit rooted or jailbroken devices. Enforce minimum security baselines. Key questions: Is there a BYOD policy? How is corporate data segregated on personal devices? Evidence examples: BYOD policy, containerization configuration, device compliance reports."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "RM",
+        "title": "Risk Management",
+        "controls": [
+          {
+            "id": "HITRUST-13.a",
+            "title": "Risk Assessment for Healthcare",
+            "description": "Conduct risk assessments addressing healthcare-specific threats and vulnerabilities.",
+            "parts": [
+              {
+                "id": "HITRUST-13.a_stm",
+                "name": "statement",
+                "prose": "The organization shall conduct comprehensive risk assessments that identify, analyze, and evaluate risks to the confidentiality, integrity, and availability of protected health information."
+              },
+              {
+                "id": "HITRUST-13.a_gdn",
+                "name": "guidance",
+                "prose": "Conduct risk assessments annually and when environmental changes occur. Address both security and privacy risks. Include all systems that store, process, or transmit PHI. Key questions: How often are risk assessments conducted? Do assessments cover all PHI systems? Evidence examples: Risk assessment methodology, assessment reports, risk register."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-13.b",
+            "title": "Risk Mitigation",
+            "description": "Implement risk mitigation plans to address identified risks to healthcare information.",
+            "parts": [
+              {
+                "id": "HITRUST-13.b_stm",
+                "name": "statement",
+                "prose": "The organization shall develop and implement risk mitigation plans that prioritize and address identified risks to the security and privacy of protected health information."
+              },
+              {
+                "id": "HITRUST-13.b_gdn",
+                "name": "guidance",
+                "prose": "Assign risk owners and remediation timelines. Track mitigation activities in a risk register. Report risk status to management quarterly. Key questions: Are risk treatment plans documented? How is remediation progress tracked? Evidence examples: Risk treatment plans, risk register updates, management review reports."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "VM",
+        "title": "Vulnerability Management",
+        "controls": [
+          {
+            "id": "HITRUST-14.a",
+            "title": "Vulnerability Scanning for Healthcare Systems",
+            "description": "Conduct regular vulnerability scanning of systems that process protected health information.",
+            "parts": [
+              {
+                "id": "HITRUST-14.a_stm",
+                "name": "statement",
+                "prose": "The organization shall conduct regular vulnerability scanning of all systems and applications that process, store, or transmit protected health information to identify and remediate security weaknesses."
+              },
+              {
+                "id": "HITRUST-14.a_gdn",
+                "name": "guidance",
+                "prose": "Scan clinical systems weekly for critical vulnerabilities. Use credentialed scanning where feasible. Remediate critical vulnerabilities within 15 days. Key questions: How often are healthcare systems scanned? What are remediation SLAs? Evidence examples: Vulnerability scan reports, remediation tracking, vulnerability management procedures."
+              }
+            ]
+          },
+          {
+            "id": "HITRUST-14.b",
+            "title": "Patch Management",
+            "description": "Apply security patches to healthcare systems in a timely manner to address known vulnerabilities.",
+            "parts": [
+              {
+                "id": "HITRUST-14.b_stm",
+                "name": "statement",
+                "prose": "The organization shall establish a patch management process to ensure security patches are evaluated, tested, and deployed in a timely manner to systems handling protected health information."
+              },
+              {
+                "id": "HITRUST-14.b_gdn",
+                "name": "guidance",
+                "prose": "Test patches in a non-production environment before deployment. Prioritize patches based on CVSS scores. Document any patch deferrals. Key questions: How are patches tested before deployment? What is the patch deployment timeline? Evidence examples: Patch management policy, patch deployment records, exception requests."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
