@@ -6,11 +6,11 @@ const purple = {
   200: "#DDD6FE",
   300: "#C4B5FD",
   400: "#A78BFA",
-  500: "#6E3BFA",
-  600: "#5B21E3",
-  700: "#4C1D95",
-  800: "#3B0764",
-  900: "#1E0A3C",
+  500: "#7C3AED",
+  600: "#6D28D9",
+  700: "#5B21B6",
+  800: "#4C1D95",
+  900: "#3B0764",
 };
 
 const teal = {
@@ -27,16 +27,27 @@ const teal = {
 };
 
 const neutral = {
-  50: "#F9FAFB",
-  100: "#F3F4F6",
-  200: "#E5E7EB",
-  300: "#D1D5DB",
-  400: "#9CA3AF",
-  500: "#6B7280",
-  600: "#4B5563",
-  700: "#374151",
-  800: "#1F2937",
-  900: "#111827",
+  50: "#F8FAFC",
+  100: "#F1F5F9",
+  200: "#E2E8F0",
+  300: "#CBD5E1",
+  400: "#94A3B8",
+  500: "#64748B",
+  600: "#475569",
+  700: "#334155",
+  800: "#1E293B",
+  900: "#0F172A",
+};
+
+const emerald = {
+  50: "#ECFDF5",
+  100: "#D1FAE5",
+  200: "#A7F3D0",
+  500: "#10B981",
+  600: "#059669",
+  700: "#047857",
+  800: "#065F46",
+  900: "#064E3B",
 };
 
 export const lightTheme = createTheme({
@@ -47,59 +58,85 @@ export const lightTheme = createTheme({
       light: purple[400],
       dark: purple[600],
       contrastText: "#FFFFFF",
+      50: purple[50],
+      100: purple[100],
+      200: purple[200],
+      300: purple[300],
+      400: purple[400],
+      500: purple[500],
+      600: purple[600],
+      700: purple[700],
+      800: purple[800],
+      900: purple[900],
     },
     secondary: {
-      main: teal[500],
+      main: teal[600],
       light: teal[400],
-      dark: teal[600],
+      dark: teal[700],
+      contrastText: "#FFFFFF",
+      50: teal[50],
+      100: teal[100],
+      200: teal[200],
+      300: teal[300],
+      400: teal[400],
+      500: teal[500],
+      600: teal[600],
+      700: teal[700],
+      800: teal[800],
+      900: teal[900],
     },
     error: {
-      main: "#EF4444",
+      main: "#DC2626",
       light: "#FCA5A5",
-      dark: "#DC2626",
+      dark: "#991B1B",
+      contrastText: "#FFFFFF",
     },
     warning: {
-      main: "#F59E0B",
+      main: "#D97706",
       light: "#FCD34D",
-      dark: "#D97706",
+      dark: "#92400E",
+      contrastText: "#FFFFFF",
     },
     success: {
-      main: teal[500],
-      light: teal[100],
-      dark: teal[700],
+      main: emerald[600],
+      light: emerald[200],
+      dark: emerald[800],
+      contrastText: "#FFFFFF",
     },
     info: {
-      main: "#3B82F6",
+      main: "#2563EB",
       light: "#93C5FD",
-      dark: "#2563EB",
+      dark: "#1E40AF",
+      contrastText: "#FFFFFF",
     },
     background: {
-      default: "#F4F7FA",
+      default: neutral[50],
       paper: "#FFFFFF",
     },
     text: {
       primary: neutral[900],
-      secondary: neutral[500],
-      disabled: neutral[300],
+      secondary: neutral[600],
+      disabled: neutral[400],
     },
     divider: neutral[200],
     action: {
       hover: neutral[50],
       selected: purple[50],
-      focus: "rgba(110, 59, 250, 0.12)",
+      focus: "rgba(124, 58, 237, 0.12)",
     },
   },
   typography: {
     fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-    h1: { fontSize: "1.75rem", fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.2, color: neutral[900] },
-    h2: { fontSize: "1.375rem", fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.3, color: neutral[900] },
-    h3: { fontSize: "1.125rem", fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.4, color: neutral[900] },
-    h4: { fontSize: "1rem", fontWeight: 600, letterSpacing: "-0.01em", lineHeight: 1.4, color: neutral[900] },
-    h5: { fontSize: "0.9375rem", fontWeight: 600, lineHeight: 1.5, color: neutral[900] },
-    h6: { fontSize: "0.875rem", fontWeight: 600, lineHeight: 1.5, color: neutral[800] },
-    body1: { fontSize: "0.875rem", lineHeight: 1.6, color: neutral[800] },
-    body2: { fontSize: "0.8125rem", lineHeight: 1.5, color: neutral[500] },
+    h1: { fontSize: "2rem", fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.2, color: neutral[900] },
+    h2: { fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.3, color: neutral[900] },
+    h3: { fontSize: "1.25rem", fontWeight: 600, letterSpacing: "-0.015em", lineHeight: 1.4, color: neutral[900] },
+    h4: { fontSize: "1.125rem", fontWeight: 600, letterSpacing: "-0.01em", lineHeight: 1.4, color: neutral[900] },
+    h5: { fontSize: "1rem", fontWeight: 600, lineHeight: 1.5, color: neutral[800] },
+    h6: { fontSize: "0.9375rem", fontWeight: 600, lineHeight: 1.5, color: neutral[800] },
+    body1: { fontSize: "0.9375rem", lineHeight: 1.6, color: neutral[800] },
+    body2: { fontSize: "0.875rem", lineHeight: 1.5, color: neutral[600] },
     caption: { fontSize: "0.75rem", lineHeight: 1.4, color: neutral[400] },
+    overline: { fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: neutral[500] },
     button: { textTransform: "none", fontWeight: 600, letterSpacing: "0.01em" },
   },
   shape: {
@@ -109,13 +146,13 @@ export const lightTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: "#F4F7FA",
+          backgroundColor: neutral[50],
           WebkitFontSmoothing: "antialiased",
           MozOsxFontSmoothing: "grayscale",
         },
         "*": {
           scrollbarWidth: "thin",
-          scrollbarColor: "rgba(110, 59, 250, 0.2) transparent",
+          scrollbarColor: `${neutral[300]} transparent`,
         },
         "*::-webkit-scrollbar": {
           width: 6,
@@ -125,36 +162,33 @@ export const lightTheme = createTheme({
           background: "transparent",
         },
         "*::-webkit-scrollbar-thumb": {
-          background: "rgba(110, 59, 250, 0.2)",
+          background: neutral[300],
           borderRadius: 3,
         },
         "*::-webkit-scrollbar-thumb:hover": {
-          background: "rgba(110, 59, 250, 0.35)",
+          background: neutral[400],
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
+          borderRadius: 8,
           padding: "8px 18px",
           fontSize: "0.875rem",
           fontWeight: 600,
           transition: "all 0.2s ease",
-          "&:hover": {
-            transform: "translateY(-1px)",
-          },
         },
         containedPrimary: {
-          boxShadow: "0 2px 8px rgba(110, 59, 250, 0.2)",
+          boxShadow: "0 1px 3px rgba(124, 58, 237, 0.15)",
           "&:hover": {
-            boxShadow: "0 4px 14px rgba(110, 59, 250, 0.3)",
+            boxShadow: "0 4px 12px rgba(124, 58, 237, 0.25)",
           },
         },
         containedSecondary: {
-          boxShadow: "0 2px 8px rgba(20, 184, 166, 0.2)",
+          boxShadow: "0 1px 3px rgba(13, 148, 136, 0.15)",
           "&:hover": {
-            boxShadow: "0 4px 14px rgba(20, 184, 166, 0.3)",
+            boxShadow: "0 4px 12px rgba(13, 148, 136, 0.25)",
           },
         },
         outlined: {
@@ -169,19 +203,20 @@ export const lightTheme = createTheme({
         },
         sizeLarge: {
           padding: "10px 24px",
-          fontSize: "1rem",
+          fontSize: "0.9375rem",
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 14,
-          border: "none",
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)",
-          transition: "box-shadow 0.2s ease, transform 0.2s ease",
+          borderRadius: 12,
+          border: `1px solid ${neutral[200]}`,
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+          transition: "box-shadow 0.2s ease, border-color 0.2s ease",
           "&:hover": {
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.06)",
+            borderColor: neutral[200],
           },
         },
       },
@@ -203,14 +238,11 @@ export const lightTheme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            borderRadius: 10,
+            borderRadius: 8,
             backgroundColor: "#FFFFFF",
             transition: "box-shadow 0.2s ease, border-color 0.2s ease",
-            "&:hover": {
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-            },
             "&.Mui-focused": {
-              boxShadow: "0 0 0 3px rgba(110, 59, 250, 0.1)",
+              boxShadow: "0 0 0 3px rgba(124, 58, 237, 0.08)",
             },
           },
         },
@@ -219,14 +251,14 @@ export const lightTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
+          borderRadius: 8,
         },
       },
     },
     MuiSelect: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
+          borderRadius: 8,
         },
       },
     },
@@ -248,9 +280,8 @@ export const lightTheme = createTheme({
             fontSize: "0.75rem",
             textTransform: "uppercase",
             letterSpacing: "0.05em",
-            borderBottom: "1px solid",
-            borderColor: neutral[200],
-            padding: "12px 16px",
+            borderBottom: `1px solid ${neutral[200]}`,
+            padding: "10px 16px",
           },
         },
       },
@@ -268,11 +299,10 @@ export const lightTheme = createTheme({
             },
           },
           "& .MuiTableCell-body": {
-            padding: "14px 16px",
+            padding: "12px 16px",
             fontSize: "0.875rem",
             color: neutral[800],
-            borderBottom: "1px solid",
-            borderColor: neutral[100],
+            borderBottom: `1px solid ${neutral[100]}`,
           },
         },
       },
@@ -280,15 +310,15 @@ export const lightTheme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: 6,
           fontWeight: 500,
           fontSize: "0.75rem",
-          height: 28,
+          height: 26,
         },
         filled: {
           "&.MuiChip-colorSuccess": {
-            backgroundColor: teal[50],
-            color: teal[700],
+            backgroundColor: emerald[50],
+            color: emerald[800],
           },
           "&.MuiChip-colorWarning": {
             backgroundColor: "#FFFBEB",
@@ -296,7 +326,7 @@ export const lightTheme = createTheme({
           },
           "&.MuiChip-colorError": {
             backgroundColor: "#FEF2F2",
-            color: "#B91C1C",
+            color: "#991B1B",
           },
           "&.MuiChip-colorInfo": {
             backgroundColor: "#EFF6FF",
@@ -311,9 +341,8 @@ export const lightTheme = createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 20,
-          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06)",
-          padding: "8px",
+          borderRadius: 16,
+          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.08)",
         },
       },
     },
@@ -322,7 +351,7 @@ export const lightTheme = createTheme({
         root: {
           fontSize: "1.125rem",
           fontWeight: 700,
-          padding: "20px 24px 8px",
+          padding: "24px 24px 8px",
         },
       },
     },
@@ -336,7 +365,7 @@ export const lightTheme = createTheme({
     MuiDialogActions: {
       styleOverrides: {
         root: {
-          padding: "12px 24px 20px",
+          padding: "12px 24px 24px",
           gap: 8,
         },
       },
@@ -355,17 +384,16 @@ export const lightTheme = createTheme({
       styleOverrides: {
         root: {
           boxShadow: "none",
-          backdropFilter: "blur(16px)",
-          backgroundColor: "rgba(255, 255, 255, 0.72)",
-          borderBottom: "1px solid",
-          borderColor: "rgba(0, 0, 0, 0.05)",
+          backdropFilter: "blur(12px)",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          borderBottom: `1px solid ${neutral[200]}`,
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          borderRight: "none",
+          borderRight: `1px solid ${neutral[200]}`,
         },
       },
     },
@@ -391,13 +419,13 @@ export const lightTheme = createTheme({
     MuiAlert: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
+          borderRadius: 10,
           padding: "12px 16px",
           fontSize: "0.875rem",
         },
         standardSuccess: {
-          backgroundColor: teal[50],
-          color: teal[800],
+          backgroundColor: emerald[50],
+          color: emerald[800],
         },
         standardWarning: {
           backgroundColor: "#FFFBEB",
@@ -405,7 +433,7 @@ export const lightTheme = createTheme({
         },
         standardError: {
           backgroundColor: "#FEF2F2",
-          color: "#B91C1C",
+          color: "#991B1B",
         },
         standardInfo: {
           backgroundColor: "#EFF6FF",
@@ -416,8 +444,8 @@ export const lightTheme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          borderRadius: 8,
-          padding: "8px 12px",
+          borderRadius: 6,
+          padding: "6px 10px",
           fontSize: "0.75rem",
           fontWeight: 500,
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -455,16 +483,16 @@ export const lightTheme = createTheme({
           transition: "all 0.15s ease",
           "&.Mui-selected": {
             backgroundColor: purple[50],
-            color: purple[500],
+            color: purple[600],
             "& .MuiListItemIcon-root": {
-              color: purple[500],
+              color: purple[600],
             },
             "&:hover": {
               backgroundColor: purple[100],
             },
           },
           "&:hover": {
-            backgroundColor: neutral[50],
+            backgroundColor: neutral[100],
           },
         },
       },
@@ -484,10 +512,9 @@ export const lightTheme = createTheme({
     MuiMenu: {
       styleOverrides: {
         paper: {
-          borderRadius: 14,
-          boxShadow: "0 10px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06)",
-          border: "1px solid",
-          borderColor: neutral[100],
+          borderRadius: 12,
+          boxShadow: "0 10px 40px rgba(0, 0, 0, 0.08)",
+          border: `1px solid ${neutral[200]}`,
           marginTop: 4,
         },
       },
@@ -495,7 +522,7 @@ export const lightTheme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: 6,
           margin: "2px 4px",
           padding: "8px 12px",
           fontSize: "0.875rem",
@@ -561,7 +588,7 @@ export const lightTheme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiAlert-filledSuccess": {
-            backgroundColor: teal[500],
+            backgroundColor: emerald[600],
           },
         },
       },

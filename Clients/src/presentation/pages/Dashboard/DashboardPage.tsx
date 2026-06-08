@@ -85,45 +85,47 @@ export default function DashboardPage() {
     <Box>
       <Typography variant="h1" sx={{ mb: 3 }}>Dashboard</Typography>
 
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Total Risks" value={stats?.totalRisks ?? 0} color={theme.palette.primary.main} icon={<RiskIcon />} onClick={() => navigate("/risks")} />
+      {/* ROW 1: Stat Cards - Bento Grid */}
+      <Grid container spacing={2.5} sx={{ mb: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Total Risks" value={stats?.totalRisks ?? 0} accentColor={theme.palette.error.main} icon={<RiskIcon />} onClick={() => navigate("/risks")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Critical" value={stats?.criticalRisks ?? 0} color="#E11D48" icon={<ShieldIcon />} onClick={() => navigate("/risks")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Critical" value={stats?.criticalRisks ?? 0} accentColor={theme.palette.error.main} icon={<ShieldIcon />} onClick={() => navigate("/risks")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Active Projects" value={stats?.activeProjects ?? 0} color="#0284C7" icon={<ProjectIcon />} onClick={() => navigate("/projects")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Active Projects" value={stats?.activeProjects ?? 0} accentColor={theme.palette.primary.main} icon={<ProjectIcon />} onClick={() => navigate("/projects")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Open Treatments" value={stats?.openTreatments ?? 0} color="#D97706" icon={<TreatmentIcon />} onClick={() => navigate("/risks")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Open Treatments" value={stats?.openTreatments ?? 0} accentColor={theme.palette.primary.main} icon={<TreatmentIcon />} onClick={() => navigate("/risks")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Integrations" value={integrationSummary?.connected ?? 0} color="#6366F1" icon={<IntegrationIcon />} subtitle={`${integrationSummary?.total ?? 0} total`} onClick={() => navigate("/integrations")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Integrations" value={integrationSummary?.connected ?? 0} accentColor="#06B6D4" icon={<IntegrationIcon />} subtitle={`${integrationSummary?.total ?? 0} total`} onClick={() => navigate("/integrations")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Entities" value={entityCount} color="#8B5CF6" icon={<EntityIcon />} onClick={() => navigate("/entities")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Entities" value={entityCount} accentColor="#84CC16" icon={<EntityIcon />} onClick={() => navigate("/entities")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Frameworks" value={complianceDashboard?.adoptedRegulations?.length ?? 0} color="#059669" icon={<FrameworkIcon />} onClick={() => navigate("/compliance-hub")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Frameworks" value={complianceDashboard?.adoptedRegulations?.length ?? 0} accentColor={theme.palette.info.main} icon={<FrameworkIcon />} onClick={() => navigate("/compliance-hub")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Policies" value={policies?.length ?? 0} color="#0D9488" icon={<PolicyIcon />} onClick={() => navigate("/policies")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Policies" value={policies?.length ?? 0} accentColor={theme.palette.secondary.main} icon={<PolicyIcon />} onClick={() => navigate("/policies")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Vendors" value={vendors?.length ?? 0} color="#D97706" icon={<VendorIcon />} subtitle={highRiskVendors > 0 ? `${highRiskVendors} high-risk` : undefined} onClick={() => navigate("/vendors")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Vendors" value={vendors?.length ?? 0} accentColor={theme.palette.warning.main} icon={<VendorIcon />} subtitle={highRiskVendors > 0 ? `${highRiskVendors} high-risk` : undefined} onClick={() => navigate("/vendors")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="FAIR ALE" value={`$${(totalALE / 1000).toFixed(0)}k`} color="#7C3AED" icon={<FairIcon />} onClick={() => navigate("/risks")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="FAIR ALE" value={`$${(totalALE / 1000).toFixed(0)}k`} accentColor="#F97316" icon={<FairIcon />} onClick={() => navigate("/risks")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Evidence" value={`${evidencePct}%`} color="#0284C7" icon={<EvidenceIcon />} subtitle={`${evidenceCollected}/${evidenceTotal}`} onClick={() => navigate("/evidence")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Evidence" value={`${evidencePct}%`} accentColor="#8B5CF6" icon={<EvidenceIcon />} subtitle={`${evidenceCollected}/${evidenceTotal}`} onClick={() => navigate("/evidence")} />
         </Grid>
-        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
-          <StatCard label="Workflows" value={workflows?.length ?? 0} color="#EC4899" icon={<WorkflowIcon />} onClick={() => navigate("/workflows")} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard label="Workflows" value={workflows?.length ?? 0} accentColor="#EC4899" icon={<WorkflowIcon />} onClick={() => navigate("/workflows")} />
         </Grid>
       </Grid>
 
+      {/* Alerts */}
       {overdueTreatments && overdueTreatments.length > 0 && (
         <Alert severity="warning" sx={{ mb: 3 }} action={
           <Tooltip title="View all risks"><IconButton size="small" color="inherit" onClick={() => navigate("/risks")}><ArrowIcon /></IconButton></Tooltip>
@@ -147,17 +149,80 @@ export default function DashboardPage() {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          {trends && trends.length > 0 && (
-            <Card sx={{ mb: 3 }}>
-              <CardContent>
-                <Typography variant="h3" sx={{ mb: 2 }}>Risk Trends (6 Months)</Typography>
-                <TrendChart data={trends} />
-              </CardContent>
-            </Card>
-          )}
+      {/* Risk Trends (full width) */}
+      {trends && trends.length > 0 && (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h3" sx={{ mb: 2 }}>Risk Trends (6 Months)</Typography>
+            <TrendChart data={trends} />
+          </CardContent>
+        </Card>
+      )}
 
+      {/* ROW 2: Compliance + Control (8) | Activity Feed (4) */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
+          {/* Compliance gauge + Control coverage */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Grid container spacing={3}>
+                {complianceDashboard && (
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="h3" sx={{ mb: 2 }}>Compliance Score</Typography>
+                    <Box sx={{ textAlign: "center", mb: 2 }}>
+                      <Box sx={{ position: "relative", display: "inline-flex" }}>
+                        <Box sx={{ width: 80, height: 80, borderRadius: "50%", border: "6px solid", borderColor: complianceDashboard.overallScore >= 80 ? "#059669" : complianceDashboard.overallScore >= 50 ? "#D97706" : "#E11D48", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Typography variant="h3" fontWeight={700}>{complianceDashboard.overallScore}%</Typography>
+                        </Box>
+                      </Box>
+                      <Typography variant="body2" color="text.secondary">Overall compliance across {complianceDashboard.adoptedRegulations.length} framework{complianceDashboard.adoptedRegulations.length !== 1 ? "s" : ""}</Typography>
+                    </Box>
+                    {complianceDashboard.areaScores?.slice(0, 3).map((a) => (
+                      <Box key={a.area} sx={{ mb: 1 }}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.25 }}>
+                          <Typography variant="caption">{a.area}</Typography>
+                          <Typography variant="caption" fontWeight={600}>{a.score}%</Typography>
+                        </Box>
+                        <LinearProgress variant="determinate" value={a.score} sx={{ height: 6, borderRadius: 3 }} color={a.score >= 70 ? "success" : a.score >= 40 ? "warning" : "error"} />
+                      </Box>
+                    ))}
+                  </Grid>
+                )}
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Typography variant="h3" sx={{ mb: 2 }}>Control Coverage</Typography>
+                  {!coverage ? (
+                    <Typography variant="body2" color="text.secondary">Loading...</Typography>
+                  ) : (
+                    <Box>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+                        <Box sx={{ position: "relative", width: 80, height: 80 }}>
+                          <Box sx={{ width: 80, height: 80, borderRadius: "50%", border: "6px solid", borderColor: coverage.coveragePercent >= 80 ? "#059669" : coverage.coveragePercent >= 50 ? "#D97706" : "#E11D48", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Typography variant="h3" fontWeight={700}>{coverage.coveragePercent}%</Typography>
+                          </Box>
+                        </Box>
+                        <Box>
+                          <Typography variant="body2">{coverage.coveredRisks} of {coverage.totalRisks} risks covered</Typography>
+                          <Typography variant="body2" color="error">{coverage.gaps} uncovered risk{coverage.gaps !== 1 ? "s" : ""}</Typography>
+                          {coverage.highRiskGaps > 0 && (
+                            <Chip label={`${coverage.highRiskGaps} high-risk gap${coverage.highRiskGaps !== 1 ? "s" : ""}`} color="error" size="small" sx={{ mt: 0.5 }} />
+                          )}
+                        </Box>
+                      </Box>
+                      {coverage.gapDetails?.length > 0 && (
+                        <Box sx={{ maxHeight: 120, overflow: "auto" }}>
+                          {coverage.gapDetails.slice(0, 5).map((g: any) => (
+                            <Typography key={g.id} variant="caption" display="block" color="text.secondary">{g.title} (Score: {g.score})</Typography>
+                          ))}
+                        </Box>
+                      )}
+                    </Box>
+                  )}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+
+          {/* Risk Distribution by Domain */}
           <Card>
             <CardContent>
               <Typography variant="h3" sx={{ mb: 2 }}>Risk Distribution by Domain</Typography>
@@ -187,7 +252,40 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+        </Grid>
 
+        {/* Right (4 cols): Recent Activity */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          {/* Recent Activity */}
+          {activity && activity.length > 0 && (
+            <Card sx={{ height: "100%" }}>
+              <CardContent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 1 }}>
+                <Typography variant="h3">Recent Activity</Typography>
+                <Chip label="View all" size="small" clickable onClick={() => navigate("/audit-logs")} />
+              </CardContent>
+              <CardContent sx={{ pt: 0 }}>
+                <List disablePadding>
+                  {activity.slice(0, 5).map((a: any) => (
+                    <ListItem key={a.id} divider sx={{ px: 0 }}>
+                      <ListItemText primary={
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <ActivityIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                          <Typography variant="body2" fontWeight={500}>{a.action || a.eventType}</Typography>
+                          <Chip label={a.entityType} size="small" variant="outlined" sx={{ fontSize: "0.65rem" }} />
+                        </Box>
+                      } secondary={
+                        <Typography variant="caption" color="text.secondary">
+                          by {a.user?.firstName} {a.user?.lastName} · {new Date(a.createdAt).toLocaleString()}
+                        </Typography>
+                      } />
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recent Risks (sidebar) */}
           <Card sx={{ mt: 3 }}>
             <CardContent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 1 }}>
               <Typography variant="h3">Recent Risks</Typography>
@@ -215,38 +313,14 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
-
-          {activity && activity.length > 0 && (
-            <Card sx={{ mt: 3 }}>
-              <CardContent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 1 }}>
-                <Typography variant="h3">Recent Activity</Typography>
-                <Chip label="View all" size="small" clickable onClick={() => navigate("/audit-logs")} />
-              </CardContent>
-              <CardContent sx={{ pt: 0 }}>
-                <List disablePadding>
-                  {activity.slice(0, 5).map((a: any) => (
-                    <ListItem key={a.id} divider sx={{ px: 0 }}>
-                      <ListItemText primary={
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <ActivityIcon sx={{ fontSize: 16, color: "text.secondary" }} />
-                          <Typography variant="body2" fontWeight={500}>{a.action || a.eventType}</Typography>
-                          <Chip label={a.entityType} size="small" variant="outlined" sx={{ fontSize: "0.65rem" }} />
-                        </Box>
-                      } secondary={
-                        <Typography variant="caption" color="text.secondary">
-                          by {a.user?.firstName} {a.user?.lastName} · {new Date(a.createdAt).toLocaleString()}
-                        </Typography>
-                      } />
-                    </ListItem>
-                  ))}
-                </List>
-              </CardContent>
-            </Card>
-          )}
         </Grid>
+      </Grid>
 
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Card>
+      {/* ROW 3: Risk Matrix (6) | Trust Status (6) */}
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          {/* Risk Matrix */}
+          <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h3" sx={{ mb: 2 }}>Risk Matrix</Typography>
               {matrixPoints.length === 0 ? (
@@ -256,41 +330,11 @@ export default function DashboardPage() {
               )}
             </CardContent>
           </Card>
+        </Grid>
 
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <Typography variant="h3" sx={{ mb: 2 }}>Control Coverage</Typography>
-              {!coverage ? (
-                <Typography variant="body2" color="text.secondary">Loading...</Typography>
-              ) : (
-                <Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-                    <Box sx={{ position: "relative", width: 80, height: 80 }}>
-                      <Box sx={{ width: 80, height: 80, borderRadius: "50%", border: "6px solid", borderColor: coverage.coveragePercent >= 80 ? "#059669" : coverage.coveragePercent >= 50 ? "#D97706" : "#E11D48", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Typography variant="h3" fontWeight={700}>{coverage.coveragePercent}%</Typography>
-                      </Box>
-                    </Box>
-                    <Box>
-                      <Typography variant="body2">{coverage.coveredRisks} of {coverage.totalRisks} risks covered</Typography>
-                      <Typography variant="body2" color="error">{coverage.gaps} uncovered risk{coverage.gaps !== 1 ? "s" : ""}</Typography>
-                      {coverage.highRiskGaps > 0 && (
-                        <Chip label={`${coverage.highRiskGaps} high-risk gap${coverage.highRiskGaps !== 1 ? "s" : ""}`} color="error" size="small" sx={{ mt: 0.5 }} />
-                      )}
-                    </Box>
-                  </Box>
-                  {coverage.gapDetails?.length > 0 && (
-                    <Box sx={{ maxHeight: 120, overflow: "auto" }}>
-                      {coverage.gapDetails.slice(0, 5).map((g: any) => (
-                        <Typography key={g.id} variant="caption" display="block" color="text.secondary">{g.title} (Score: {g.score})</Typography>
-                      ))}
-                    </Box>
-                  )}
-                </Box>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card sx={{ mt: 3 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          {/* Risks by Status */}
+          <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography variant="h3" sx={{ mb: 2 }}>Risks by Status</Typography>
               {!stats?.risksByStatus?.length ? (
@@ -308,33 +352,9 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          {complianceDashboard && (
-            <Card sx={{ mt: 3 }}>
-              <CardContent>
-                <Typography variant="h3" sx={{ mb: 2 }}>Compliance Score</Typography>
-                <Box sx={{ textAlign: "center", mb: 2 }}>
-                  <Box sx={{ position: "relative", display: "inline-flex" }}>
-                    <Box sx={{ width: 80, height: 80, borderRadius: "50%", border: "6px solid", borderColor: complianceDashboard.overallScore >= 80 ? "#059669" : complianceDashboard.overallScore >= 50 ? "#D97706" : "#E11D48", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <Typography variant="h3" fontWeight={700}>{complianceDashboard.overallScore}%</Typography>
-                    </Box>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">Overall compliance across {complianceDashboard.adoptedRegulations.length} framework{complianceDashboard.adoptedRegulations.length !== 1 ? "s" : ""}</Typography>
-                </Box>
-                {complianceDashboard.areaScores?.slice(0, 3).map((a) => (
-                  <Box key={a.area} sx={{ mb: 1 }}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.25 }}>
-                      <Typography variant="caption">{a.area}</Typography>
-                      <Typography variant="caption" fontWeight={600}>{a.score}%</Typography>
-                    </Box>
-                    <LinearProgress variant="determinate" value={a.score} sx={{ height: 6, borderRadius: 3 }} color={a.score >= 70 ? "success" : a.score >= 40 ? "warning" : "error"} />
-                  </Box>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
+          {/* Trust Center */}
           {trustConfig && (
-            <Card sx={{ mt: 3 }}>
+            <Card>
               <CardContent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <TrustIcon sx={{ color: trustConfig.isPublic ? "#059669" : "text.secondary", fontSize: 28 }} />
@@ -350,6 +370,8 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           )}
+
+
         </Grid>
       </Grid>
     </Box>

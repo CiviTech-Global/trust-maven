@@ -60,8 +60,11 @@ const secondaryNav = [
   { label: "Audits", path: "/audits", icon: <AuditMgmtIcon /> },
   { label: "Reports", path: "/reports", icon: <ReportsIcon /> },
   { label: "Workflows", path: "/workflows", icon: <WorkflowIcon /> },
-  { label: "GRC Assistant", path: "/copilot", icon: <AiIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
+];
+
+const assistantNav = [
+  { label: "GRC Assistant", path: "/copilot", icon: <AiIcon /> },
 ];
 
 const adminNavItems = [
@@ -105,16 +108,28 @@ function NavSection({ label, items, location, navigate, collapsed }: {
             key={item.path}
             onClick={() => navigate(item.path)}
             selected={active}
-            sx={{
+            sx={(t) => ({
               mx: collapsed ? 0.5 : 1.5,
               my: 0.3,
               py: 1.2,
               px: collapsed ? 1 : 1.5,
-              borderRadius: collapsed ? 2 : 1.5,
+              borderRadius: collapsed ? 2 : active ? "0 8px 8px 0" : 1.5,
               justifyContent: collapsed ? "center" : "flex-start",
               minHeight: 44,
-              transition: "all 0.2s ease",
-            }}
+              transition: "all 0.15s ease",
+              borderLeft: !collapsed && active ? "3px solid" : "3px solid transparent",
+              borderColor: !collapsed && active ? "primary.main" : "transparent",
+              bgcolor: active
+                ? t.palette.mode === "dark"
+                  ? "rgba(255,255,255,0.08)"
+                  : `${t.palette.primary.main}10`
+                : "transparent",
+              "&:hover": {
+                bgcolor: t.palette.mode === "dark"
+                  ? "rgba(255,255,255,0.05)"
+                  : "#F1F5F9",
+              },
+            })}
             title={collapsed ? item.label : undefined}
           >
             <ListItemIcon
@@ -132,6 +147,7 @@ function NavSection({ label, items, location, navigate, collapsed }: {
               primaryTypographyProps={{
                 fontSize: "0.85rem",
                 fontWeight: active ? 600 : 500,
+                color: active ? "primary.main" : "text.primary",
                 sx: {
                   overflow: "hidden",
                   whiteSpace: "nowrap",
@@ -198,10 +214,14 @@ export default function DashboardLayout() {
 
   const drawerWidth = collapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH;
 
+  const allNavItems = [...primaryNav, ...complianceNav, ...secondaryNav, ...assistantNav, ...adminNavItems];
+  const currentPageTitle = allNavItems.find(
+    (item) => location.pathname === item.path || location.pathname.startsWith(item.path + "/")
+  )?.label || "";
+
   function renderDrawer(drawerCollapsed: boolean) {
     return (
       <Box sx={{ height: "100%", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Logo */}
         <Box
           sx={{
             px: drawerCollapsed ? 0 : 2.5, py: 2.5,
@@ -233,13 +253,14 @@ export default function DashboardLayout() {
         </Box>
         <Divider sx={{ mx: 2 }} />
 
-        {/* Navigation */}
         <Box sx={{ flex: 1, overflow: "hidden", "&:hover": { overflow: "auto" }, pt: 1, pb: 1 }}>
           <NavSection items={primaryNav} location={location} navigate={navigate} collapsed={drawerCollapsed} />
           <Divider sx={{ mx: 2, my: 0.5 }} />
           <NavSection label="Compliance" items={complianceNav} location={location} navigate={navigate} collapsed={drawerCollapsed} />
           <Divider sx={{ mx: 2, my: 0.5 }} />
           <NavSection items={secondaryNav} location={location} navigate={navigate} collapsed={drawerCollapsed} />
+          <Divider sx={{ mx: 2, my: 0.5 }} />
+          <NavSection items={assistantNav} location={location} navigate={navigate} collapsed={drawerCollapsed} />
           {adminItems.length > 0 && (
             <>
               <Divider sx={{ mx: 2, my: 0.5 }} />
@@ -249,7 +270,6 @@ export default function DashboardLayout() {
         </Box>
 
         <Divider sx={{ mx: 2 }} />
-        {/* Demo Button */}
         <Box sx={{ px: drawerCollapsed ? 1 : 2, py: 1.5 }}>
           <Button
             fullWidth
@@ -276,7 +296,6 @@ export default function DashboardLayout() {
           </Button>
         </Box>
 
-        {/* Toggle + User */}
         <Box sx={{ px: drawerCollapsed ? 0.5 : 2, py: 1, display: "flex", alignItems: "center", gap: drawerCollapsed ? 0 : 1.5, justifyContent: drawerCollapsed ? "center" : "flex-start" }}>
           <IconButton
             size="small"
@@ -337,6 +356,9 @@ export default function DashboardLayout() {
           >
             <MenuIcon />
           </IconButton>
+          <Typography variant="body1" sx={{ fontWeight: 600, fontSize: "0.95rem" }}>
+            {currentPageTitle}
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
 
           <IconButton onClick={() => dispatch(toggleTheme())} size="small" sx={{ mr: 1, color: "text.secondary" }}>
@@ -429,26 +451,27 @@ export default function DashboardLayout() {
           variant="temporary"
           open={mobileOpen}
           onClose={() => setMobileOpen(false)}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": { width: DRAWER_WIDTH },
+          PaperProps={{
+            sx: { width: DRAWER_WIDTH, bgcolor: theme.palette.mode === "light" ? "#F8FAFC" : undefined },
           }}
+          sx={{ display: { xs: "block", sm: "none" } }}
         >
           {renderDrawer(false)}
         </Drawer>
         <Drawer
           variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
+          PaperProps={{
+            sx: {
               width: drawerWidth,
               overflowX: "hidden",
+              bgcolor: theme.palette.mode === "light" ? "#F8FAFC" : undefined,
               transition: theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
               }),
             },
           }}
+          sx={{ display: { xs: "none", sm: "block" } }}
           open
         >
           {renderDrawer(collapsed)}
@@ -472,7 +495,9 @@ export default function DashboardLayout() {
           }),
         }}
       >
-        <Outlet />
+        <Box sx={{ maxWidth: 1440, mx: "auto" }}>
+          <Outlet />
+        </Box>
       </Box>
 
       <Snackbar
