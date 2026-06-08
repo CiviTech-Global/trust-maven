@@ -186,7 +186,10 @@ export interface AuditRecord {
   startDate: string;
   endDate: string | null;
   leadAuditor?: { id: string; firstName: string; lastName: string };
+  auditors?: { id: string; firstName: string; lastName: string; email: string }[];
+  auditorIds?: string[];
   findings?: AuditFinding[];
+  findingCount?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -196,6 +199,7 @@ export interface AuditFinding {
   auditId: string;
   title: string;
   description: string | null;
+  recommendation: string | null;
   severity: string;
   status: string;
   responsibleId: string | null;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Box, Typography, Button, Card, CardContent, CardActions, Chip, IconButton, Tooltip, Dialog,
   DialogTitle, DialogContent, DialogActions, TextField, MenuItem, LinearProgress, Alert, Switch,
@@ -12,13 +13,16 @@ import {
   Inventory2 as Inventory2Icon, Warning as WarningIcon, Construction as ConstructionIcon,
   BugReport as BugReportIcon, AutoGraph as AutoGraphIcon, Dns as DnsIcon,
   ConfirmationNumber as ConfirmationNumberIcon, Computer as ComputerIcon,
+  PlayArrow as PlayArrowIcon,
 } from "@mui/icons-material";
+import axiosInstance from "../../../infrastructure/api/axiosInstance";
 import {
   useIntegrations, useIntegrationDashboardSummary, useAvailableConnectors,
   useCreateIntegration, useUpdateIntegration, useDeleteIntegration,
   useTestIntegrationConnection, useSyncIntegration, useIntegrationHistory,
   type Integration, type AvailableConnector,
 } from "../../../infrastructure/api/integrations.api";
+import { useEvidence } from "../../../infrastructure/api/evidence.api";
 import StatCard from "../../components/common/StatCard";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
@@ -161,6 +165,171 @@ function ConfigFormFields({ connectorType, config, onChange }: {
   );
 }
 
+interface SchedulerStatus {
+  isRunning: boolean;
+  lastRunAt: string | null;
+  nextRunAt: string | null;
+  intervalMinutes: number;
+}
+
+function SchedulerStatusCard() {
+  const queryClient = useQueryClient();
+  const { data: scheduler, isLoading } = useQuery<SchedulerStatus>({
+    queryKey: ["integrations", "scheduler", "status"],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get("/integrations/scheduler/status");
+      return data.data;
+    },
+    refetchInterval: 30000,
+  });
+
+  const runMutation = useMutation({
+    mutationFn: async () => {
+      await axiosInstance.post("/integrations/scheduler/run");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["integrations", "scheduler", "status"] });
+      queryClient.invalidateQueries({ queryKey: ["integrations"] });
+    },
+  });
+
+  if (isLoading) return <LinearProgress sx={{ mb: 2 }} />;
+
+  return (
+    <Card sx={{ mb: 4, p: 2, display: "flex", alignItems: "center", gap: 3, flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: scheduler?.isRunning ? "#059669" : "#9CA3AF" }} />
+        <Typography variant="subtitle2" fontWeight={600}>
+          {scheduler?.isRunning ? "Running" : "Stopped"}
+        </Typography>
+      </Box>
+      <Typography variant="caption" color="text.secondary">
+        Last run: {scheduler?.lastRunAt ? new Date(scheduler.lastRunAt).toLocaleString() : "N/A"}
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        Next run: {scheduler?.nextRunAt ? new Date(scheduler.nextRunAt).toLocaleString() : "N/A"}
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        Every {scheduler?.intervalMinutes ?? 60} min
+      </Typography>
+      <Button
+        variant="outlined"
+        size="small"
+        startIcon={<PlayArrowIcon />}
+        onClick={() => runMutation.mutate()}
+        disabled={runMutation.isPending}
+        sx={{ ml: "auto" }}
+      >
+        Run Now
+      </Button>
+    </Card>
+  );
+}
+
+function IntegrationCard({ integration, connectorName, onTest, onSync, onHistory, onEdit, onDelete }: {
+  integration: Integration;
+  connectorName: string;
+  onTest: (id: string) => void;
+  onSync: (id: string) => void;
+  onHistory: (id: string) => void;
+  onEdit: (i: Integration) => void;
+  onDelete: (id: string) => void;
+}) {
+  const { data: evidenceItems } = useEvidence({ entityType: "integration", entityId: integration.id });
+  const { data: historyEvents } = useIntegrationHistory(integration.id);
+
+  const evidenceCount = evidenceItems?.length ?? 0;
+
+  const lastEvent = historyEvents?.[0];
+  const healthColor = !lastEvent
+    ? "#9CA3AF"
+    : lastEvent.status === "success"
+    ? "#059669"
+    : lastEvent.status === "failed"
+    ? "#DC2626"
+    : "#EAB308";
+
+  const syncDuration = lastEvent?.payload?.duration != null
+    ? `${lastEvent.payload.duration}s`
+    : null;
+
+  return (
+    <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(33.333% - 11px)" }, minWidth: 300 }}>
+      <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+        <CardContent sx={{ flex: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
+            <Box sx={{ color: integration.status === "connected" ? "#059669" : integration.status === "error" ? "#DC2626" : "#6B7280" }}>
+              {getConnectorIcon(integration.connectorType)}
+            </Box>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography variant="body1" fontWeight={600} noWrap>{integration.name}</Typography>
+              <Typography variant="caption" color="text.secondary">
+                {connectorName} · v1.0.0
+              </Typography>
+            </Box>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Box sx={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: healthColor }} />
+              <Chip
+                label={integration.status}
+                size="small"
+                sx={{
+                  fontWeight: 600,
+                  backgroundColor: integration.status === "connected" ? "#D1FAE5" : integration.status === "error" ? "#FEE2E2" : "#F1F5F9",
+                  color: integration.status === "connected" ? "#065F46" : integration.status === "error" ? "#991B1B" : "#475569",
+                }}
+              />
+            </Box>
+            <Chip label={integration.connectorType} size="small" variant="outlined" />
+            {evidenceCount > 0 && (
+              <Chip
+                icon={<HistoryIcon sx={{ fontSize: 14 }} />}
+                label={`${evidenceCount} evidence`}
+                size="small"
+                variant="outlined"
+                color="primary"
+              />
+            )}
+          </Box>
+          <Typography variant="caption" color="text.secondary">
+            Last sync: {integration.lastSyncAt ? new Date(integration.lastSyncAt).toLocaleString() : "Never"}
+            {syncDuration && ` · ${syncDuration}`}
+          </Typography>
+        </CardContent>
+        <CardActions sx={{ px: 2, pb: 2, pt: 0 }}>
+          <Tooltip title="Test Connection">
+            <IconButton size="small" color="primary" onClick={() => onTest(integration.id)}>
+              <ScienceIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Sync Now">
+            <IconButton size="small" color="primary" onClick={() => onSync(integration.id)}>
+              <SyncIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="History">
+            <IconButton size="small" onClick={() => onHistory(integration.id)}>
+              <HistoryIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Box sx={{ flex: 1 }} />
+          <Tooltip title="Edit">
+            <IconButton size="small" onClick={() => onEdit(integration)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton size="small" color="error" onClick={() => onDelete(integration.id)}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </CardActions>
+      </Card>
+    </Box>
+  );
+}
+
 export default function IntegrationsPage() {
   const [filterConnector, setFilterConnector] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
@@ -169,6 +338,7 @@ export default function IntegrationsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [historyId, setHistoryId] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<{ id: string; success: boolean; message: string } | null>(null);
+  const [syncingAll, setSyncingAll] = useState(false);
 
   const { data: integrations, isLoading, error } = useIntegrations({
     connectorType: filterConnector || undefined,
@@ -205,16 +375,40 @@ export default function IntegrationsPage() {
     setDeleteId(null);
   };
 
+  const handleSyncAll = async () => {
+    if (!integrations) return;
+    setSyncingAll(true);
+    for (const integration of integrations) {
+      if (integration.status !== "connected") continue;
+      try {
+        await syncIntegration.mutateAsync(integration.id);
+      } catch { /* continue */ }
+    }
+    setSyncingAll(false);
+  };
+
   return (
     <Box>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
         <Typography variant="h1">Integrations</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}>
-          Add Integration
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button
+            variant="outlined"
+            startIcon={<SyncIcon />}
+            onClick={handleSyncAll}
+            disabled={syncingAll || !integrations?.length}
+          >
+            {syncingAll ? "Syncing..." : "Sync All"}
+          </Button>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateOpen(true)}>
+            Add Integration
+          </Button>
+        </Box>
       </Box>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>Failed to load integrations</Alert>}
+
+      <SchedulerStatusCard />
 
       <Box sx={{ display: "flex", gap: 2, mb: 4, flexWrap: "wrap" }}>
         <Box sx={{ flex: "1 1 220px", minWidth: 200 }}>
@@ -262,68 +456,16 @@ export default function IntegrationsPage() {
           {integrations?.map((integration) => {
             const connectorName = availableConnectors?.find((c) => c.type === integration.connectorType)?.name || integration.connectorType;
             return (
-              <Box key={integration.id} sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(33.333% - 11px)" }, minWidth: 300 }}>
-                <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-                  <CardContent sx={{ flex: 1 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
-                      <Box sx={{ color: integration.status === "connected" ? "#059669" : integration.status === "error" ? "#DC2626" : "#6B7280" }}>
-                        {getConnectorIcon(integration.connectorType)}
-                      </Box>
-                      <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography variant="body1" fontWeight={600} noWrap>{integration.name}</Typography>
-                        <Typography variant="caption" color="text.secondary">{connectorName}</Typography>
-                      </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                      <Chip
-                        label={integration.status}
-                        size="small"
-                        sx={{
-                          fontWeight: 600,
-                          backgroundColor: integration.status === "connected" ? "#D1FAE5" : integration.status === "error" ? "#FEE2E2" : "#F1F5F9",
-                          color: integration.status === "connected" ? "#065F46" : integration.status === "error" ? "#991B1B" : "#475569",
-                        }}
-                      />
-                      <Chip
-                        label={integration.connectorType}
-                        size="small"
-                        variant="outlined"
-                      />
-                    </Box>
-                    <Typography variant="caption" color="text.secondary">
-                      Last sync: {integration.lastSyncAt ? new Date(integration.lastSyncAt).toLocaleString() : "Never"}
-                    </Typography>
-                  </CardContent>
-                  <CardActions sx={{ px: 2, pb: 2, pt: 0 }}>
-                    <Tooltip title="Test Connection">
-                      <IconButton size="small" color="primary" onClick={() => handleTest(integration.id)}>
-                        <ScienceIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Sync Now">
-                      <IconButton size="small" color="primary" onClick={() => handleSync(integration.id)}>
-                        <SyncIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="History">
-                      <IconButton size="small" onClick={() => { setHistoryId(integration.id); setHistoryOpen(true); }}>
-                        <HistoryIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Box sx={{ flex: 1 }} />
-                    <Tooltip title="Edit">
-                      <IconButton size="small" onClick={() => setEditIntegration(integration)}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <IconButton size="small" color="error" onClick={() => setDeleteId(integration.id)}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </CardActions>
-                </Card>
-              </Box>
+              <IntegrationCard
+                key={integration.id}
+                integration={integration}
+                connectorName={connectorName}
+                onTest={handleTest}
+                onSync={handleSync}
+                onHistory={(id) => { setHistoryId(id); setHistoryOpen(true); }}
+                onEdit={setEditIntegration}
+                onDelete={setDeleteId}
+              />
             );
           })}
         </Box>

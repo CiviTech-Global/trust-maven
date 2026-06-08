@@ -8,16 +8,25 @@ interface StatCardProps {
   icon?: React.ReactElement<SvgIconProps>;
   trend?: string;
   trendDirection?: "up" | "down";
+  subtitle?: string;
+  onClick?: () => void;
 }
 
-export default function StatCard({ label, value, color, accentColor, icon, trend }: StatCardProps) {
+export default function StatCard({ label, value, color, accentColor, icon, trend, subtitle, onClick }: StatCardProps) {
   const theme = useTheme();
   const accent = color || accentColor || theme.palette.primary.main;
   return (
     <Card
+      onClick={onClick}
       sx={{
         position: "relative",
         overflow: "visible",
+        cursor: onClick ? "pointer" : "default",
+        transition: "transform 0.15s ease, box-shadow 0.15s ease",
+        "&:hover": onClick ? {
+          transform: "translateY(-2px)",
+          boxShadow: theme.shadows[4],
+        } : {},
         "&::before": {
           content: '""',
           position: "absolute",
@@ -58,6 +67,11 @@ export default function StatCard({ label, value, color, accentColor, icon, trend
             >
               {value}
             </Typography>
+            {subtitle && (
+              <Typography variant="caption" sx={{ mt: 0.25, display: "block", color: "text.secondary", fontWeight: 400 }}>
+                {subtitle}
+              </Typography>
+            )}
             {trend && (
               <Typography
                 variant="caption"

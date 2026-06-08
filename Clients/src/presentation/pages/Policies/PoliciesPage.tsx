@@ -4,12 +4,13 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Chip, LinearProgress, Alert,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, Visibility as ViewIcon } from "@mui/icons-material";
 import { usePolicies, useDeletePolicy } from "../../../infrastructure/api/policies.api";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import CreatePolicyModal from "./CreatePolicyModal";
 import EditPolicyModal from "./EditPolicyModal";
+import PolicyDetailDialog from "./PolicyDetailDialog";
 
 const STATUS_FILTERS = [
   { value: "", label: "All Statuses" },
@@ -39,6 +40,7 @@ export default function PoliciesPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editPolicy, setEditPolicy] = useState<any | null>(null);
+  const [detailPolicyId, setDetailPolicyId] = useState<string | null>(null);
 
   const { data: policies, isLoading, error } = usePolicies({
     status: statusFilter || undefined,
@@ -97,7 +99,14 @@ export default function PoliciesPage() {
               {policies?.map((policy: any) => (
                 <TableRow key={policy.id} hover>
                   <TableCell>
-                    <Typography variant="body1" fontWeight={500}>{policy.title}</Typography>
+                    <Typography
+                      variant="body1"
+                      fontWeight={500}
+                      sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline", color: "primary.main" } }}
+                      onClick={() => setDetailPolicyId(policy.id)}
+                    >
+                      {policy.title}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary">v{policy.version}</Typography>
@@ -130,6 +139,11 @@ export default function PoliciesPage() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="View">
+                      <IconButton size="small" onClick={() => setDetailPolicyId(policy.id)}>
+                        <ViewIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Edit">
                       <IconButton size="small" onClick={() => setEditPolicy(policy)}>
                         <EditIcon fontSize="small" />
@@ -152,6 +166,10 @@ export default function PoliciesPage() {
 
       {editPolicy && (
         <EditPolicyModal open={true} onClose={() => setEditPolicy(null)} policy={editPolicy} />
+      )}
+
+      {detailPolicyId && (
+        <PolicyDetailDialog open={true} onClose={() => setDetailPolicyId(null)} policyId={detailPolicyId} />
       )}
 
       <ConfirmDialog

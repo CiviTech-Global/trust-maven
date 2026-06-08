@@ -4,12 +4,16 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Chip, LinearProgress, Alert,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon, Assessment as AssessIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon,
+  Assessment as AssessIcon, Visibility as ViewIcon,
+} from "@mui/icons-material";
 import { useVendors, useDeleteVendor, type VendorItem } from "../../../infrastructure/api/vendors.api";
 import EmptyState from "../../components/common/EmptyState";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import CreateVendorModal from "./CreateVendorModal";
 import VendorAssessmentModal from "./VendorAssessmentModal";
+import VendorDetailDialog from "./VendorDetailDialog";
 
 const RISK_LEVELS = [
   { value: "", label: "All Risk Levels" },
@@ -33,6 +37,7 @@ export default function VendorsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editVendor, setEditVendor] = useState<VendorItem | null>(null);
   const [assessVendor, setAssessVendor] = useState<VendorItem | null>(null);
+  const [viewVendorId, setViewVendorId] = useState<string | null>(null);
 
   const { data: vendors, isLoading, error } = useVendors({
     riskLevel: riskLevel || undefined,
@@ -90,7 +95,13 @@ export default function VendorsPage() {
               {vendors?.map((vendor) => (
                 <TableRow key={vendor.id} hover>
                   <TableCell>
-                    <Typography variant="body1" fontWeight={500}>{vendor.name}</Typography>
+                    <Typography
+                      variant="body1" fontWeight={500}
+                      sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline", color: "primary.main" } }}
+                      onClick={() => setViewVendorId(vendor.id)}
+                    >
+                      {vendor.name}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Chip
@@ -118,6 +129,11 @@ export default function VendorsPage() {
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
+                    <Tooltip title="View Details">
+                      <IconButton size="small" color="info" onClick={() => setViewVendorId(vendor.id)}>
+                        <ViewIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                     <Tooltip title="Assess">
                       <IconButton size="small" color="primary" onClick={() => setAssessVendor(vendor)}>
                         <AssessIcon fontSize="small" />
@@ -144,6 +160,8 @@ export default function VendorsPage() {
       <CreateVendorModal open={createOpen} onClose={() => setCreateOpen(false)} />
       {editVendor && <CreateVendorModal open={true} onClose={() => setEditVendor(null)} editVendor={editVendor} />}
       {assessVendor && <VendorAssessmentModal open={true} onClose={() => setAssessVendor(null)} vendor={assessVendor} />}
+
+      <VendorDetailDialog vendorId={viewVendorId} onClose={() => setViewVendorId(null)} />
 
       <ConfirmDialog
         open={!!deleteId}

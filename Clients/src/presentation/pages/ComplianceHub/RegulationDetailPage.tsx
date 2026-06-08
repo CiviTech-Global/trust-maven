@@ -17,12 +17,14 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   Snackbar,
   Alert,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Divider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import {
@@ -32,6 +34,10 @@ import {
   CheckCircleOutline,
   CancelOutlined,
   Visibility,
+  AttachFile as AttachFileIcon,
+  PlayArrow as PlayArrowIcon,
+  CheckCircle as CheckCircleIcon,
+  Policy as PolicyIcon,
 } from "@mui/icons-material";
 import { useRegulation, RegulationRequirementItem } from "../../../infrastructure/api/regulationCatalog.api";
 import {
@@ -43,6 +49,13 @@ import {
 import {
   useJumpstartCoverage,
 } from "../../../infrastructure/api/metaframework.api";
+import {
+  useEvidence,
+  useCreateEvidence,
+  type EvidenceItem,
+} from "../../../infrastructure/api/evidence.api";
+import { usePolicies } from "../../../infrastructure/api/policies.api";
+import type { Policy } from "../../../domain/interfaces";
 import StrMappingViewer from "../Metaframework/StrMappingViewer";
 
 function ComplianceGauge({ percent }: { percent: number }) {
@@ -254,6 +267,269 @@ function JumpstartPreviewDialog({
   );
 }
 
+const EVIDENCE_STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  draft: { bg: "#F1F5F9", color: "#475569" },
+  submitted: { bg: "#DBEAFE", color: "#1E40AF" },
+  approved: { bg: "#D1FAE5", color: "#065F46" },
+  rejected: { bg: "#FEE2E2", color: "#9F1239" },
+};
+
+function RequirementEvidenceDialog({
+  open,
+  requirementId,
+  onClose,
+}: {
+  open: boolean;
+  requirementId: string;
+  onClose: () => void;
+}) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [createTitle, setCreateTitle] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+  const [mode, setMode] = useState<"search" | "create">("search");
+  const [error, setError] = useState("");
+
+  const { data: linkedEvidence, isLoading: linkedLoading } = useEvidence({
+    entityType: "requirement",
+    entityId: requirementId,
+  });
+
+  const { data: searchResults, isLoading: searchLoading } = useEvidence(
+    searchTerm ? { search: searchTerm } : undefined,
+  );
+
+  const createEvidence = useCreateEvidence();
+
+  const unlinkedEvidence = (searchResults || []).filter(
+    (e: EvidenceItem) => e.entityId !== requirementId,
+  );
+
+  const handleLinkExisting = async (evidenceId: string) => {
+    try {
+      setError("");
+      await createEvidence.mutateAsync({
+        title: searchResults?.find((e: EvidenceItem) => e.id === evidenceId)?.title || "Linked evidence",
+        entityType: "requirement",
+        entityId: requirementId,
+      });
+      onClose();
+    } catch {
+      setError("Failed to link evidence");
+    }
+  };
+
+  const handleCreateAndLink = async () => {
+    if (!createTitle.trim()) return;
+    try {
+      setError("");
+      await createEvidence.mutateAsync({
+        title: createTitle.trim(),
+        description: createDescription.trim() || undefined,
+        entityType: "requirement",
+        entityId: requirementId,
+        status: "draft",
+      });
+      onClose();
+      setCreateTitle("");
+      setCreateDescription("");
+    } catch {
+      setError("Failed to create evidence");
+    }
+  };
+
+  const handleClose = () => {
+    onClose();
+    setSearchTerm("");
+    setCreateTitle("");
+    setCreateDescription("");
+    setError("");
+    setMode("search");
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Evidence for Requirement</DialogTitle>
+      <DialogContent>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
+        {/* Linked evidence list */}
+        {linkedLoading ? (
+          <LinearProgress sx={{ mb: 2 }} />
+        ) : (
+          <>
+            <Typography variant="subtitle2" gutterBottom>
+              Linked Evidence ({linkedEvidence?.length || 0})
+            </Typography>
+            {!linkedEvidence || linkedEvidence.length === 0 ? (
+              <Typography variant="body2" color="text.secondary" sx={{ py: 1, mb: 2 }}>
+                No evidence linked to this requirement
+              </Typography>
+            ) : (
+              <List disablePadding sx={{ mb: 2, maxHeight: 200, overflow: "auto" }}>
+                {linkedEvidence.map((item: EvidenceItem) => (
+                  <ListItem key={item.id} sx={{ borderBottom: "1px solid", borderColor: "divider", py: 0.5 }}>
+                    <ListItemText
+                      primary={
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <Typography variant="body2" fontWeight={600}>{item.title}</Typography>
+                          <Chip
+                            label={item.status}
+                            size="small"
+                            sx={{
+                              backgroundColor: EVIDENCE_STATUS_COLORS[item.status]?.bg,
+                              color: EVIDENCE_STATUS_COLORS[item.status]?.color,
+                              fontWeight: 600,
+                              fontSize: "0.65rem",
+                            }}
+                          />
+                        </Box>
+                      }
+                      secondary={
+                        <Typography variant="caption" color="text.secondary">
+                          {item.uploadedBy
+                            ? `${item.uploadedBy.firstName} ${item.uploadedBy.lastName}`
+                            : "Unknown"}{" "}
+                          &middot; {new Date(item.createdAt).toLocaleDateString()}
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </>
+        )}
+
+        <Divider sx={{ mb: 2 }} />
+
+        <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+          <Button
+            size="small"
+            variant={mode === "search" ? "contained" : "outlined"}
+            onClick={() => setMode("search")}
+          >
+            Search Existing
+          </Button>
+          <Button
+            size="small"
+            variant={mode === "create" ? "contained" : "outlined"}
+            onClick={() => setMode("create")}
+          >
+            Create New
+          </Button>
+        </Box>
+
+        {mode === "search" ? (
+          <Box>
+            <TextField
+              label="Search evidence by title"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+              size="small"
+              sx={{ mb: 2 }}
+            />
+            {searchLoading && <LinearProgress sx={{ mb: 1 }} />}
+            {!searchLoading && (!unlinkedEvidence || unlinkedEvidence.length === 0) ? (
+              <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: "center" }}>
+                {searchTerm ? "No unlinked evidence found" : "Type to search for evidence"}
+              </Typography>
+            ) : (
+              <List disablePadding sx={{ maxHeight: 300, overflow: "auto" }}>
+                {unlinkedEvidence.map((item: EvidenceItem) => (
+                  <ListItem key={item.id} disablePadding>
+                    <ListItemButton onClick={() => handleLinkExisting(item.id)}>
+                      <ListItemText
+                        primary={item.title}
+                        secondary={`${item.entityType} · ${item.uploadedBy?.firstName || "Unknown"}`}
+                      />
+                      <Chip
+                        label={item.status}
+                        size="small"
+                        sx={{
+                          backgroundColor: EVIDENCE_STATUS_COLORS[item.status]?.bg,
+                          color: EVIDENCE_STATUS_COLORS[item.status]?.color,
+                          fontWeight: 600,
+                          fontSize: "0.65rem",
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Title"
+              value={createTitle}
+              onChange={(e) => setCreateTitle(e.target.value)}
+              fullWidth
+              required
+              size="small"
+            />
+            <TextField
+              label="Description"
+              value={createDescription}
+              onChange={(e) => setCreateDescription(e.target.value)}
+              fullWidth
+              multiline
+              rows={3}
+              size="small"
+            />
+            <Button
+              variant="contained"
+              onClick={handleCreateAndLink}
+              disabled={!createTitle.trim() || createEvidence.isPending}
+            >
+              {createEvidence.isPending ? "Creating..." : "Create & Link"}
+            </Button>
+          </Box>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function LinkedPoliciesSection({ requirementCode }: { requirementCode: string }) {
+  const { data: policies, isLoading } = usePolicies({ search: requirementCode });
+
+  const relevantPolicies = (policies || []).slice(0, 5);
+
+  return (
+    <Box sx={{ mb: 2 }}>
+      <Typography variant="body2" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <PolicyIcon sx={{ fontSize: 16 }} />
+        Linked Policies
+      </Typography>
+      {isLoading ? (
+        <LinearProgress sx={{ mb: 1 }} />
+      ) : relevantPolicies.length === 0 ? (
+        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+          No policies linked to this requirement
+        </Typography>
+      ) : (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+          {relevantPolicies.map((p: Policy) => (
+            <Chip
+              key={p.id}
+              label={p.title}
+              size="small"
+              variant="outlined"
+              icon={<PolicyIcon sx={{ fontSize: 14 }} />}
+              sx={{ fontSize: "0.75rem" }}
+            />
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+}
+
 export default function RegulationDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -262,6 +538,7 @@ export default function RegulationDetailPage() {
   const [targetDate, setTargetDate] = useState("");
   const [toast, setToast] = useState<{ severity: "success" | "error"; message: string } | null>(null);
   const [mappingViewerReqId, setMappingViewerReqId] = useState<string | null>(null);
+  const [evidenceDialogReqId, setEvidenceDialogReqId] = useState<string | null>(null);
 
   const { data: regulationData, isLoading } = useRegulation(id || null);
   const { data: adopted } = useAdoptedRegulations();
@@ -346,6 +623,7 @@ export default function RegulationDetailPage() {
                 sx={{ mr: 1 }}
               />
             )}
+            <EvidenceCountBadge requirementId={req.id} />
           </Box>
         </AccordionSummary>
         <AccordionDetails>
@@ -377,31 +655,60 @@ export default function RegulationDetailPage() {
             </Box>
           )}
 
-          <Button
-            size="small"
-            variant="outlined"
-            startIcon={<Visibility />}
-            onClick={() => setMappingViewerReqId(req.id)}
-            sx={{ mb: 2 }}
-          >
-            View Common Controls
-          </Button>
+          <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<Visibility />}
+              onClick={() => setMappingViewerReqId(req.id)}
+            >
+              View Common Controls
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<AttachFileIcon />}
+              onClick={() => setEvidenceDialogReqId(req.id)}
+            >
+              Add Evidence
+            </Button>
+          </Box>
+
+          <LinkedPoliciesSection requirementCode={req.code} />
 
           {orgReg && impl && (
             <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
-              <FormControl size="small" sx={{ minWidth: 180 }}>
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={impl.status}
-                  label="Status"
-                  onChange={(e) => handleStatusChange(impl.id, e.target.value)}
+              {impl.status === "not_started" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  startIcon={<PlayArrowIcon />}
+                  onClick={() => handleStatusChange(impl.id, "in_progress")}
                 >
-                  <MenuItem value="not_started">Not Started</MenuItem>
-                  <MenuItem value="in_progress">In Progress</MenuItem>
-                  <MenuItem value="implemented">Implemented</MenuItem>
-                  <MenuItem value="not_applicable">Not Applicable</MenuItem>
-                </Select>
-              </FormControl>
+                  Start Work
+                </Button>
+              )}
+              {impl.status === "in_progress" && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  size="small"
+                  startIcon={<CheckCircleIcon />}
+                  onClick={() => handleStatusChange(impl.id, "implemented")}
+                >
+                  Mark Complete
+                </Button>
+              )}
+              {impl.status === "implemented" && (
+                <Chip
+                  icon={<CheckCircleIcon />}
+                  label="Verified"
+                  color="success"
+                  size="small"
+                  variant="filled"
+                />
+              )}
             </Box>
           )}
 
@@ -414,6 +721,23 @@ export default function RegulationDetailPage() {
       </Accordion>
     );
   };
+
+  function EvidenceCountBadge({ requirementId }: { requirementId: string }) {
+    const { data: evidence } = useEvidence({ entityType: "requirement", entityId: requirementId });
+    const count = evidence?.length || 0;
+    if (count === 0) return null;
+    return (
+      <Tooltip title={`${count} evidence item${count === 1 ? "" : "s"}`}>
+        <Chip
+          icon={<AttachFileIcon sx={{ fontSize: 14 }} />}
+          label={count}
+          size="small"
+          variant="outlined"
+          sx={{ fontSize: "0.7rem", mr: 1 }}
+        />
+      </Tooltip>
+    );
+  }
 
   return (
     <Box>
@@ -537,6 +861,13 @@ export default function RegulationDetailPage() {
         requirementId={mappingViewerReqId || ""}
         open={!!mappingViewerReqId}
         onClose={() => setMappingViewerReqId(null)}
+      />
+
+      {/* Evidence Dialog */}
+      <RequirementEvidenceDialog
+        open={!!evidenceDialogReqId}
+        requirementId={evidenceDialogReqId || ""}
+        onClose={() => setEvidenceDialogReqId(null)}
       />
 
       <Snackbar

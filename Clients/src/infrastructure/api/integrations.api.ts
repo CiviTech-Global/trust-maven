@@ -52,6 +52,11 @@ export interface EntityItem {
   children?: EntityItem[];
 }
 
+export interface TrustCenterBadge {
+  name: string;
+  imageUrl: string;
+}
+
 export interface TrustCenterConfig {
   id: string;
   isPublic: boolean;
@@ -62,6 +67,11 @@ export interface TrustCenterConfig {
   supportUrl: string | null;
   certifications: any[];
   controls: any[];
+  selectedFrameworkIds: string[];
+  vulnerabilityPolicyUrl: string | null;
+  incidentResponseContact: string | null;
+  bugBountyUrl: string | null;
+  badges: TrustCenterBadge[];
 }
 
 export interface FairAnalysis {

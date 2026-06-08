@@ -8,11 +8,15 @@ import {
   Edit as EditIcon, Link as LinkIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useCommonControl, useMappingsForControl,
   useImplementations, useUpdateImplementation,
   type StrMapping,
 } from "../../../infrastructure/api/metaframework.api";
+import { usePolicies } from "../../../infrastructure/api/policies.api";
+import { useEntityTree, type EntityItem } from "../../../infrastructure/api/integrations.api";
+import type { Policy } from "../../../domain/interfaces";
 import ControlEvidencePanel from "./ControlEvidencePanel";
 
 interface ControlDetailDialogProps {
@@ -40,11 +44,23 @@ function TabPanel({ children, value, index }: { children: React.ReactNode; value
   return value === index ? <Box sx={{ pt: 2 }}>{children}</Box> : null;
 }
 
+function flattenEntityTree(items: EntityItem[]): EntityItem[] {
+  const result: EntityItem[] = [];
+  for (const item of items) {
+    result.push(item);
+    if (item.children?.length) result.push(...flattenEntityTree(item.children));
+  }
+  return result;
+}
+
 export default function ControlDetailDialog({ open, onClose, controlId }: ControlDetailDialogProps) {
+  const navigate = useNavigate();
   const [tab, setTab] = useState(0);
   const { data: control, isLoading: ctrlLoading } = useCommonControl(controlId);
   const { data: mappings, isLoading: mapLoading } = useMappingsForControl(controlId);
   const { data: impls } = useImplementations();
+  const { data: policies, isLoading: policiesLoading } = usePolicies({ search: control?.title });
+  const { data: entityTree, isLoading: entitiesLoading } = useEntityTree();
   const updateImpl = useUpdateImplementation();
 
   const impl = impls?.implementations?.find((i) => i.commonControlId === controlId);
@@ -99,11 +115,13 @@ export default function ControlDetailDialog({ open, onClose, controlId }: Contro
         <Tab label="Implementation" />
         <Tab
           label={
-            <Badge badgeContent={impl?.evidenceIds?.length || 0} color="primary" size="small" sx={{ "& .MuiBadge-badge": { fontSize: "0.6rem", height: 16, minWidth: 16 } }}>
+            <Badge badgeContent={impl?.evidenceIds?.length || 0} color="primary" sx={{ "& .MuiBadge-badge": { fontSize: "0.6rem", height: 16, minWidth: 16 } }}>
               <Typography variant="body2">Evidence & Monitoring</Typography>
             </Badge>
           }
         />
+        <Tab label={`Linked Policies (${policies?.length || 0})`} />
+        <Tab label={`Entity Assignments (${entityTree ? flattenEntityTree(entityTree).length : 0})`} />
       </Tabs>
 
       <DialogContent dividers>
@@ -402,6 +420,109 @@ export default function ControlDetailDialog({ open, onClose, controlId }: Contro
               </Box>
             </Box>
           </Box>
+        </TabPanel>
+
+        <TabPanel value={tab} index={4}>
+          {policiesLoading ? (
+            <LinearProgress />
+          ) : !policies || policies.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: "center" }}>
+              <Typography color="text.secondary">No linked policies found for this control</Typography>
+            </Box>
+          ) : (
+            <TableContainer sx={{ maxHeight: 400 }}>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Policy Title</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Version</TableCell>
+                    <TableCell>Owner</TableCell>
+                    <TableCell>Last Updated</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {policies.map((p: Policy) => (
+                    <TableRow key={p.id} hover sx={{ cursor: "pointer" }} onClick={() => navigate(`/policies/${p.id}`)}>
+                      <TableCell>
+                        <Typography variant="body2" fontWeight={500} color="primary" sx={{ textDecoration: "underline", cursor: "pointer" }}>
+                          {p.title}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={p.status.replace(/_/g, " ")}
+                          size="small"
+                          color={p.status === "active" || p.status === "published" ? "success" : p.status === "draft" ? "default" : "warning"}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{p.version}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {p.owner ? `${p.owner.firstName} ${p.owner.lastName}` : "--"}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {new Date(p.updatedAt).toLocaleDateString()}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </TabPanel>
+
+        <TabPanel value={tab} index={5}>
+          {entitiesLoading ? (
+            <LinearProgress />
+          ) : !entityTree || entityTree.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: "center" }}>
+              <Typography color="text.secondary">No entities found</Typography>
+            </Box>
+          ) : (
+            <TableContainer sx={{ maxHeight: 400 }}>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Entity Name</TableCell>
+                    <TableCell>Type</TableCell>
+                    <TableCell>Risk Score</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {flattenEntityTree(entityTree).map((e: EntityItem) => (
+                    <TableRow key={e.id} hover sx={{ cursor: "pointer" }} onClick={() => navigate(`/entities/${e.id}`)}>
+                      <TableCell>
+                        <Typography variant="body2" fontWeight={500}>{e.name}</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip label={e.type} size="small" variant="outlined" />
+                      </TableCell>
+                      <TableCell>
+                        {e.riskScore != null ? (
+                          <Chip
+                            label={e.riskScore}
+                            size="small"
+                            sx={{
+                              color: "#fff",
+                              backgroundColor: e.riskScore >= 7 ? "#DC2626" : e.riskScore >= 4 ? "#CA8A04" : "#16A34A",
+                            }}
+                          />
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">--</Typography>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </TabPanel>
       </DialogContent>
 

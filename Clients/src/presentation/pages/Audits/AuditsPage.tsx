@@ -4,7 +4,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   IconButton, Tooltip, Chip, LinearProgress, Alert,
 } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, Visibility as ViewIcon } from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon, Visibility as ViewIcon, DescriptionOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAudits, useDeleteAudit } from "../../../infrastructure/api/auditMgmt.api";
 import EmptyState from "../../components/common/EmptyState";
@@ -91,6 +91,7 @@ export default function AuditsPage() {
                 <TableCell>Title</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Status</TableCell>
+                <TableCell>Findings</TableCell>
                 <TableCell>Lead Auditor</TableCell>
                 <TableCell>Start Date</TableCell>
                 <TableCell>End Date</TableCell>
@@ -115,6 +116,14 @@ export default function AuditsPage() {
                     />
                   </TableCell>
                   <TableCell>
+                    <Chip
+                      label={audit.findingCount ?? audit.findings?.length ?? 0}
+                      size="small"
+                      variant="outlined"
+                      color={((audit.findingCount ?? audit.findings?.length ?? 0) > 0) ? "warning" : "default"}
+                    />
+                  </TableCell>
+                  <TableCell>
                     {audit.leadAuditor ? `${audit.leadAuditor.firstName} ${audit.leadAuditor.lastName}` : "--"}
                   </TableCell>
                   <TableCell>{new Date(audit.startDate).toLocaleDateString()}</TableCell>
@@ -123,6 +132,11 @@ export default function AuditsPage() {
                     <Tooltip title="View">
                       <IconButton size="small" onClick={() => navigate(`/audits/${audit.id}`)}>
                         <ViewIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Evidence">
+                      <IconButton size="small" onClick={() => navigate(`/evidence?entityType=audit&entityId=${audit.id}`)}>
+                        <DescriptionOutlined fontSize="small" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
