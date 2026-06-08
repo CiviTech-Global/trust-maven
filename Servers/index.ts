@@ -36,7 +36,16 @@ import fileRoutes from "./routes/file.route";
 import organizationRoutes from "./routes/organization.route";
 import evidenceRoutes from "./routes/evidence.route";
 import coverageRoutes from "./routes/coverage.route";
+import metaframeworkRoutes from "./routes/metaframework.route";
+import integrationRoutes from "./routes/integration.route";
+import entityRoutes from "./routes/entity.route";
+import { trustCenterPublicRoutes, trustCenterProtectedRoutes } from "./routes/trustCenter.route";
+import fairAnalysisRoutes from "./routes/fairAnalysis.route";
+import tprmRoutes from "./routes/tprm.route";
+import workflowRoutes from "./routes/workflow.route";
 import { regulationSeederService } from "./services/regulationSeeder.service";
+import { metaframeworkSeeder } from "./services/metaframeworkSeeder.service";
+import { startEvidenceScheduler } from "./services/evidenceCollector.service";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -112,6 +121,14 @@ app.use("/api/v1/organizations", organizationRoutes);
 app.use("/api/v1/evidence", evidenceRoutes);
 app.use("/api/v1/coverage", coverageRoutes);
 app.use("/api/v1/compliance-hub", complianceHubRoutes);
+app.use("/api/v1/metaframework", metaframeworkRoutes);
+app.use("/api/v1/integrations", integrationRoutes);
+app.use("/api/v1/entities", entityRoutes);
+app.use("/api/v1/trust-center", trustCenterPublicRoutes);
+app.use("/api/v1/trust-center", trustCenterProtectedRoutes);
+app.use("/api/v1/fair-analysis", fairAnalysisRoutes);
+app.use("/api/v1/tprm", tprmRoutes);
+app.use("/api/v1/workflows", workflowRoutes);
 
 // Global error handler
 app.use(
@@ -145,6 +162,21 @@ async function bootstrap() {
       await regulationSeederService.seed();
     } catch (err: any) {
       logger.error("Failed to seed regulations:", err.message);
+    }
+
+    // Seed metaframework common controls and STRM mappings
+    try {
+      await metaframeworkSeeder.seed();
+    } catch (err: any) {
+      logger.error("Failed to seed metaframework:", err.message);
+    }
+
+    // Start evidence collection scheduler for cloud integrations
+    try {
+      startEvidenceScheduler();
+      logger.info("Evidence collection scheduler started");
+    } catch (err: any) {
+      logger.error("Failed to start evidence scheduler:", err.message);
     }
 
     const server = app.listen(PORT, () => {

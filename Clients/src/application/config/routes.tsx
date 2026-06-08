@@ -92,6 +92,30 @@ const EvidencePage = lazy(
 const ComplianceScorecardPage = lazy(
   () => import("../../presentation/pages/ComplianceScorecard/ComplianceScorecardPage")
 );
+const CommonControlsPage = lazy(
+  () => import("../../presentation/pages/Metaframework/CommonControlsPage")
+);
+const EvidenceMonitoringPage = lazy(
+  () => import("../../presentation/pages/Metaframework/EvidenceMonitoringPage")
+);
+const UnifiedCompliancePage = lazy(
+  () => import("../../presentation/pages/Metaframework/UnifiedCompliancePage")
+);
+const AnalyticsPage = lazy(
+  () => import("../../presentation/pages/Metaframework/AnalyticsPage")
+);
+const WorkflowBuilderPage = lazy(
+  () => import("../../presentation/pages/WorkflowBuilder/WorkflowBuilderPage")
+);
+const IntegrationsPage = lazy(
+  () => import("../../presentation/pages/Integrations/IntegrationsPage")
+);
+const EntityManagerPage = lazy(
+  () => import("../../presentation/pages/EntityManager/EntityManagerPage")
+);
+const TrustCenterPage = lazy(
+  () => import("../../presentation/pages/TrustCenter/TrustCenterPage")
+);
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -167,6 +191,10 @@ export default function AppRoutes() {
           <Route path="vendors" element={<VendorsPage />} />
           <Route path="policies" element={<PoliciesPage />} />
           <Route path="frameworks" element={<FrameworksPage />} />
+          <Route path="common-controls" element={<CommonControlsPage />} />
+          <Route path="common-controls/monitoring" element={<EvidenceMonitoringPage />} />
+          <Route path="common-controls/compliance" element={<UnifiedCompliancePage />} />
+          <Route path="common-controls/analytics" element={<AnalyticsPage />} />
           <Route path="compliance-hub" element={<ComplianceHubPage />} />
           <Route path="compliance-hub/regulations" element={<RegulationCatalogPage />} />
           <Route path="compliance-hub/regulations/:id" element={<RegulationDetailPage />} />
@@ -182,6 +210,10 @@ export default function AppRoutes() {
           <Route path="reports" element={<ReportsPage />} />
           <Route path="reports/builder" element={<ReportBuilderPage />} />
           <Route path="reports/builder/:id" element={<ReportBuilderPage />} />
+          <Route path="integrations" element={<IntegrationsPage />} />
+          <Route path="entities" element={<EntityManagerPage />} />
+          <Route path="trust-center" element={<TrustCenterPage />} />
+          <Route path="workflows" element={<WorkflowBuilderPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

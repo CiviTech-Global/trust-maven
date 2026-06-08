@@ -1,0 +1,86 @@
+import { RegulationSeed } from "./types";
+
+export const DORA_SEED: RegulationSeed = {
+  code: "DORA",
+  name: "EU Digital Operational Resilience Act",
+  type: "regulation",
+  category: "business_continuity",
+  jurisdiction: "EU",
+  issuer: "European Parliament",
+  version: "2022/2554",
+  description:
+    "EU regulation establishing requirements for financial entities to ensure they can withstand, respond to, and recover from ICT-related disruptions.",
+  effectiveDate: "2025-01-17",
+  requirements: [
+    {
+      code: "DORA.I",
+      title: "ICT Risk Management",
+      level: 0, orderNo: 1,
+      children: [
+        { code: "DORA.I.1", title: "ICT risk management framework", level: 1, orderNo: 1, description: "Establish and maintain a comprehensive ICT risk management framework as part of the overall risk management system." },
+        { code: "DORA.I.2", title: "ICT risk management governance", level: 1, orderNo: 2, description: "Define roles and responsibilities for ICT risk management including management body oversight and accountability." },
+        { code: "DORA.I.3", title: "ICT risk identification and mapping", level: 1, orderNo: 3, description: "Identify and map all ICT assets, systems, processes, and dependencies including network architecture and data flows." },
+        { code: "DORA.I.4", title: "ICT risk assessment and analysis", level: 1, orderNo: 4, description: "Conduct ICT risk assessments on a continuous basis using quantitative and qualitative methodologies." },
+        { code: "DORA.I.5", title: "ICT risk mitigation and controls", level: 1, orderNo: 5, description: "Implement appropriate controls to mitigate identified ICT risks including preventive, detective, and corrective measures." },
+        { code: "DORA.I.6", title: "ICT systems security monitoring", level: 1, orderNo: 6, description: "Implement continuous monitoring of ICT systems and applications for security events and anomalies." },
+        { code: "DORA.I.7", title: "ICT vulnerability and patch management", level: 1, orderNo: 7, description: "Establish a vulnerability management program including regular scanning, prioritization, and timely patch application." },
+        { code: "DORA.I.8", title: "ICT physical security", level: 1, orderNo: 8, description: "Implement physical and environmental security controls for ICT assets including data centers and critical infrastructure." },
+        { code: "DORA.I.9", title: "ICT change management", level: 1, orderNo: 9, description: "Manage ICT changes through formal change control procedures including impact assessment, testing, and approval." },
+        { code: "DORA.I.10", title: "ICT business continuity management", level: 1, orderNo: 10, description: "Develop and maintain ICT business continuity plans to ensure availability of ICT systems during disruptions." },
+        { code: "DORA.I.11", title: "ICT disaster recovery plans", level: 1, orderNo: 11, description: "Develop and maintain ICT disaster recovery plans with defined RTOs, RPOs, and recovery procedures for critical systems." },
+        { code: "DORA.I.12", title: "ICT backup and restoration", level: 1, orderNo: 12, description: "Implement backup procedures and regularly test restoration capabilities for critical data and systems." },
+      ],
+    },
+    {
+      code: "DORA.II",
+      title: "ICT Incident Management",
+      level: 0, orderNo: 2,
+      children: [
+        { code: "DORA.II.1", title: "ICT incident detection and classification", level: 1, orderNo: 1, description: "Establish processes for detecting, classifying, and prioritizing ICT incidents based on severity and impact." },
+        { code: "DORA.II.2", title: "ICT incident response procedures", level: 1, orderNo: 2, description: "Develop and implement ICT incident response procedures including containment, eradication, and recovery steps." },
+        { code: "DORA.II.3", title: "ICT incident reporting to authorities", level: 1, orderNo: 3, description: "Establish procedures for reporting major ICT incidents to competent authorities within mandatory timeframes." },
+        { code: "DORA.II.4", title: "ICT incident communication", level: 1, orderNo: 4, description: "Establish communication procedures for notifying affected clients, counterparties, and the public of major ICT incidents." },
+        { code: "DORA.II.5", title: "ICT incident documentation and analysis", level: 1, orderNo: 5, description: "Document ICT incidents and conduct post-incident reviews to identify root causes and improvement opportunities." },
+        { code: "DORA.II.6", title: "Voluntary incident notification", level: 1, orderNo: 6, description: "Establish a voluntary notification mechanism for sharing ICT threat and incident intelligence with other financial entities." },
+      ],
+    },
+    {
+      code: "DORA.III",
+      title: "Digital Operational Resilience Testing",
+      level: 0, orderNo: 3,
+      children: [
+        { code: "DORA.III.1", title: "Testing programme", level: 1, orderNo: 1, description: "Establish a comprehensive digital operational resilience testing programme covering all ICT systems and applications." },
+        { code: "DORA.III.2", title: "Vulnerability assessments and scans", level: 1, orderNo: 2, description: "Conduct regular vulnerability assessments and automated scans across all ICT infrastructure and applications." },
+        { code: "DORA.III.3", title: "Penetration testing", level: 1, orderNo: 3, description: "Conduct penetration testing of critical ICT systems, networks, and applications at least annually." },
+        { code: "DORA.III.4", title: "Scenario-based testing", level: 1, orderNo: 4, description: "Perform scenario-based testing including simulated cyber attacks, data corruption scenarios, and infrastructure failures." },
+        { code: "DORA.III.5", title: "Threat-led penetration testing", level: 1, orderNo: 5, description: "Conduct threat-led penetration testing (TLPT) for designated financial entities every three years." },
+        { code: "DORA.III.6", title: "Testing coordination and reporting", level: 1, orderNo: 6, description: "Coordinate testing activities with relevant authorities and report test results and remediation to management." },
+      ],
+    },
+    {
+      code: "DORA.IV",
+      title: "ICT Third-Party Risk Management",
+      level: 0, orderNo: 4,
+      children: [
+        { code: "DORA.IV.1", title: "Third-party ICT risk strategy", level: 1, orderNo: 1, description: "Establish a strategy for managing ICT third-party risk including identification, assessment, and monitoring of critical providers." },
+        { code: "DORA.IV.2", title: "Pre-contract due diligence", level: 1, orderNo: 2, description: "Conduct due diligence on ICT third-party providers before contracting including security posture and financial stability." },
+        { code: "DORA.IV.3", title: "Contractual ICT security requirements", level: 1, orderNo: 3, description: "Include mandatory contractual provisions for ICT third-party providers covering security, performance, and termination rights." },
+        { code: "DORA.IV.4", title: "Register of ICT third-party arrangements", level: 1, orderNo: 4, description: "Maintain a register of all contractual ICT third-party arrangements categorized by criticality and risk." },
+        { code: "DORA.IV.5", title: "Ongoing monitoring of ICT providers", level: 1, orderNo: 5, description: "Monitor ICT third-party provider security posture, performance, and compliance on an ongoing basis." },
+        { code: "DORA.IV.6", title: "Exit strategies for ICT services", level: 1, orderNo: 6, description: "Develop exit strategies for critical ICT third-party services including transition plans and data repatriation." },
+        { code: "DORA.IV.7", title: "Oversight of critical ICT providers", level: 1, orderNo: 7, description: "Designate and manage critical ICT third-party service providers (CTPPs) under the oversight framework." },
+      ],
+    },
+    {
+      code: "DORA.V",
+      title: "Information Sharing and Reporting",
+      level: 0, orderNo: 5,
+      children: [
+        { code: "DORA.V.1", title: "ICT threat intelligence sharing", level: 1, orderNo: 1, description: "Establish arrangements for sharing ICT threat intelligence and indicators of compromise with trusted peers." },
+        { code: "DORA.V.2", title: "Major incident reporting", level: 1, orderNo: 2, description: "Submit initial notification, intermediate report, and final report of major ICT incidents to competent authorities." },
+        { code: "DORA.V.3", title: "Voluntary threat notification", level: 1, orderNo: 3, description: "Establish voluntary notification mechanisms for sharing ICT threat information with financial sector peers." },
+        { code: "DORA.V.4", title: "Register of ICT incidents", level: 1, orderNo: 4, description: "Maintain a register of all ICT incidents including details of impact, response, and lessons learned." },
+      ],
+    },
+  ],
+};

@@ -90,6 +90,13 @@ export enum AuditAction {
   CREATE = "create",
   UPDATE = "update",
   DELETE = "delete",
+  APPROVE = "approve",
+  REJECT = "reject",
+  SUBMIT = "submit",
+  CONNECT = "connect",
+  DISCONNECT = "disconnect",
+  SYNC = "sync",
+  SIMULATE = "simulate",
 }
 
 export enum MonitoringStatus {

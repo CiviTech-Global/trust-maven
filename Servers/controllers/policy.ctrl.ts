@@ -47,11 +47,13 @@ export class PolicyController {
   async update(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const id = req.params.id as string;
+      const { comment, ...policyData } = req.body;
       const policy = await policyService.update(
         id,
-        req.body,
+        policyData,
         req.user!.organizationId,
-        req.user!.userId
+        req.user!.userId,
+        comment
       );
       res.json({ success: true, data: policy });
     } catch (error: any) {

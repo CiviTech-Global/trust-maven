@@ -43,8 +43,21 @@ export class Policy extends Model {
   @Column({ type: DataType.UUID })
   ownerId!: string | null;
 
+  @ForeignKey(() => User)
+  @Column({ type: DataType.UUID, allowNull: true })
+  reviewerId!: string | null;
+
   @Column({ type: DataType.DATE })
   approvedAt!: Date | null;
+
+  @Column({ type: DataType.DATE, allowNull: true })
+  submittedAt!: Date | null;
+
+  @Column({ type: DataType.DATE, allowNull: true })
+  retiredAt!: Date | null;
+
+  @Column({ type: DataType.JSONB, allowNull: true })
+  changeHistory!: object[] | null;
 
   @CreatedAt
   createdAt!: Date;
@@ -57,4 +70,7 @@ export class Policy extends Model {
 
   @BelongsTo(() => User)
   owner!: User;
+
+  @BelongsTo(() => User, "reviewerId")
+  reviewer!: User;
 }

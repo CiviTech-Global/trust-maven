@@ -33,6 +33,16 @@ import { RequirementImplementation } from "../domain.layer/models/requirementImp
 import { MfaSetting } from "../domain.layer/models/mfa/mfa.model";
 import { KriHistory } from "../domain.layer/models/kriHistory/kriHistory.model";
 import { Evidence } from "../domain.layer/models/evidence/evidence.model";
+import { CommonControl } from "../domain.layer/models/commonControl/commonControl.model";
+import { CommonControlMapping } from "../domain.layer/models/commonControlMapping/commonControlMapping.model";
+import { CommonControlImplementation } from "../domain.layer/models/commonControlImplementation/commonControlImplementation.model";
+import { Integration } from "../domain.layer/models/integration/integration.model";
+import { IntegrationEvent } from "../domain.layer/models/integrationEvent/integrationEvent.model";
+import { Entity } from "../domain.layer/models/entity/entity.model";
+import { TrustCenter } from "../domain.layer/models/trustCenter/trustCenter.model";
+import { FairAnalysis } from "../domain.layer/models/fairAnalysis/fairAnalysis.model";
+import { WorkflowDefinition } from "../domain.layer/models/workflowDefinition/workflowDefinition.model";
+import { WorkflowExecution } from "../domain.layer/models/workflowExecution/workflowExecution.model";
 
 dotenv.config();
 
@@ -78,6 +88,16 @@ export const sequelize = new Sequelize({
     MfaSetting,
     KriHistory,
     Evidence,
+    CommonControl,
+    CommonControlMapping,
+    CommonControlImplementation,
+    Integration,
+    IntegrationEvent,
+    Entity,
+    TrustCenter,
+    FairAnalysis,
+    WorkflowDefinition,
+    WorkflowExecution,
   ],
   pool: {
     max: 20,

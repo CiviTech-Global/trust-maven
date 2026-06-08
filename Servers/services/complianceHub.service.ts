@@ -3,6 +3,8 @@ import { RegulationDefinition } from "../domain.layer/models/regulationDefinitio
 import { RegulationRequirement } from "../domain.layer/models/regulationRequirement/regulationRequirement.model";
 import { OrganizationRegulation } from "../domain.layer/models/organizationRegulation/organizationRegulation.model";
 import { RequirementImplementation } from "../domain.layer/models/requirementImplementation/requirementImplementation.model";
+import { CommonControlMapping } from "../domain.layer/models/commonControlMapping/commonControlMapping.model";
+import { CommonControlImplementation } from "../domain.layer/models/commonControlImplementation/commonControlImplementation.model";
 import { User } from "../domain.layer/models/user/user.model";
 import { auditService } from "./audit.service";
 import { AuditAction } from "../types";
@@ -41,15 +43,45 @@ export class ComplianceHubService {
       notes: data.notes || null,
     });
 
-    // Create RequirementImplementation records for all requirements
+    // Create RequirementImplementation records with Jumpstart:
+    // check if any common controls already satisfy these requirements
     const requirements = await RegulationRequirement.findAll({
       where: { regulationId, isActive: true },
     });
+    const reqIds = requirements.map((r) => r.id);
+
+    // Find common control mappings for these requirements
+    const mappings = await CommonControlMapping.findAll({
+      where: { requirementId: { [Op.in]: reqIds } },
+    });
+
+    // Find which common controls are already implemented
+    const mappedCcIds = [...new Set(mappings.map((m) => m.commonControlId))];
+    const existingImpls = mappedCcIds.length > 0
+      ? await CommonControlImplementation.findAll({
+          where: {
+            organizationId,
+            commonControlId: { [Op.in]: mappedCcIds },
+            status: "implemented",
+          },
+        })
+      : [];
+
+    const implementedCcIds = new Set(existingImpls.map((i) => i.commonControlId));
+
+    // Map requirementId -> already satisfied by a common control
+    const satisfiedByCc = new Set<string>();
+    for (const m of mappings) {
+      if (implementedCcIds.has(m.commonControlId)) {
+        satisfiedByCc.add(m.requirementId);
+      }
+    }
 
     const implRecords = requirements.map((req) => ({
       organizationId,
       requirementId: req.id,
-      status: "not_started",
+      status: satisfiedByCc.has(req.id) ? "implemented" : "not_started",
+      completedAt: satisfiedByCc.has(req.id) ? new Date() : null,
     }));
 
     if (implRecords.length > 0) {
@@ -58,13 +90,20 @@ export class ComplianceHubService {
       });
     }
 
+    const jumpstartCount = satisfiedByCc.size;
+
     await auditService.log({
       organizationId,
       userId,
       entityType: "organization_regulation",
       entityId: orgReg.id,
       action: AuditAction.CREATE,
-      changes: { regulationCode: regulation.code, regulationName: regulation.name },
+      changes: {
+        regulationCode: regulation.code,
+        regulationName: regulation.name,
+        totalRequirements: requirements.length,
+        jumpstartCovered: jumpstartCount,
+      },
     });
 
     return orgReg;

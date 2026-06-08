@@ -13,10 +13,11 @@ import {
   Science as DemoIcon, Security as ControlIcon, TrendingUp as KRIIcon,
   Store as VendorIcon, Gavel as FrameworkIcon, Description as PolicyIcon,
   People as UsersIcon, History as AuditIcon, MonitorHeart as MonitorIcon,
-  FactCheck as AuditMgmtIcon, Assessment as ReportsIcon,
+  FactCheck as AuditMgmtIcon,   Assessment as ReportsIcon,
   Notifications as NotifIcon, LightMode as LightIcon, DarkMode as DarkIcon,
   Hub as ComplianceHubIcon, FactCheck as ScorecardIcon, FolderZip as EvidenceIcon,
-  ShieldOutlined,
+  ShieldOutlined, AltRoute as WorkflowIcon, Lan as LanIcon,
+  AccountTree as TreeIcon, Verified as VerifiedIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../application/redux/store";
@@ -41,15 +42,23 @@ const primaryNav = [
 const complianceNav = [
   { label: "Monitoring", path: "/controls/monitoring", icon: <MonitorIcon /> },
   { label: "Policies", path: "/policies", icon: <PolicyIcon /> },
+  { label: "Control Monitoring", path: "/common-controls/monitoring", icon: <MonitorIcon /> },
+  { label: "Integrations", path: "/integrations", icon: <LanIcon /> },
+  { label: "Common Controls", path: "/common-controls", icon: <ShieldOutlined /> },
+  { label: "Entities", path: "/entities", icon: <TreeIcon /> },
+  { label: "Unified Compliance", path: "/common-controls/compliance", icon: <ScorecardIcon /> },
+  { label: "Analytics", path: "/common-controls/analytics", icon: <ReportsIcon /> },
   { label: "Frameworks", path: "/frameworks", icon: <FrameworkIcon /> },
   { label: "Compliance Hub", path: "/compliance-hub", icon: <ComplianceHubIcon /> },
   { label: "Scorecard", path: "/compliance-scorecard", icon: <ScorecardIcon /> },
   { label: "Evidence", path: "/evidence", icon: <EvidenceIcon /> },
+  { label: "Trust Center", path: "/trust-center", icon: <VerifiedIcon /> },
 ];
 
 const secondaryNav = [
   { label: "Audits", path: "/audits", icon: <AuditMgmtIcon /> },
   { label: "Reports", path: "/reports", icon: <ReportsIcon /> },
+  { label: "Workflows", path: "/workflows", icon: <WorkflowIcon /> },
   { label: "Settings", path: "/settings", icon: <SettingsIcon /> },
 ];
 
