@@ -2,67 +2,70 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { reportTemplateService } from "../services/reportTemplate.service";
 import { reportGeneratorService } from "../services/reportGenerator.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class ReportTemplateController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findAll = controllerWrapper(
+    async (req) => {
       const templates = await reportTemplateService.findAll(req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, data: templates });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: templates };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const template = await reportTemplateService.findById(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data: template });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: template };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { name, description, entityType, columns, filters, groupBy, sortBy, sortOrder, isShared } = req.body;
-      if (!name || !entityType) {
-        res.status(400).json({ success: false, message: "Name and entity type are required" });
-        return;
-      }
+      if (!name || !entityType) throw new ValidationException("Name and entity type are required");
       const template = await reportTemplateService.create(
         { name, description, entityType, columns, filters, groupBy, sortBy, sortOrder, isShared },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: template });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: template };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const template = await reportTemplateService.update(
         req.params.id as string,
         req.body,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: template });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: template };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       await reportTemplateService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Report template deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Report template deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
+  getSchema = controllerWrapper(
+    async (req) => {
+      const fields = reportGeneratorService.getSchema(req.params.entityType as string);
+      return { status: 200, data: fields };
+    },
+    { functionName: "getSchema", eventType: "Read" }
+  );
+
+  // generate needs direct res access for CSV export
   async generate(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const template = await reportTemplateService.findById(req.params.id as string, req.user!.organizationId);
@@ -82,15 +85,6 @@ export class ReportTemplateController {
       res.json({ success: true, data: result });
     } catch (error: any) {
       res.status(500).json({ success: false, message: error.message });
-    }
-  }
-
-  async getSchema(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const fields = reportGeneratorService.getSchema(req.params.entityType as string);
-      res.json({ success: true, data: fields });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
     }
   }
 }

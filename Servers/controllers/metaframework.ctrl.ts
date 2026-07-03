@@ -2,6 +2,7 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { metaframeworkService } from "../services/metaframework.service";
 import { workflowEngineService } from "../services/workflowEngine.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
 
 const VALID_META_TRANSITIONS: Record<string, string[]> = {
   not_started: ["draft"],
@@ -13,11 +14,6 @@ const VALID_META_TRANSITIONS: Record<string, string[]> = {
   implemented: [],
   not_applicable: [],
 };
-
-function ensureUser(req: AuthenticatedRequest) {
-  if (!req.user) throw new Error("Authentication required");
-  return req.user;
-}
 
 function qs(val: unknown): string | undefined {
   if (typeof val === "string") return val;
@@ -42,84 +38,103 @@ export class MetaframeworkController {
     return transitions;
   }
 
-  async getWorkflowStatus(req: AuthenticatedRequest, res: Response) {
-    const currentStatus = qs(req.query.currentStatus) || "";
-    const user = ensureUser(req);
-    const allowedTransitions = await this.getAllowedTransitions(currentStatus, user.organizationId);
-    res.json({ currentStatus, allowedTransitions });
-  }
+  getWorkflowStatus = controllerWrapper(
+    async (req) => {
+      const currentStatus = qs(req.query.currentStatus) || "";
+      const allowedTransitions = await this.getAllowedTransitions(currentStatus, req.user!.organizationId);
+      return { status: 200, data: { currentStatus, allowedTransitions } };
+    },
+    { functionName: "getWorkflowStatus", eventType: "Read" }
+  );
 
-  async listCommonControls(req: AuthenticatedRequest, res: Response) {
-    const controls = await metaframeworkService.listCommonControls({
-      domain: qs(req.query.domain),
-      search: qs(req.query.search),
-      weight: qs(req.query.weight),
-    });
-    res.json(controls);
-  }
+  listCommonControls = controllerWrapper(
+    async (req) => {
+      const controls = await metaframeworkService.listCommonControls({
+        domain: qs(req.query.domain),
+        search: qs(req.query.search),
+        weight: qs(req.query.weight),
+      });
+      return { status: 200, data: controls };
+    },
+    { functionName: "listCommonControls", eventType: "Read" }
+  );
 
-  async getCommonControl(req: AuthenticatedRequest, res: Response) {
-    const control = await metaframeworkService.getCommonControl(
-      String(req.params.id)
-    );
-    res.json(control);
-  }
+  getCommonControl = controllerWrapper(
+    async (req) => {
+      const control = await metaframeworkService.getCommonControl(String(req.params.id));
+      return { status: 200, data: control };
+    },
+    { functionName: "getCommonControl", eventType: "Read" }
+  );
 
-  async listDomains(req: AuthenticatedRequest, res: Response) {
-    const domains = await metaframeworkService.listDomains();
-    res.json(domains);
-  }
+  listDomains = controllerWrapper(
+    async (_req) => {
+      const domains = await metaframeworkService.listDomains();
+      return { status: 200, data: domains };
+    },
+    { functionName: "listDomains", eventType: "Read" }
+  );
 
-  async getMappingsForRequirement(req: AuthenticatedRequest, res: Response) {
-    const mappings = await metaframeworkService.getMappingsForRequirement(
-      String(req.params.requirementId)
-    );
-    res.json(mappings);
-  }
+  getMappingsForRequirement = controllerWrapper(
+    async (req) => {
+      const mappings = await metaframeworkService.getMappingsForRequirement(String(req.params.requirementId));
+      return { status: 200, data: mappings };
+    },
+    { functionName: "getMappingsForRequirement", eventType: "Read" }
+  );
 
-  async getMappingsForControl(req: AuthenticatedRequest, res: Response) {
-    const mappings = await metaframeworkService.getMappingsForControl(
-      String(req.params.controlId)
-    );
-    res.json(mappings);
-  }
+  getMappingsForControl = controllerWrapper(
+    async (req) => {
+      const mappings = await metaframeworkService.getMappingsForControl(String(req.params.controlId));
+      return { status: 200, data: mappings };
+    },
+    { functionName: "getMappingsForControl", eventType: "Read" }
+  );
 
-  async getImplementations(req: AuthenticatedRequest, res: Response) {
-    const user = ensureUser(req);
-    const result = await metaframeworkService.getOrganizationImplementations(
-      user.organizationId,
-      { status: qs(req.query.status), domain: qs(req.query.domain) }
-    );
-    res.json(result);
-  }
+  getImplementations = controllerWrapper(
+    async (req) => {
+      const result = await metaframeworkService.getOrganizationImplementations(
+        req.user!.organizationId,
+        { status: qs(req.query.status), domain: qs(req.query.domain) }
+      );
+      return { status: 200, data: result };
+    },
+    { functionName: "getImplementations", eventType: "Read" }
+  );
 
-  async updateImplementation(req: AuthenticatedRequest, res: Response) {
-    const user = ensureUser(req);
-    const impl = await metaframeworkService.updateImplementation(
-      user.organizationId,
-      String(req.params.controlId),
-      req.body,
-      user.userId
-    );
-    res.json(impl);
-  }
+  updateImplementation = controllerWrapper(
+    async (req) => {
+      const impl = await metaframeworkService.updateImplementation(
+        req.user!.organizationId,
+        String(req.params.controlId),
+        req.body,
+        req.user!.userId
+      );
+      return { status: 200, data: impl };
+    },
+    { functionName: "updateImplementation", eventType: "Update" }
+  );
 
-  async getJumpstartCoverage(req: AuthenticatedRequest, res: Response) {
-    const user = ensureUser(req);
-    const coverage = await metaframeworkService.getJumpstartCoverage(
-      user.organizationId,
-      String(req.params.regulationId)
-    );
-    res.json(coverage);
-  }
+  getJumpstartCoverage = controllerWrapper(
+    async (req) => {
+      const coverage = await metaframeworkService.getJumpstartCoverage(
+        req.user!.organizationId,
+        String(req.params.regulationId)
+      );
+      return { status: 200, data: coverage };
+    },
+    { functionName: "getJumpstartCoverage", eventType: "Read" }
+  );
 
-  async getUnifiedCompliance(req: AuthenticatedRequest, res: Response) {
-    const user = ensureUser(req);
-    const status = await metaframeworkService.getUnifiedComplianceStatus(
-      user.organizationId
-    );
-    res.json(status);
-  }
+  getUnifiedCompliance = controllerWrapper(
+    async (req) => {
+      const status = await metaframeworkService.getUnifiedComplianceStatus(
+        req.user!.organizationId
+      );
+      return { status: 200, data: status };
+    },
+    { functionName: "getUnifiedCompliance", eventType: "Read" }
+  );
 }
 
 export const metaframeworkController = new MetaframeworkController();

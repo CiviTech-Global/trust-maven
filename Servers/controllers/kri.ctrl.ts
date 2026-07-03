@@ -1,99 +1,94 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { kriService } from "../services/kri.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class KRIController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { category, status, riskId, search } = req.query;
-      const kris = await kriService.findAll(req.user!.organizationId, {
+  findAll = controllerWrapper(
+    async (req) => {
+      const { category, status, riskId, search, page, limit } = req.query;
+      const result = await kriService.findAll(req.user!.organizationId, {
         category: category as string | undefined,
         status: status as string | undefined,
         riskId: riskId as string | undefined,
         search: search as string | undefined,
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
       });
-      res.json({ success: true, data: kris });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result.kris, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const kri = await kriService.findById(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data: kri });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: kri };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { name, description, category, currentValue, thresholdGreen, thresholdAmber, thresholdRed, direction, unit, frequency, riskId, ownerId } = req.body;
       if (!name || !category || currentValue === undefined || thresholdGreen === undefined || thresholdAmber === undefined || thresholdRed === undefined) {
-        res.status(400).json({ success: false, message: "Name, category, currentValue, and all thresholds are required" });
-        return;
+        throw new ValidationException("Name, category, currentValue, and all thresholds are required");
       }
       const kri = await kriService.create(
         { name, description, category, currentValue, thresholdGreen, thresholdAmber, thresholdRed, direction, unit, frequency, riskId, ownerId },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: kri });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: kri };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const kri = await kriService.update(
         req.params.id as string,
         req.body,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: kri });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: kri };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       await kriService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "KRI deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "KRI deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  async getSummary(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getSummary = controllerWrapper(
+    async (req) => {
       const summary = await kriService.getSummary(req.user!.organizationId);
-      res.json({ success: true, data: summary });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: summary };
+    },
+    { functionName: "getSummary", eventType: "Read" }
+  );
 
-  async getHistory(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getHistory = controllerWrapper(
+    async (req) => {
       const history = await kriService.getHistory(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data: history });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: history };
+    },
+    { functionName: "getHistory", eventType: "Read" }
+  );
 
-  async getBreached(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getBreached = controllerWrapper(
+    async (req) => {
       const breached = await kriService.getBreachedKRIs(req.user!.organizationId);
-      res.json({ success: true, data: breached });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: breached };
+    },
+    { functionName: "getBreached", eventType: "Read" }
+  );
 }
 
 export const kriController = new KRIController();

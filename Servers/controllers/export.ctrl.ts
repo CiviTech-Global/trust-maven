@@ -34,6 +34,19 @@ export class ExportController {
       res.status(500).json({ success: false, message: error.message });
     }
   }
+
+  async exportRisksPDF(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { domain, status } = req.query;
+      const data = await exportService.exportRisksPDF(req.user!.organizationId, {
+        domain: domain as string | undefined,
+        status: status as string | undefined,
+      });
+      res.json({ success: true, data });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
 }
 
 export const exportController = new ExportController();

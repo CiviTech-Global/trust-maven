@@ -23,5 +23,11 @@ router.post("/refresh", (req, res) =>
 router.post("/logout", (req, res) =>
   authController.logout(req, res)
 );
+router.post("/forgot-password", authRateLimit, (req, res) =>
+  authController.forgotPassword(req, res)
+);
+router.post("/reset-password", authRateLimit, (req, res) =>
+  authController.resetPassword(req, res)
+);
 
 export default router;

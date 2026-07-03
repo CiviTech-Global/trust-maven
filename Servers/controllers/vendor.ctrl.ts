@@ -1,109 +1,98 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { vendorService } from "../services/vendor.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class VendorController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { riskLevel, status, search } = req.query;
-      const vendors = await vendorService.findAll(req.user!.organizationId, {
+  findAll = controllerWrapper(
+    async (req) => {
+      const { riskLevel, status, search, page, limit } = req.query;
+      const result = await vendorService.findAll(req.user!.organizationId, {
         riskLevel: riskLevel as string | undefined,
         status: status as string | undefined,
         search: search as string | undefined,
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
       });
-      res.json({ success: true, data: vendors });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result.vendors, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const vendor = await vendorService.findById(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data: vendor });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: vendor };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { name, description, riskLevel, contactInfo, status } = req.body;
-      if (!name) {
-        res.status(400).json({ success: false, message: "Name is required" });
-        return;
-      }
+      if (!name) throw new ValidationException("Name is required");
       const vendor = await vendorService.create(
         { name, description, riskLevel, contactInfo, status },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: vendor });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: vendor };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const vendor = await vendorService.update(
         req.params.id as string,
         req.body,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: vendor });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: vendor };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       await vendorService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Vendor deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Vendor deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  // Assessments
-  async getAssessments(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getAssessments = controllerWrapper(
+    async (req) => {
       const assessments = await vendorService.getAssessments(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data: assessments });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: assessments };
+    },
+    { functionName: "getAssessments", eventType: "Read" }
+  );
 
-  async createAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  createAssessment = controllerWrapper(
+    async (req) => {
       const vendorId = req.params.id as string;
       const { title, assessmentType, questionnaire, findings, summary, riskRating, score, nextReviewDate } = req.body;
-      if (!title || !assessmentType) {
-        res.status(400).json({ success: false, message: "Title and assessment type are required" });
-        return;
-      }
+      if (!title || !assessmentType) throw new ValidationException("Title and assessment type are required");
       const assessment = await vendorService.createAssessment(
         { vendorId, title, assessmentType, questionnaire, findings, summary, riskRating, score, nextReviewDate },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: assessment });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: assessment };
+    },
+    { functionName: "createAssessment", eventType: "Create" }
+  );
 
-  async deleteAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  deleteAssessment = controllerWrapper(
+    async (req) => {
       await vendorService.deleteAssessment(req.params.assessmentId as string, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Assessment deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Assessment deleted" };
+    },
+    { functionName: "deleteAssessment", eventType: "Delete" }
+  );
 }
 
 export const vendorController = new VendorController();

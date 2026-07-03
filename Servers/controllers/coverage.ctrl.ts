@@ -5,10 +5,11 @@ import { Control } from "../domain.layer/models/control/control.model";
 import { RiskControlMapping } from "../domain.layer/models/riskControlMapping/riskControlMapping.model";
 import { RiskAssessment } from "../domain.layer/models/riskAssessment/riskAssessment.model";
 import { Op } from "sequelize";
+import { controllerWrapper } from "../utils/controllerWrapper";
 
 export class CoverageController {
-  async getControlCoverage(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getControlCoverage = controllerWrapper(
+    async (req) => {
       const orgId = req.user!.organizationId;
 
       const risks = await Risk.findAll({
@@ -38,8 +39,8 @@ export class CoverageController {
       const coveragePercent = totalRisks > 0 ? Math.round((coveredRisks / totalRisks) * 100) : 100;
       const gaps = totalRisks - coveredRisks;
 
-      res.json({
-        success: true,
+      return {
+        status: 200,
         data: {
           totalRisks,
           coveredRisks,
@@ -48,11 +49,10 @@ export class CoverageController {
           highRiskGaps,
           gapDetails: gapDetails.slice(0, 20),
         },
-      });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      };
+    },
+    { functionName: "getControlCoverage", eventType: "Read" }
+  );
 }
 
 export const coverageController = new CoverageController();

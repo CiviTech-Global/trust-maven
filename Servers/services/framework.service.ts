@@ -6,16 +6,27 @@ import { auditService } from "./audit.service";
 import { AuditAction } from "../types";
 
 export class FrameworkService {
-  async findAll(organizationId: string, filters?: { search?: string }) {
+  async findAll(organizationId: string, filters?: { search?: string; page?: number; limit?: number }) {
     const where: WhereOptions = { organizationId } as any;
     if (filters?.search) {
       (where as any).name = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Framework.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Framework.findAndCountAll({
       where,
       order: [["name", "ASC"]],
+      limit,
+      offset,
     });
+
+    return {
+      frameworks: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {
@@ -123,9 +134,9 @@ export class FrameworkService {
   }
 
   async getAllComplianceSummary(organizationId: string) {
-    const frameworks = await this.findAll(organizationId);
+    const result = await this.findAll(organizationId);
     const summaries = await Promise.all(
-      frameworks.map(async (f) => {
+      result.frameworks.map(async (f) => {
         const requirements = (f.requirements || []) as unknown[];
         const totalRequirements = requirements.length;
 

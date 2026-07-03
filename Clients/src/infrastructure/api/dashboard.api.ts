@@ -41,6 +41,17 @@ export function useDashboardTrends() {
   });
 }
 
+export function useDashboardRiskMatrix() {
+  return useQuery({
+    queryKey: ["dashboard", "risk-matrix"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/dashboard/risk-matrix");
+      return res.data.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useOverdueTreatments() {
   return useQuery<any[]>({
     queryKey: ["dashboard", "overdue"],

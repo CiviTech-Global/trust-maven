@@ -1,76 +1,71 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { evidenceService } from "../services/evidence.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class EvidenceController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { entityType, entityId, status, search } = req.query;
-      const items = await evidenceService.findAll(req.user!.organizationId, {
+  findAll = controllerWrapper(
+    async (req) => {
+      const { entityType, entityId, status, search, page, limit } = req.query;
+      const result = await evidenceService.findAll(req.user!.organizationId, {
         entityType: (entityType || undefined) as string | undefined,
         entityId: (entityId || undefined) as string | undefined,
         status: (status || undefined) as string | undefined,
         search: (search || undefined) as string | undefined,
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
       });
-      res.json({ success: true, data: items });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result.evidence, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const item = await evidenceService.findById(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data: item });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: item };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { title, entityType, entityId, description, filePath, fileType, status, notes } = req.body;
-      if (!title || !entityType || !entityId) {
-        res.status(400).json({ success: false, message: "title, entityType, entityId are required" });
-        return;
-      }
+      if (!title || !entityType || !entityId) throw new ValidationException("title, entityType, entityId are required");
       const item = await evidenceService.create(
         { title, entityType, entityId, description, filePath, fileType, status, notes },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: item });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: item };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const item = await evidenceService.update(req.params.id as string, req.body, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, data: item });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: item };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       await evidenceService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Evidence deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Evidence deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  async getSummary(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getSummary = controllerWrapper(
+    async (req) => {
       const summary = await evidenceService.getSummary(req.user!.organizationId);
-      res.json({ success: true, data: summary });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: summary };
+    },
+    { functionName: "getSummary", eventType: "Read" }
+  );
 }
 
 export const evidenceController = new EvidenceController();

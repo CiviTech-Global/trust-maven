@@ -12,7 +12,7 @@ import {
   TrendingUp as FairIcon, FolderZip as EvidenceIcon, AltRoute as WorkflowIcon,
   Verified as TrustIcon, Notifications as ActivityIcon,
 } from "@mui/icons-material";
-import { useDashboardStats, useDashboardTrends, useDashboardActivity, useOverdueTreatments } from "../../../infrastructure/api/dashboard.api";
+import { useDashboardStats, useDashboardTrends, useDashboardActivity, useOverdueTreatments, useDashboardRiskMatrix } from "../../../infrastructure/api/dashboard.api";
 import { useControlCoverage } from "../../../infrastructure/api/coverage.api";
 import { useIntegrationDashboardSummary } from "../../../infrastructure/api/integrations.api";
 import { useEntityTree } from "../../../infrastructure/api/integrations.api";
@@ -435,10 +435,11 @@ function RecentRisksCard() {
 function RiskMatrixAndStatusSection() {
   const navigate = useNavigate();
   const { data: stats } = useDashboardStats();
+  const { data: matrixData } = useDashboardRiskMatrix();
   const { data: trustConfig } = useTrustCenterConfig();
   const certificationCount = trustConfig?.certifications?.length || 0;
 
-  const matrixPoints = (stats?.recentRisks || [])
+  const matrixPoints = matrixData?.points || (stats?.recentRisks || [])
     .filter((r: any) => r.assessments?.length > 0)
     .map((r: any) => ({
       likelihood: r.assessments[0].likelihood,
@@ -450,7 +451,7 @@ function RiskMatrixAndStatusSection() {
     <Grid container spacing={2.5}>
       <Grid size={{ xs: 12, md: 6 }}>
         <SectionCard title="Risk Matrix" subtitle="Likelihood vs Impact heatmap">
-          {matrixPoints.length === 0 ? (
+          {(!matrixPoints || matrixPoints.length === 0) ? (
             <Typography variant="body2" color="text.secondary">No assessed risks yet</Typography>
           ) : (
             <RiskMatrix points={matrixPoints} />

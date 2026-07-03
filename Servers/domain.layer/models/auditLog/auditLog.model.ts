@@ -34,7 +34,7 @@ export class AuditLog extends Model {
   entityId!: string;
 
   @Column({
-    type: DataType.ENUM("create", "update", "delete"),
+    type: DataType.ENUM("create", "update", "delete", "approve", "reject", "submit", "connect", "disconnect", "sync", "simulate"),
     allowNull: false,
   })
   action!: string;

@@ -5,53 +5,51 @@ import { riskAssessmentService } from "../services/riskAssessment.service";
 import { riskTreatmentService } from "../services/riskTreatment.service";
 import { riskControlMappingService } from "../services/riskControlMapping.service";
 import { aiService } from "../services/ai.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class RiskController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { domain, status, projectId, search } = req.query;
-      const risks = await riskService.findAll(req.user!.organizationId, {
+  findAll = controllerWrapper(
+    async (req) => {
+      const { domain, status, projectId, search, page, limit } = req.query;
+      const result = await riskService.findAll(req.user!.organizationId, {
         domain: domain as string | undefined,
         status: status as string | undefined,
         projectId: projectId as string | undefined,
         search: search as string | undefined,
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
       });
-      res.json({ success: true, data: risks });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result.risks, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const risk = await riskService.findById(id, req.user!.organizationId);
-      res.json({ success: true, data: risk });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: risk };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { title, description, domain, projectId, ownerId } = req.body;
-      if (!title || !domain) {
-        res.status(400).json({ success: false, message: "Title and domain are required" });
-        return;
-      }
+      if (!title || !domain) throw new ValidationException("Title and domain are required");
       const risk = await riskService.create(
         { title, description, domain, projectId, ownerId },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: risk });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: risk };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const risk = await riskService.update(
         id,
@@ -59,54 +57,46 @@ export class RiskController {
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: risk });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: risk };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       await riskService.delete(id, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Risk deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Risk deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  // Assessment endpoints
-  async getAssessments(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getAssessments = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const assessments = await riskAssessmentService.findByRisk(riskId);
-      res.json({ success: true, data: assessments });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: assessments };
+    },
+    { functionName: "getAssessments", eventType: "Read" }
+  );
 
-  async createAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  createAssessment = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const { likelihood, impact, methodology, notes } = req.body;
-      if (!likelihood || !impact) {
-        res.status(400).json({ success: false, message: "Likelihood and impact are required" });
-        return;
-      }
+      if (!likelihood || !impact) throw new ValidationException("Likelihood and impact are required");
       const assessment = await riskAssessmentService.create(
         { riskId, likelihood, impact, methodology, notes },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: assessment });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: assessment };
+    },
+    { functionName: "createAssessment", eventType: "Create" }
+  );
 
-  async updateAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  updateAssessment = controllerWrapper(
+    async (req) => {
       const assessmentId = req.params.assessmentId as string;
       const assessment = await riskAssessmentService.update(
         assessmentId,
@@ -114,58 +104,50 @@ export class RiskController {
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: assessment });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: assessment };
+    },
+    { functionName: "updateAssessment", eventType: "Update" }
+  );
 
-  async deleteAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  deleteAssessment = controllerWrapper(
+    async (req) => {
       const assessmentId = req.params.assessmentId as string;
       await riskAssessmentService.delete(
         assessmentId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, message: "Assessment deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Assessment deleted" };
+    },
+    { functionName: "deleteAssessment", eventType: "Delete" }
+  );
 
-  // Treatment endpoints
-  async getTreatments(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getTreatments = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const treatments = await riskTreatmentService.findByRisk(riskId);
-      res.json({ success: true, data: treatments });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: treatments };
+    },
+    { functionName: "getTreatments", eventType: "Read" }
+  );
 
-  async createTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  createTreatment = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const { strategy, description, responsibleId, dueDate } = req.body;
-      if (!strategy || !description) {
-        res.status(400).json({ success: false, message: "Strategy and description are required" });
-        return;
-      }
+      if (!strategy || !description) throw new ValidationException("Strategy and description are required");
       const treatment = await riskTreatmentService.create(
         { riskId, strategy, description, responsibleId, dueDate },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: treatment });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: treatment };
+    },
+    { functionName: "createTreatment", eventType: "Create" }
+  );
 
-  async updateTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  updateTreatment = controllerWrapper(
+    async (req) => {
       const treatmentId = req.params.treatmentId as string;
       const treatment = await riskTreatmentService.update(
         treatmentId,
@@ -173,97 +155,87 @@ export class RiskController {
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: treatment });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: treatment };
+    },
+    { functionName: "updateTreatment", eventType: "Update" }
+  );
 
-  async deleteTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  deleteTreatment = controllerWrapper(
+    async (req) => {
       const treatmentId = req.params.treatmentId as string;
       await riskTreatmentService.delete(
         treatmentId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, message: "Treatment deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Treatment deleted" };
+    },
+    { functionName: "deleteTreatment", eventType: "Delete" }
+  );
 
-  // Assessment approval
-  async approveAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  approveAssessment = controllerWrapper(
+    async (req) => {
       const assessmentId = req.params.assessmentId as string;
       const assessment = await riskAssessmentService.approve(
         assessmentId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: assessment });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: assessment };
+    },
+    { functionName: "approveAssessment", eventType: "Update" }
+  );
 
-  async rejectAssessment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  rejectAssessment = controllerWrapper(
+    async (req) => {
       const assessmentId = req.params.assessmentId as string;
       const assessment = await riskAssessmentService.reject(
         assessmentId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: assessment });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: assessment };
+    },
+    { functionName: "rejectAssessment", eventType: "Update" }
+  );
 
-  // Treatment approval
-  async approveTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  approveTreatment = controllerWrapper(
+    async (req) => {
       const treatmentId = req.params.treatmentId as string;
       const treatment = await riskTreatmentService.approve(
         treatmentId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: treatment });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: treatment };
+    },
+    { functionName: "approveTreatment", eventType: "Update" }
+  );
 
-  async rejectTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  rejectTreatment = controllerWrapper(
+    async (req) => {
       const treatmentId = req.params.treatmentId as string;
       const treatment = await riskTreatmentService.reject(
         treatmentId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: treatment });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: treatment };
+    },
+    { functionName: "rejectTreatment", eventType: "Update" }
+  );
 
-  // Risk-Control mapping
-  async getRiskControlMappings(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getRiskControlMappings = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const mappings = await riskControlMappingService.findByRisk(riskId);
-      res.json({ success: true, data: mappings });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: mappings };
+    },
+    { functionName: "getRiskControlMappings", eventType: "Read" }
+  );
 
-  async addRiskControlMapping(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  addRiskControlMapping = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const controlId = req.params.controlId as string;
       const mapping = await riskControlMappingService.create(
@@ -271,77 +243,63 @@ export class RiskController {
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: mapping });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: mapping };
+    },
+    { functionName: "addRiskControlMapping", eventType: "Create" }
+  );
 
-  async removeRiskControlMapping(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  removeRiskControlMapping = controllerWrapper(
+    async (req) => {
       const controlId = req.params.controlId as string;
       await riskControlMappingService.delete(
         controlId,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, message: "Control unlinked from risk" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
-  // Bulk operations
-  async bulkUpdate(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { ids, data } = req.body;
-      if (!ids || !Array.isArray(ids) || !ids.length) {
-        res.status(400).json({ success: false, message: "Risk IDs array is required" });
-        return;
-      }
-      const result = await riskService.bulkUpdate(ids, data, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Control unlinked from risk" };
+    },
+    { functionName: "removeRiskControlMapping", eventType: "Delete" }
+  );
 
-  // Bulk delete
-  async bulkDelete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  bulkUpdate = controllerWrapper(
+    async (req) => {
+      const { ids, data } = req.body;
+      if (!ids || !Array.isArray(ids) || !ids.length) throw new ValidationException("Risk IDs array is required");
+      const result = await riskService.bulkUpdate(ids, data, req.user!.organizationId, req.user!.userId);
+      return { status: 200, data: result };
+    },
+    { functionName: "bulkUpdate", eventType: "Update" }
+  );
+
+  bulkDelete = controllerWrapper(
+    async (req) => {
       const { ids } = req.body;
-      if (!ids || !Array.isArray(ids) || !ids.length) {
-        res.status(400).json({ success: false, message: "Risk IDs array is required" });
-        return;
-      }
+      if (!ids || !Array.isArray(ids) || !ids.length) throw new ValidationException("Risk IDs array is required");
       for (const id of ids) {
         await riskService.delete(id, req.user!.organizationId, req.user!.userId);
       }
-      res.json({ success: true, data: { deleted: ids.length } });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: { deleted: ids.length } };
+    },
+    { functionName: "bulkDelete", eventType: "Delete" }
+  );
 
-  // AI-assisted suggestions
-  async suggestScore(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  suggestScore = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const suggestion = await aiService.suggestRiskScore(riskId, req.user!.organizationId);
-      res.json({ success: true, data: suggestion });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: suggestion };
+    },
+    { functionName: "suggestScore", eventType: "Read" }
+  );
 
-  async suggestTreatment(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  suggestTreatment = controllerWrapper(
+    async (req) => {
       const riskId = req.params.riskId as string;
       const suggestion = await aiService.suggestTreatmentStrategy(riskId, req.user!.organizationId);
-      res.json({ success: true, data: suggestion });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: suggestion };
+    },
+    { functionName: "suggestTreatment", eventType: "Read" }
+  );
 }
 
 export const riskController = new RiskController();

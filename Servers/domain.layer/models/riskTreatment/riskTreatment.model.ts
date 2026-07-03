@@ -52,6 +52,15 @@ export class RiskTreatment extends Model {
   @Column({ type: DataType.INTEGER, validate: { min: 0, max: 100 } })
   progress!: number | null;
 
+  @Column({ type: DataType.DATEONLY })
+  startDate!: string | null;
+
+  @Column({ type: DataType.INTEGER, validate: { min: 1, max: 25 } })
+  targetResidualScore!: number | null;
+
+  @Column({ type: DataType.TEXT })
+  evidenceOfCompletion!: string | null;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 

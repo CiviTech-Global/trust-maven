@@ -1,96 +1,76 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { fairAnalysisService } from "../services/fairAnalysis.service";
-
-function ensureUser(req: AuthenticatedRequest) {
-  if (!req.user) throw new Error("Authentication required");
-  return req.user;
-}
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class FairAnalysisController {
-  async findByRisk(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const analyses = await fairAnalysisService.findByRisk(req.params.riskId as string, user.organizationId);
-      res.json({ success: true, data: analyses });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+  findByRisk = controllerWrapper(
+    async (req) => {
+      const analyses = await fairAnalysisService.findByRisk(req.params.riskId as string, req.user!.organizationId);
+      return { status: 200, data: analyses };
+    },
+    { functionName: "findByRisk", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const analysis = await fairAnalysisService.findById(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: analysis });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  findById = controllerWrapper(
+    async (req) => {
+      const analysis = await fairAnalysisService.findById(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: analysis };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  create = controllerWrapper(
+    async (req) => {
       const { riskId, methodology, lossEventFrequency, lossMagnitude, threatEventFrequency, vulnerability, lossMagnitudeMin, lossMagnitudeMostLikely, lossMagnitudeMax, assumptions, simulationRuns } = req.body;
-      if (!riskId) {
-        res.status(400).json({ success: false, message: "riskId is required" });
-        return;
-      }
+      if (!riskId) throw new ValidationException("riskId is required");
       const analysis = await fairAnalysisService.create(
         { riskId, methodology, lossEventFrequency, lossMagnitude, threatEventFrequency, vulnerability, lossMagnitudeMin, lossMagnitudeMostLikely, lossMagnitudeMax, assumptions, simulationRuns },
-        user.organizationId,
-        user.userId
+        req.user!.organizationId,
+        req.user!.userId
       );
-      res.status(201).json({ success: true, data: analysis });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: analysis };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  update = controllerWrapper(
+    async (req) => {
       const analysis = await fairAnalysisService.update(
         req.params.id as string,
         req.body,
-        user.organizationId,
-        user.userId
+        req.user!.organizationId,
+        req.user!.userId
       );
-      res.json({ success: true, data: analysis });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: analysis };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      await fairAnalysisService.delete(req.params.id as string, user.organizationId, user.userId);
-      res.json({ success: true, message: "FairAnalysis deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  delete = controllerWrapper(
+    async (req) => {
+      await fairAnalysisService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
+      return { status: 200, message: "FairAnalysis deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  async runSimulation(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const result = await fairAnalysisService.runMonteCarlo(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+  runSimulation = controllerWrapper(
+    async (req) => {
+      const result = await fairAnalysisService.runMonteCarlo(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: result };
+    },
+    { functionName: "runSimulation", eventType: "Create" }
+  );
 
-  async getExposureSummary(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const summary = await fairAnalysisService.getExposureSummary(user.organizationId);
-      res.json({ success: true, data: summary });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+  getExposureSummary = controllerWrapper(
+    async (req) => {
+      const summary = await fairAnalysisService.getExposureSummary(req.user!.organizationId);
+      return { status: 200, data: summary };
+    },
+    { functionName: "getExposureSummary", eventType: "Read" }
+  );
 }
 
 export const fairAnalysisController = new FairAnalysisController();

@@ -8,7 +8,7 @@ import { AuditAction } from "../types";
 export class ControlService {
   async findAll(
     organizationId: string,
-    filters?: { type?: string; effectiveness?: string; riskId?: string; search?: string }
+    filters?: { type?: string; effectiveness?: string; riskId?: string; search?: string; page?: number; limit?: number }
   ) {
     const where: WhereOptions = { organizationId } as any;
 
@@ -19,14 +19,25 @@ export class ControlService {
       (where as any).title = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Control.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Control.findAndCountAll({
       where,
       include: [
         { model: Risk, attributes: ["id", "title"] },
         { model: User, as: "owner", attributes: ["id", "firstName", "lastName"] },
       ],
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
+
+    return {
+      controls: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {
@@ -52,7 +63,7 @@ export class ControlService {
   }
 
   async create(
-    data: { title: string; description?: string; type: string; effectiveness?: string; riskId?: string; ownerId?: string; designEffectiveness?: string; operatingEffectiveness?: string; testingMethod?: string; lastTestedAt?: string; nextTestDue?: string; testFrequency?: string },
+    data: { title: string; description?: string; type: string; effectiveness?: string; riskId?: string; ownerId?: string; designEffectiveness?: string; operatingEffectiveness?: string; testingMethod?: string; lastTestedAt?: string; nextTestDue?: string; testFrequency?: string; evidenceRequirements?: Record<string, unknown>; frameworkMappings?: Record<string, unknown>; annualCost?: number | null },
     organizationId: string,
     userId: string
   ) {
@@ -76,7 +87,7 @@ export class ControlService {
 
   async update(
     id: string,
-    data: Partial<{ title: string; description: string; type: string; effectiveness: string; riskId: string; ownerId: string; designEffectiveness: string; operatingEffectiveness: string; testingMethod: string; lastTestedAt: string; nextTestDue: string; testFrequency: string }>,
+    data: Partial<{ title: string; description: string; type: string; effectiveness: string; riskId: string; ownerId: string; designEffectiveness: string; operatingEffectiveness: string; testingMethod: string; lastTestedAt: string; nextTestDue: string; testFrequency: string; evidenceRequirements: Record<string, unknown>; frameworkMappings: Record<string, unknown>; annualCost: number | null }>,
     organizationId: string,
     userId: string
   ) {

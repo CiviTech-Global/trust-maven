@@ -94,6 +94,15 @@ export class Control extends Model {
   @Column({ type: DataType.INTEGER, defaultValue: 0 })
   consecutiveFailures!: number;
 
+  @Column({ type: DataType.JSONB, defaultValue: {} })
+  evidenceRequirements!: Record<string, unknown>;
+
+  @Column({ type: DataType.JSONB, defaultValue: {} })
+  frameworkMappings!: Record<string, unknown>;
+
+  @Column({ type: DataType.DECIMAL(12, 2) })
+  annualCost!: number | null;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 

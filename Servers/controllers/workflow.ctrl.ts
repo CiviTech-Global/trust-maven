@@ -2,10 +2,12 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { workflowEngineService } from "../services/workflowEngine.service";
 import { WorkflowDefinition } from "../domain.layer/models/workflowDefinition/workflowDefinition.model";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException, NotFoundException } from "../domain.layer/exceptions/custom.exception";
 
 export class WorkflowController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findAll = controllerWrapper(
+    async (req) => {
       const { entityType } = req.query;
       const where: Record<string, unknown> = { organizationId: req.user!.organizationId };
       if (entityType) where.entityType = entityType;
@@ -13,149 +15,126 @@ export class WorkflowController {
         where,
         order: [["updatedAt", "DESC"]],
       });
-      res.json({ success: true, data: workflows });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: workflows };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const workflow = await WorkflowDefinition.findOne({
         where: { id: req.params.id as string, organizationId: req.user!.organizationId },
       });
-      if (!workflow) {
-        res.status(404).json({ success: false, message: "Workflow not found" });
-        return;
-      }
-      res.json({ success: true, data: workflow });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      if (!workflow) throw new NotFoundException("Workflow not found");
+      return { status: 200, data: workflow };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const workflow = await workflowEngineService.createWorkflow(
         req.body,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: workflow });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: workflow };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const workflow = await workflowEngineService.updateWorkflow(
         req.params.id as string,
         req.body,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: workflow });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: workflow };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       const workflow = await WorkflowDefinition.findOne({
         where: { id: req.params.id as string, organizationId: req.user!.organizationId },
       });
-      if (!workflow) {
-        res.status(404).json({ success: false, message: "Workflow not found" });
-        return;
-      }
+      if (!workflow) throw new NotFoundException("Workflow not found");
       await workflow.destroy();
-      res.json({ success: true, message: "Workflow deleted" });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Workflow deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  async clone(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  clone = controllerWrapper(
+    async (req) => {
       const { name } = req.body;
-      if (!name) {
-        res.status(400).json({ success: false, message: "New name is required" });
-        return;
-      }
+      if (!name) throw new ValidationException("New name is required");
       const workflow = await workflowEngineService.cloneWorkflow(
         req.params.id as string,
         name,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: workflow });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: workflow };
+    },
+    { functionName: "clone", eventType: "Create" }
+  );
 
-  async setDefault(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  setDefault = controllerWrapper(
+    async (req) => {
       await workflowEngineService.setDefaultForType(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, message: "Default workflow updated" });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Default workflow updated" };
+    },
+    { functionName: "setDefault", eventType: "Update" }
+  );
 
-  async exportWorkflow(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  exportWorkflow = controllerWrapper(
+    async (req) => {
       const data = await workflowEngineService.exportWorkflow(req.params.id as string, req.user!.organizationId);
-      res.json({ success: true, data });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data };
+    },
+    { functionName: "exportWorkflow", eventType: "Read" }
+  );
 
-  async importWorkflow(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  importWorkflow = controllerWrapper(
+    async (req) => {
       const workflow = await workflowEngineService.importWorkflow(
         req.body,
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: workflow });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: workflow };
+    },
+    { functionName: "importWorkflow", eventType: "Create" }
+  );
 
-  async validateWorkflow(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  validateWorkflow = controllerWrapper(
+    async (req) => {
       const { states, transitions } = req.body;
       const errors = workflowEngineService.validateDefinition(states, transitions);
-      res.json({ success: true, data: { valid: errors.length === 0, errors } });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: { valid: errors.length === 0, errors } };
+    },
+    { functionName: "validateWorkflow", eventType: "Read" }
+  );
 
-  async getTransitions(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getTransitions = controllerWrapper(
+    async (req) => {
       const { currentState } = req.query;
-      if (!currentState) {
-        res.status(400).json({ success: false, message: "currentState query param required" });
-        return;
-      }
+      if (!currentState) throw new ValidationException("currentState query param required");
       const transitions = await workflowEngineService.getAllowedTransitions(
         req.params.id as string,
         currentState as string
       );
-      res.json({ success: true, data: transitions });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: transitions };
+    },
+    { functionName: "getTransitions", eventType: "Read" }
+  );
 
-  async executeTransition(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  executeTransition = controllerWrapper(
+    async (req) => {
       const { entityType, entityId, fromState, toState, comment } = req.body;
       const result = await workflowEngineService.executeTransition(
         req.params.id as string,
@@ -167,43 +146,37 @@ export class WorkflowController {
         req.user!.organizationId,
         comment
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "executeTransition", eventType: "Update" }
+  );
 
-  async getExecutionHistory(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getExecutionHistory = controllerWrapper(
+    async (req) => {
       const { entityId } = req.query;
       const history = await workflowEngineService.getExecutionHistory(
         req.params.id as string,
         entityId as string | undefined,
         req.user!.organizationId
       );
-      res.json({ success: true, data: history });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: history };
+    },
+    { functionName: "getExecutionHistory", eventType: "Read" }
+  );
 
-  async getDefaultForType(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getDefaultForType = controllerWrapper(
+    async (req) => {
       const { entityType } = req.params;
       const custom = await workflowEngineService.getWorkflow(
         req.user!.organizationId,
         entityType as string
       );
-      if (custom) {
-        res.json({ success: true, data: custom });
-        return;
-      }
+      if (custom) return { status: 200, data: custom };
       const globalDefault = await workflowEngineService.getDefaultWorkflow(entityType as string);
-      res.json({ success: true, data: globalDefault });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: globalDefault };
+    },
+    { functionName: "getDefaultForType", eventType: "Read" }
+  );
 }
 
 export const workflowController = new WorkflowController();

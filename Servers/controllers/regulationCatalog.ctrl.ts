@@ -1,10 +1,11 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { regulationCatalogService } from "../services/regulationCatalog.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
 
 export class RegulationCatalogController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findAll = controllerWrapper(
+    async (req) => {
       const { category, type, jurisdiction, search } = req.query;
       const regulations = await regulationCatalogService.findAll({
         category: category as string | undefined,
@@ -12,50 +13,45 @@ export class RegulationCatalogController {
         jurisdiction: jurisdiction as string | undefined,
         search: search as string | undefined,
       });
-      res.json({ success: true, data: regulations });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: regulations };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const result = await regulationCatalogService.getRequirementTree(req.params.id as string);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async getRequirements(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getRequirements = controllerWrapper(
+    async (req) => {
       const requirements = await regulationCatalogService.getRequirementFlat(req.params.id as string);
-      res.json({ success: true, data: requirements });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: requirements };
+    },
+    { functionName: "getRequirements", eventType: "Read" }
+  );
 
-  async getRequirement(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getRequirement = controllerWrapper(
+    async (req) => {
       const result = await regulationCatalogService.getRequirement(req.params.reqId as string);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "getRequirement", eventType: "Read" }
+  );
 
-  async getOverlap(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getOverlap = controllerWrapper(
+    async (req) => {
       const result = await regulationCatalogService.getFrameworkOverlap(
         req.params.id1 as string,
         req.params.id2 as string
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "getOverlap", eventType: "Read" }
+  );
 }
 
 export const regulationCatalogController = new RegulationCatalogController();

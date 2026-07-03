@@ -49,6 +49,12 @@ export class User extends Model {
   @Column({ type: DataType.DATE })
   lastLogin!: Date | null;
 
+  @Column({ type: DataType.STRING(64) })
+  passwordResetToken!: string | null;
+
+  @Column({ type: DataType.DATE })
+  passwordResetExpires!: Date | null;
+
   @CreatedAt
   createdAt!: Date;
 

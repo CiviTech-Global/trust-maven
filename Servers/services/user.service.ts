@@ -4,13 +4,20 @@ import { Organization } from "../domain.layer/models/organization/organization.m
 import crypto from "crypto";
 
 export class UserService {
-  async findAll(organizationId: string) {
-    return User.findAll({
+  async findAll(organizationId: string, page: number = 1, limit: number = 50) {
+    const offset = (page - 1) * limit;
+    const { rows, count } = await User.findAndCountAll({
       where: { organizationId },
       attributes: { exclude: ["passwordHash"] },
       include: [{ model: Role, attributes: ["id", "name"] }],
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
+    return {
+      users: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {

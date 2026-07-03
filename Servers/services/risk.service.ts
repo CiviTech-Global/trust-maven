@@ -36,7 +36,7 @@ export class RiskService {
 
   async findAll(
     organizationId: string,
-    filters?: { domain?: string; status?: string; projectId?: string; search?: string }
+    filters?: { domain?: string; status?: string; projectId?: string; search?: string; page?: number; limit?: number }
   ) {
     const where: WhereOptions = { organizationId } as any;
 
@@ -47,7 +47,11 @@ export class RiskService {
       (where as any).title = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Risk.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Risk.findAndCountAll({
       where,
       include: [
         { model: User, as: "owner", attributes: ["id", "firstName", "lastName"] },
@@ -56,7 +60,14 @@ export class RiskService {
         { model: RiskTreatment },
       ],
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
+
+    return {
+      risks: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {
@@ -74,7 +85,7 @@ export class RiskService {
   }
 
   async create(
-    data: { title: string; description?: string; domain: string; projectId?: string; ownerId?: string; riskAppetiteThreshold?: number; reviewCycleDays?: number },
+    data: { title: string; description?: string; domain: string; projectId?: string; ownerId?: string; riskAppetiteThreshold?: number; reviewCycleDays?: number; riskSource?: string; velocity?: string; financialImpactEstimate?: number | null },
     organizationId: string,
     userId: string
   ) {
@@ -108,7 +119,7 @@ export class RiskService {
 
   async update(
     id: string,
-    data: Partial<{ title: string; description: string; domain: string; status: string; projectId: string; ownerId: string; riskAppetiteThreshold: number; reviewCycleDays: number; lastReviewedAt: string; nextReviewDue: string }>,
+    data: Partial<{ title: string; description: string; domain: string; status: string; projectId: string; ownerId: string; riskAppetiteThreshold: number; reviewCycleDays: number; lastReviewedAt: string; nextReviewDue: string; riskSource: string; velocity: string; financialImpactEstimate: number | null }>,
     organizationId: string,
     userId: string
   ) {

@@ -117,6 +117,34 @@ export class AuthController {
     });
     res.json({ success: true, message: "Logged out" });
   }
+
+  async forgotPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.status(400).json({ success: false, message: "Email is required" });
+        return;
+      }
+      await authService.forgotPassword(email);
+      res.json({ success: true, message: "If the email exists, a reset link has been sent." });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword) {
+        res.status(400).json({ success: false, message: "Token and new password are required" });
+        return;
+      }
+      await authService.resetPassword(token, newPassword);
+      res.json({ success: true, message: "Password reset successfully." });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
 }
 
 export const authController = new AuthController();

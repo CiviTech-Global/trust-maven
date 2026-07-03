@@ -11,7 +11,7 @@ export class AuditMgmtService {
   // Audits
   async findAllAudits(
     organizationId: string,
-    filters?: { status?: string; auditType?: string; search?: string }
+    filters?: { status?: string; auditType?: string; search?: string; page?: number; limit?: number }
   ) {
     const where: WhereOptions = { organizationId } as any;
 
@@ -21,13 +21,24 @@ export class AuditMgmtService {
       (where as any).title = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Audit.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Audit.findAndCountAll({
       where,
       include: [
         { model: User, as: "leadAuditor", attributes: ["id", "firstName", "lastName"] },
       ],
       order: [["startDate", "DESC"]],
+      limit,
+      offset,
     });
+
+    return {
+      audits: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findAuditById(id: string, organizationId: string) {

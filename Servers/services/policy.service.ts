@@ -42,7 +42,7 @@ export class PolicyService {
 
   async findAll(
     organizationId: string,
-    filters?: { status?: string; search?: string }
+    filters?: { status?: string; search?: string; page?: number; limit?: number }
   ) {
     const where: WhereOptions = { organizationId } as any;
 
@@ -51,13 +51,24 @@ export class PolicyService {
       (where as any).title = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Policy.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Policy.findAndCountAll({
       where,
       include: [
         { model: User, as: "owner", attributes: ["id", "firstName", "lastName"] },
       ],
       order: [["updatedAt", "DESC"]],
+      limit,
+      offset,
     });
+
+    return {
+      policies: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {

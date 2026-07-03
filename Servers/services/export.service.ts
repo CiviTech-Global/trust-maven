@@ -66,6 +66,65 @@ export class ExportService {
     return toCSV(headers, rows);
   }
 
+  async exportRisksPDF(organizationId: string, filters?: { domain?: string; status?: string }) {
+    const where: any = { organizationId };
+    if (filters?.domain) where.domain = filters.domain;
+    if (filters?.status) where.status = filters.status;
+
+    const risks = await Risk.findAll({
+      where,
+      include: [
+        { model: User, as: "owner", attributes: ["firstName", "lastName"] },
+        { model: Project, attributes: ["name"] },
+        { model: RiskAssessment, order: [["assessedAt", "DESC"]], limit: 1 },
+        { model: RiskTreatment },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    const rows = risks.map((risk: any) => {
+      const assessment = risk.assessments?.[0];
+      const score = assessment ? assessment.likelihood * assessment.impact : null;
+      return {
+        title: risk.title,
+        description: risk.description || "",
+        domain: risk.domain,
+        status: risk.status,
+        project: risk.project?.name || "",
+        owner: risk.owner ? `${risk.owner.firstName} ${risk.owner.lastName}` : "",
+        likelihood: assessment?.likelihood || null,
+        impact: assessment?.impact || null,
+        riskScore: score,
+        treatmentCount: risk.treatments?.length ?? 0,
+        createdAt: new Date(risk.createdAt).toISOString(),
+        updatedAt: new Date(risk.updatedAt).toISOString(),
+      };
+    });
+
+    const severityBreakdown = {
+      critical: rows.filter((r: any) => r.riskScore && r.riskScore >= 20).length,
+      high: rows.filter((r: any) => r.riskScore && r.riskScore >= 15 && r.riskScore < 20).length,
+      medium: rows.filter((r: any) => r.riskScore && r.riskScore >= 10 && r.riskScore < 15).length,
+      low: rows.filter((r: any) => r.riskScore && r.riskScore < 10).length,
+      unassessed: rows.filter((r: any) => !r.riskScore).length,
+    };
+
+    const domainBreakdown: Record<string, number> = {};
+    rows.forEach((r: any) => {
+      domainBreakdown[r.domain] = (domainBreakdown[r.domain] || 0) + 1;
+    });
+
+    return {
+      generatedAt: new Date().toISOString(),
+      summary: {
+        totalRisks: rows.length,
+        severityBreakdown,
+        domainBreakdown,
+      },
+      risks: rows,
+    };
+  }
+
   async exportAuditCSV(organizationId: string, dateRange?: { from?: string; to?: string }) {
     const where: any = { organizationId };
     if (dateRange?.from || dateRange?.to) {

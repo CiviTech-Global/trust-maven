@@ -130,6 +130,47 @@ export class DashboardService {
       order: [["nextReviewDue", "ASC"]],
     });
   }
+
+  async getRiskMatrix(organizationId: string) {
+    const risks = await Risk.findAll({
+      where: { organizationId, status: { [Op.notIn]: ["closed", "accepted"] } },
+      include: [
+        { model: RiskAssessment, order: [["assessedAt", "DESC"]], limit: 1 },
+      ],
+    });
+
+    const matrix: Record<string, { count: number; risks: { id: string; title: string }[] }> = {};
+    const topRisks: { id: string; title: string; domain: string; riskScore: number; likelihood: number; impact: number }[] = [];
+
+    for (const risk of risks) {
+      const assessment = (risk as any).assessments?.[0];
+      if (assessment) {
+        const key = `${assessment.likelihood}x${assessment.impact}`;
+        if (!matrix[key]) matrix[key] = { count: 0, risks: [] };
+        matrix[key].count++;
+        matrix[key].risks.push({ id: risk.id, title: risk.title });
+
+        const score = assessment.likelihood * assessment.impact;
+        topRisks.push({
+          id: risk.id,
+          title: risk.title,
+          domain: risk.domain,
+          riskScore: score,
+          likelihood: assessment.likelihood,
+          impact: assessment.impact,
+        });
+      }
+    }
+
+    const matrixArray = Object.entries(matrix).map(([key, val]) => {
+      const [likelihood, impact] = key.split("x").map(Number);
+      return { likelihood, impact, count: val.count, risks: val.risks };
+    });
+
+    topRisks.sort((a, b) => b.riskScore - a.riskScore);
+
+    return { matrix: matrixArray, topRisks: topRisks.slice(0, 10) };
+  }
 }
 
 export const dashboardService = new DashboardService();

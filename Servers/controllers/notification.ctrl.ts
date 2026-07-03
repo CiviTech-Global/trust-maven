@@ -1,55 +1,51 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { notificationService } from "../services/notification.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
 
 export class NotificationController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findAll = controllerWrapper(
+    async (req) => {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const result = await notificationService.findAll(req.user!.userId, { page, limit });
-      res.json({ success: true, data: result.notifications, pagination: result.pagination });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: { notifications: result.notifications, pagination: result.pagination } };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findUnread(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findUnread = controllerWrapper(
+    async (req) => {
       const notifications = await notificationService.findUnread(req.user!.userId);
-      res.json({ success: true, data: notifications });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: notifications };
+    },
+    { functionName: "findUnread", eventType: "Read" }
+  );
 
-  async getUnreadCount(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getUnreadCount = controllerWrapper(
+    async (req) => {
       const count = await notificationService.getUnreadCount(req.user!.userId);
-      res.json({ success: true, data: { count } });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: { count } };
+    },
+    { functionName: "getUnreadCount", eventType: "Read" }
+  );
 
-  async markAsRead(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  markAsRead = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       await notificationService.markAsRead(id, req.user!.userId);
-      res.json({ success: true, message: "Notification marked as read" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Notification marked as read" };
+    },
+    { functionName: "markAsRead", eventType: "Update" }
+  );
 
-  async markAllAsRead(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  markAllAsRead = controllerWrapper(
+    async (req) => {
       await notificationService.markAllAsRead(req.user!.userId);
-      res.json({ success: true, message: "All notifications marked as read" });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "All notifications marked as read" };
+    },
+    { functionName: "markAllAsRead", eventType: "Update" }
+  );
 }
 
 export const notificationController = new NotificationController();

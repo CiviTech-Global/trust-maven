@@ -1,4 +1,4 @@
-import { RiskDomain, RiskStatus, TreatmentStrategy, ProjectStatus, AssessmentType, ApprovalStatus, TestFrequency, TestingMethod, MonitoringStatus } from "../enums";
+import { RiskDomain, RiskStatus, TreatmentStrategy, ProjectStatus, AssessmentType, ApprovalStatus, TestFrequency, TestingMethod, MonitoringStatus, RiskSource, RiskVelocity } from "../enums";
 
 export interface User {
   id: string;
@@ -28,6 +28,9 @@ export interface Risk {
   projectId: string | null;
   ownerId: string | null;
   categoryId: string | null;
+  riskSource: RiskSource;
+  velocity: RiskVelocity;
+  financialImpactEstimate: number | null;
   riskAppetiteThreshold: number | null;
   createdAt: string;
   updatedAt: string;
@@ -43,6 +46,7 @@ export interface RiskAssessment {
   methodology: string;
   notes: string;
   assessedAt: string;
+  financialImpactEstimate: number | null;
   assessmentType: AssessmentType;
   approvalStatus: ApprovalStatus;
   approvedById: string | null;
@@ -57,6 +61,11 @@ export interface RiskTreatment {
   status: string;
   responsibleId: string | null;
   dueDate: string | null;
+  costEstimate: number | null;
+  progress: number | null;
+  startDate: string | null;
+  targetResidualScore: number | null;
+  evidenceOfCompletion: string | null;
   approvalStatus: ApprovalStatus;
   approvedById: string | null;
   approvedAt: string | null;
@@ -88,6 +97,9 @@ export interface Control {
   monitoringStatus: MonitoringStatus;
   lastMonitoredAt: string | null;
   consecutiveFailures: number;
+  evidenceRequirements: Record<string, unknown>;
+  frameworkMappings: Record<string, unknown>;
+  annualCost: number | null;
   riskId: string | null;
   ownerId: string | null;
   createdAt: string;

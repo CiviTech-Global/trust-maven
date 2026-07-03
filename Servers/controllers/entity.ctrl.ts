@@ -1,133 +1,104 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { entityService } from "../services/entity.service";
-
-function ensureUser(req: AuthenticatedRequest) {
-  if (!req.user) throw new Error("Authentication required");
-  return req.user;
-}
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class EntityController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  findAll = controllerWrapper(
+    async (req) => {
       const parentId = req.query.parentId === undefined ? null : (req.query.parentId as string | undefined);
-      const entities = await entityService.findAll(user.organizationId, parentId);
-      res.json({ success: true, data: entities });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      const entities = await entityService.findAll(req.user!.organizationId, parentId);
+      return { status: 200, data: entities };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const entity = await entityService.findById(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: entity });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  findById = controllerWrapper(
+    async (req) => {
+      const entity = await entityService.findById(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: entity };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  create = controllerWrapper(
+    async (req) => {
       const { name, type, parentId, attributes, riskScore } = req.body;
-      if (!name || !type) {
-        res.status(400).json({ success: false, message: "name and type are required" });
-        return;
-      }
+      if (!name || !type) throw new ValidationException("name and type are required");
       const entity = await entityService.create(
         { name, type, parentId, attributes, riskScore },
-        user.organizationId,
-        user.userId
+        req.user!.organizationId,
+        req.user!.userId
       );
-      res.status(201).json({ success: true, data: entity });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: entity };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  update = controllerWrapper(
+    async (req) => {
       const entity = await entityService.update(
         req.params.id as string,
         req.body,
-        user.organizationId,
-        user.userId
+        req.user!.organizationId,
+        req.user!.userId
       );
-      res.json({ success: true, data: entity });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: entity };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      await entityService.delete(req.params.id as string, user.organizationId, user.userId);
-      res.json({ success: true, message: "Entity deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  delete = controllerWrapper(
+    async (req) => {
+      await entityService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
+      return { status: 200, message: "Entity deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
-  async getTree(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  getTree = controllerWrapper(
+    async (req) => {
       const parentId = req.query.parentId === undefined ? null : (req.query.parentId as string | undefined);
-      const tree = await entityService.getTree(user.organizationId, parentId);
-      res.json({ success: true, data: tree });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      const tree = await entityService.getTree(req.user!.organizationId, parentId);
+      return { status: 200, data: tree };
+    },
+    { functionName: "getTree", eventType: "Read" }
+  );
 
-  async getAncestors(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const ancestors = await entityService.getAncestors(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: ancestors });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  getAncestors = controllerWrapper(
+    async (req) => {
+      const ancestors = await entityService.getAncestors(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: ancestors };
+    },
+    { functionName: "getAncestors", eventType: "Read" }
+  );
 
-  async rollupScore(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const result = await entityService.rollupScore(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+  rollupScore = controllerWrapper(
+    async (req) => {
+      const result = await entityService.rollupScore(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: result };
+    },
+    { functionName: "rollupScore", eventType: "Update" }
+  );
 
-  async linkRisk(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  linkRisk = controllerWrapper(
+    async (req) => {
       const { riskId } = req.body;
-      if (!riskId) {
-        res.status(400).json({ success: false, message: "riskId is required" });
-        return;
-      }
-      const entity = await entityService.linkRisk(req.params.id as string, riskId, user.organizationId);
-      res.json({ success: true, data: entity });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      if (!riskId) throw new ValidationException("riskId is required");
+      const entity = await entityService.linkRisk(req.params.id as string, riskId, req.user!.organizationId);
+      return { status: 200, data: entity };
+    },
+    { functionName: "linkRisk", eventType: "Update" }
+  );
 
-  async getLinkedRisks(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const risks = await entityService.getLinkedRisks(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: risks });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  getLinkedRisks = controllerWrapper(
+    async (req) => {
+      const risks = await entityService.getLinkedRisks(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: risks };
+    },
+    { functionName: "getLinkedRisks", eventType: "Read" }
+  );
 }
 
 export const entityController = new EntityController();

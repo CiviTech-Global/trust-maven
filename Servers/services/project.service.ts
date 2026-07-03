@@ -4,15 +4,22 @@ import { Risk } from "../domain.layer/models/risk/risk.model";
 import { auditService } from "./audit.service";
 import { AuditAction } from "../types";
 export class ProjectService {
-  async findAll(organizationId: string) {
-    return Project.findAll({
+  async findAll(organizationId: string, page: number = 1, limit: number = 50) {
+    const offset = (page - 1) * limit;
+    const { rows, count } = await Project.findAndCountAll({
       where: { organizationId },
       include: [
         { model: User, as: "owner", attributes: ["id", "firstName", "lastName"] },
         { model: Risk, attributes: ["id"] },
       ],
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
+    return {
+      projects: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {

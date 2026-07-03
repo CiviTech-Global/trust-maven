@@ -9,7 +9,7 @@ import { AuditAction } from "../types";
 export class KRIService {
   async findAll(
     organizationId: string,
-    filters?: { category?: string; status?: string; riskId?: string; search?: string }
+    filters?: { category?: string; status?: string; riskId?: string; search?: string; page?: number; limit?: number }
   ) {
     const where: WhereOptions = { organizationId } as any;
 
@@ -19,20 +19,31 @@ export class KRIService {
       (where as any).name = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    const kris = await KRI.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await KRI.findAndCountAll({
       where,
       include: [
         { model: Risk, attributes: ["id", "title", "domain"] },
         { model: User, as: "owner", attributes: ["id", "firstName", "lastName"] },
       ],
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
 
     // Filter by computed status if requested
+    let items = rows;
     if (filters?.status) {
-      return kris.filter((k) => k.status === filters.status);
+      items = rows.filter((k) => k.status === filters.status);
     }
-    return kris;
+
+    return {
+      kris: items,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {
@@ -145,8 +156,8 @@ export class KRIService {
   }
 
   async getBreachedKRIs(organizationId: string) {
-    const kris = await this.findAll(organizationId);
-    return kris.filter((k) => k.status === "red" || k.status === "amber");
+    const result = await this.findAll(organizationId);
+    return result.kris.filter((k) => k.status === "red" || k.status === "amber");
   }
 
   async getHistory(kriId: string, organizationId: string) {
@@ -159,9 +170,9 @@ export class KRIService {
   }
 
   async getSummary(organizationId: string) {
-    const kris = await this.findAll(organizationId);
-    const summary = { total: kris.length, green: 0, amber: 0, red: 0 };
-    for (const kri of kris) {
+    const result = await this.findAll(organizationId);
+    const summary = { total: result.kris.length, green: 0, amber: 0, red: 0 };
+    for (const kri of result.kris) {
       if (kri.status === "green") summary.green++;
       else if (kri.status === "amber") summary.amber++;
       else summary.red++;

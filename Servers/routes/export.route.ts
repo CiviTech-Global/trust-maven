@@ -8,6 +8,7 @@ const router = Router();
 router.use(authenticate, tenantIsolation);
 
 router.get("/risks", (req, res) => exportController.exportRisks(req, res));
+router.get("/risks/pdf", (req, res) => exportController.exportRisksPDF(req, res));
 router.get("/audit-logs", authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN, UserRole.AUDITOR), (req, res) => exportController.exportAuditLogs(req, res));
 
 export default router;

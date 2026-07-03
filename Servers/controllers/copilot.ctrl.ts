@@ -1,32 +1,29 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { copilotService } from "../services/copilot.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException, UnauthorizedException } from "../domain.layer/exceptions/custom.exception";
 
 export class CopilotController {
-  async query(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      if (!req.user) { res.status(401).json({ success: false, message: "Unauthorized" }); return; }
+  query = controllerWrapper(
+    async (req) => {
+      if (!req.user) throw new UnauthorizedException();
       const { q } = req.body;
-      if (!q || typeof q !== "string") {
-        res.status(400).json({ success: false, message: "Query text (q) is required" });
-        return;
-      }
+      if (!q || typeof q !== "string") throw new ValidationException("Query text (q) is required");
       const result = await copilotService.processQuery(req.user.organizationId, q);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "query", eventType: "Read" }
+  );
 
-  async getSuggestions(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      if (!req.user) { res.status(401).json({ success: false, message: "Unauthorized" }); return; }
+  getSuggestions = controllerWrapper(
+    async (req) => {
+      if (!req.user) throw new UnauthorizedException();
       const suggestions = copilotService.getDefaultSuggestions();
-      res.json({ success: true, data: suggestions });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: suggestions };
+    },
+    { functionName: "getSuggestions", eventType: "Read" }
+  );
 }
 
 export const copilotController = new CopilotController();

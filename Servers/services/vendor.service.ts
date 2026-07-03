@@ -8,7 +8,7 @@ import { AuditAction } from "../types";
 export class VendorService {
   async findAll(
     organizationId: string,
-    filters?: { riskLevel?: string; status?: string; search?: string }
+    filters?: { riskLevel?: string; status?: string; search?: string; page?: number; limit?: number }
   ) {
     const where: WhereOptions = { organizationId } as any;
 
@@ -18,10 +18,21 @@ export class VendorService {
       (where as any).name = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Vendor.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Vendor.findAndCountAll({
       where,
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
+
+    return {
+      vendors: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {

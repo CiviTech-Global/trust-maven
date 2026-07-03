@@ -5,7 +5,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { sequelize } from "./database/db";
-import { generalApiLimiter, authLimiter } from "./middleware/rateLimit.middleware";
+import { generalApiLimiter, authLimiter, fileOperationsLimiter } from "./middleware/rateLimit.middleware";
 import authRoutes from "./routes/auth.route";
 import ssoRoutes from "./routes/sso.route";
 import mfaRoutes from "./routes/mfa.route";
@@ -47,6 +47,7 @@ import copilotRoutes from "./routes/copilot.route";
 import { regulationSeederService } from "./services/regulationSeeder.service";
 import { metaframeworkSeeder } from "./services/metaframeworkSeeder.service";
 import { startEvidenceScheduler } from "./services/evidenceCollector.service";
+import passport from "passport";
 import { logger } from "./utils/logger";
 
 dotenv.config();
@@ -71,6 +72,9 @@ app.use(generalApiLimiter);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Initialize Passport for SSO strategies
+app.use(passport.initialize());
 
 // Health check — verifies database connectivity
 app.get("/api/health", async (_req, res) => {
@@ -117,6 +121,7 @@ app.use("/api/v1/change-history", changeHistoryRoutes);
 app.use("/api/v1/regulations", regulationCatalogRoutes);
 app.use("/api/v1/org-regulations", organizationRegulationRoutes);
 app.use("/api/v1/policies", policyRoutes);
+app.use("/api/v1/files", fileOperationsLimiter);
 app.use("/api/v1/files", fileRoutes);
 app.use("/api/v1/organizations", organizationRoutes);
 app.use("/api/v1/evidence", evidenceRoutes);

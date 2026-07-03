@@ -2,11 +2,8 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { integrationService } from "../services/integration.service";
 import { getAllConnectors, getConnectorHealth } from "../services/connectors/connector.registry";
-
-function ensureUser(req: AuthenticatedRequest) {
-  if (!req.user) throw new Error("Authentication required");
-  return req.user;
-}
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 function qs(val: unknown): string | undefined {
   if (typeof val === "string") return val;
@@ -15,115 +12,96 @@ function qs(val: unknown): string | undefined {
 }
 
 export class IntegrationController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const integrations = await integrationService.findAll(user.organizationId, {
+  findAll = controllerWrapper(
+    async (req) => {
+      const integrations = await integrationService.findAll(req.user!.organizationId, {
         connectorType: qs(req.query.connectorType),
         status: qs(req.query.status),
       });
-      res.json({ success: true, data: integrations });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: integrations };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const integration = await integrationService.findById(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: integration });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  findById = controllerWrapper(
+    async (req) => {
+      const integration = await integrationService.findById(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: integration };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  create = controllerWrapper(
+    async (req) => {
       const { connectorType, name, config } = req.body;
-      if (!connectorType || !name) {
-        res.status(400).json({ success: false, message: "connectorType and name are required" });
-        return;
-      }
+      if (!connectorType || !name) throw new ValidationException("connectorType and name are required");
       const integration = await integrationService.create(
         { connectorType, name, config: config || {} },
-        user.organizationId,
-        user.userId
+        req.user!.organizationId,
+        req.user!.userId
       );
-      res.status(201).json({ success: true, data: integration });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: integration };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
+  update = controllerWrapper(
+    async (req) => {
       const integration = await integrationService.update(
         req.params.id as string,
         req.body,
-        user.organizationId,
-        user.userId
+        req.user!.organizationId,
+        req.user!.userId
       );
-      res.json({ success: true, data: integration });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: integration };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      await integrationService.delete(req.params.id as string, user.organizationId, user.userId);
-      res.json({ success: true, message: "Integration deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  delete = controllerWrapper(
+    async (req) => {
+      await integrationService.delete(req.params.id as string, req.user!.organizationId, req.user!.userId);
+      return { status: 200, message: "Integration deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 
+  // testConnection needs raw res because the success field in response depends on result
   async testConnection(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const user = ensureUser(req);
-      const result = await integrationService.testConnection(req.params.id as string, user.organizationId);
+      const result = await integrationService.testConnection(req.params.id as string, req.user!.organizationId);
       res.json({ success: result.success, data: result });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
     }
   }
 
-  async syncNow(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const evidence = await integrationService.syncNow(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: evidence });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+  syncNow = controllerWrapper(
+    async (req) => {
+      const evidence = await integrationService.syncNow(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: evidence };
+    },
+    { functionName: "syncNow", eventType: "Create" }
+  );
 
-  async getSyncHistory(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const events = await integrationService.getSyncHistory(req.params.id as string, user.organizationId);
-      res.json({ success: true, data: events });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  getSyncHistory = controllerWrapper(
+    async (req) => {
+      const events = await integrationService.getSyncHistory(req.params.id as string, req.user!.organizationId);
+      return { status: 200, data: events };
+    },
+    { functionName: "getSyncHistory", eventType: "Read" }
+  );
 
-  async getDashboardSummary(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const summary = await integrationService.getDashboardSummary(user.organizationId);
-      res.json({ success: true, data: summary });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+  getDashboardSummary = controllerWrapper(
+    async (req) => {
+      const summary = await integrationService.getDashboardSummary(req.user!.organizationId);
+      return { status: 200, data: summary };
+    },
+    { functionName: "getDashboardSummary", eventType: "Read" }
+  );
 
-  async getAvailableConnectors(_req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getAvailableConnectors = controllerWrapper(
+    async (_req) => {
       const connectors = getAllConnectors().map((c) => ({
         type: c.type,
         name: c.name,
@@ -131,28 +109,26 @@ export class IntegrationController {
         icon: c.icon,
         supportedControls: c.getSupportedControls(),
       }));
-      res.json({ success: true, data: connectors });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: connectors };
+    },
+    { functionName: "getAvailableConnectors", eventType: "Read" }
+  );
 
-  async getMarketplace(_req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getMarketplace = controllerWrapper(
+    async (_req) => {
       const health = getConnectorHealth();
-      res.json({ 
-        success: true, 
+      return {
+        status: 200,
         data: {
           total: health.length,
           connectors: health,
           communityUrl: "https://github.com/anomalyco/trust-maven-connectors",
           generatorScript: "node Servers/scripts/generateConnector.js",
-        }
-      });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+        },
+      };
+    },
+    { functionName: "getMarketplace", eventType: "Read" }
+  );
 }
 
 export const integrationController = new IntegrationController();

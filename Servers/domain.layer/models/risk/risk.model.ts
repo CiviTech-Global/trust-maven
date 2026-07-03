@@ -86,6 +86,21 @@ export class Risk extends Model {
   @Column({ type: DataType.UUID })
   categoryId!: string | null;
 
+  @Column({
+    type: DataType.ENUM("internal", "external", "third_party"),
+    defaultValue: "internal",
+  })
+  riskSource!: string;
+
+  @Column({
+    type: DataType.ENUM("immediate", "short_term", "medium_term", "long_term", "years"),
+    defaultValue: "medium_term",
+  })
+  velocity!: string;
+
+  @Column({ type: DataType.DECIMAL(15, 2) })
+  financialImpactEstimate!: number | null;
+
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 

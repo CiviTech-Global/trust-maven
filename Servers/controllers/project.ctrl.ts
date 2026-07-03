@@ -1,47 +1,45 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { projectService } from "../services/project.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class ProjectController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const projects = await projectService.findAll(req.user!.organizationId);
-      res.json({ success: true, data: projects });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+  findAll = controllerWrapper(
+    async (req) => {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const result = await projectService.findAll(req.user!.organizationId, page, limit);
+      return { status: 200, data: result.projects, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const project = await projectService.findById(id, req.user!.organizationId);
-      res.json({ success: true, data: project });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: project };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { name, description, status, startDate, endDate } = req.body;
-      if (!name) {
-        res.status(400).json({ success: false, message: "Name is required" });
-        return;
-      }
+      if (!name) throw new ValidationException("Name is required");
       const project = await projectService.create(
         { name, description, status, startDate, endDate },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: project });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: project };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const project = await projectService.update(
         id,
@@ -49,21 +47,19 @@ export class ProjectController {
         req.user!.organizationId,
         req.user!.userId
       );
-      res.json({ success: true, data: project });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: project };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       await projectService.delete(id, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Project deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Project deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 }
 
 export const projectController = new ProjectController();

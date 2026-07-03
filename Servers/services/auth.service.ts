@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { Op } from "sequelize";
 import { User } from "../domain.layer/models/user/user.model";
 import { Organization } from "../domain.layer/models/organization/organization.model";
 import { Role } from "../domain.layer/models/role/role.model";
@@ -162,6 +164,43 @@ export class AuthService {
     } catch {
       throw new Error("Invalid refresh token");
     }
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return; // Don't reveal if email exists
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenHash = crypto.createHash("sha256").update(resetToken).digest("hex");
+    const resetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await user.update({
+      passwordResetToken: resetTokenHash,
+      passwordResetExpires: resetExpires,
+    });
+
+    console.log(`Password reset token for ${email}: ${resetToken}`);
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const resetTokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      where: {
+        passwordResetToken: resetTokenHash,
+        passwordResetExpires: { [Op.gt]: new Date() },
+      },
+    });
+
+    if (!user) {
+      throw new Error("Invalid or expired reset token");
+    }
+
+    await user.update({
+      passwordHash: newPassword,
+      passwordResetToken: null,
+      passwordResetExpires: null,
+    });
   }
 }
 

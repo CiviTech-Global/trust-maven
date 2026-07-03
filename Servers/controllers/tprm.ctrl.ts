@@ -1,56 +1,44 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { tprmService } from "../services/tprm.service";
-
-function ensureUser(req: AuthenticatedRequest) {
-  if (!req.user) throw new Error("Authentication required");
-  return req.user;
-}
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class TprmController {
-  async getQuestionnaire(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getQuestionnaire = controllerWrapper(
+    async (req) => {
       const assessmentType = (req.query.type as string) || "security";
       const template = tprmService.generateQuestionnaire(assessmentType);
-      res.json({ success: true, data: template });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: template };
+    },
+    { functionName: "getQuestionnaire", eventType: "Read" }
+  );
 
-  async calculateScore(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  calculateScore = controllerWrapper(
+    async (req) => {
       const { questionnaire } = req.body;
-      if (!questionnaire || !Array.isArray(questionnaire)) {
-        res.status(400).json({ success: false, message: "questionnaire array is required" });
-        return;
-      }
+      if (!questionnaire || !Array.isArray(questionnaire)) throw new ValidationException("questionnaire array is required");
       const result = tprmService.scoreQuestionnaire(questionnaire);
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "calculateScore", eventType: "Create" }
+  );
 
-  async getRiskTrend(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const trend = await tprmService.getVendorRiskTrend(req.params.vendorId as string, user.organizationId);
-      res.json({ success: true, data: trend });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+  getRiskTrend = controllerWrapper(
+    async (req) => {
+      const trend = await tprmService.getVendorRiskTrend(req.params.vendorId as string, req.user!.organizationId);
+      return { status: 200, data: trend };
+    },
+    { functionName: "getRiskTrend", eventType: "Read" }
+  );
 
-  async getOverdueAssessments(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const user = ensureUser(req);
-      const overdue = await tprmService.getOverdueAssessments(user.organizationId);
-      res.json({ success: true, data: overdue });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+  getOverdueAssessments = controllerWrapper(
+    async (req) => {
+      const overdue = await tprmService.getOverdueAssessments(req.user!.organizationId);
+      return { status: 200, data: overdue };
+    },
+    { functionName: "getOverdueAssessments", eventType: "Read" }
+  );
 }
 
 export const tprmController = new TprmController();

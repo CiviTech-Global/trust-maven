@@ -11,5 +11,6 @@ router.get("/activity", (req, res) => dashboardController.getActivity(req, res))
 router.get("/trends", (req, res) => dashboardController.getTrends(req, res));
 router.get("/overdue", (req, res) => dashboardController.getOverdue(req, res));
 router.get("/overdue-reviews", (req, res) => dashboardController.getOverdueReviews(req, res));
+router.get("/risk-matrix", (req, res) => dashboardController.getRiskMatrix(req, res));
 
 export default router;

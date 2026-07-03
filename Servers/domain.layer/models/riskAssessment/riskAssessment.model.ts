@@ -54,6 +54,9 @@ export class RiskAssessment extends Model {
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isDemoData!: boolean;
 
+  @Column({ type: DataType.DECIMAL(15, 2) })
+  financialImpactEstimate!: number | null;
+
   @Column({
     type: DataType.ENUM("inherent", "residual"),
     defaultValue: "inherent",

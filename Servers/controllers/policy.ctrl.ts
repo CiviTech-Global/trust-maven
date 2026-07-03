@@ -1,51 +1,49 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { policyService } from "../services/policy.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class PolicyController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { status, search } = req.query;
-      const policies = await policyService.findAll(req.user!.organizationId, {
+  findAll = controllerWrapper(
+    async (req) => {
+      const { status, search, page, limit } = req.query;
+      const result = await policyService.findAll(req.user!.organizationId, {
         status: status as string | undefined,
         search: search as string | undefined,
+        page: page ? parseInt(page as string) : undefined,
+        limit: limit ? parseInt(limit as string) : undefined,
       });
-      res.json({ success: true, data: policies });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result.policies, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const policy = await policyService.findById(id, req.user!.organizationId);
-      res.json({ success: true, data: policy });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: policy };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { title, content, version, status, ownerId } = req.body;
-      if (!title) {
-        res.status(400).json({ success: false, message: "Title is required" });
-        return;
-      }
+      if (!title) throw new ValidationException("Title is required");
       const policy = await policyService.create(
         { title, content, version, status, ownerId },
         req.user!.organizationId,
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: policy });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: policy };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const { comment, ...policyData } = req.body;
       const policy = await policyService.update(
@@ -55,21 +53,19 @@ export class PolicyController {
         req.user!.userId,
         comment
       );
-      res.json({ success: true, data: policy });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: policy };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async delete(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  delete = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       await policyService.delete(id, req.user!.organizationId, req.user!.userId);
-      res.json({ success: true, message: "Policy deleted" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "Policy deleted" };
+    },
+    { functionName: "delete", eventType: "Delete" }
+  );
 }
 
 export const policyController = new PolicyController();

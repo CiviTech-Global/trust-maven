@@ -96,6 +96,20 @@ export enum ConfidenceLevel {
   HIGH = "high",
 }
 
+export enum RiskSource {
+  INTERNAL = "internal",
+  EXTERNAL = "external",
+  THIRD_PARTY = "third_party",
+}
+
+export enum RiskVelocity {
+  IMMEDIATE = "immediate",
+  SHORT_TERM = "short_term",
+  MEDIUM_TERM = "medium_term",
+  LONG_TERM = "long_term",
+  YEARS = "years",
+}
+
 export enum QuantificationMethodology {
   SIMPLE_ALE = "simple_ale",
   FAIR = "fair",

@@ -17,6 +17,12 @@ const LoginPage = lazy(
 const RegisterPage = lazy(
   () => import("../../presentation/pages/Authentication/RegisterPage")
 );
+const ForgotPasswordPage = lazy(
+  () => import("../../presentation/pages/Authentication/ForgotPasswordPage")
+);
+const ResetPasswordPage = lazy(
+  () => import("../../presentation/pages/Authentication/ResetPasswordPage")
+);
 const DashboardPage = lazy(
   () => import("../../presentation/pages/Dashboard/DashboardPage")
 );
@@ -175,6 +181,8 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route
           path="/"
           element={

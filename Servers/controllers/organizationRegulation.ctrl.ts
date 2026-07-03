@@ -1,117 +1,100 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { complianceHubService } from "../services/complianceHub.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class OrganizationRegulationController {
-  async getAdopted(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getAdopted = controllerWrapper(
+    async (req) => {
       const adopted = await complianceHubService.getAdoptedRegulations(
         req.user!.organizationId
       );
-      res.json({ success: true, data: adopted });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: adopted };
+    },
+    { functionName: "getAdopted", eventType: "Read" }
+  );
 
-  async adopt(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  adopt = controllerWrapper(
+    async (req) => {
       const { regulationId, targetComplianceDate, notes } = req.body;
-      if (!regulationId) {
-        res.status(400).json({ success: false, message: "regulationId is required" });
-        return;
-      }
+      if (!regulationId) throw new ValidationException("regulationId is required");
       const result = await complianceHubService.adoptRegulation(
         req.user!.organizationId,
         regulationId as string,
         { targetComplianceDate, notes },
         req.user!.userId
       );
-      res.status(201).json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: result };
+    },
+    { functionName: "adopt", eventType: "Create" }
+  );
 
-  async deprecate(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  deprecate = controllerWrapper(
+    async (req) => {
       const result = await complianceHubService.deprecateRegulation(
         req.user!.organizationId,
         req.params.id as string,
         req.user!.userId
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "deprecate", eventType: "Update" }
+  );
 
-  async getStatus(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  getStatus = controllerWrapper(
+    async (req) => {
       const result = await complianceHubService.getImplementationStatus(
         req.user!.organizationId,
         req.params.id as string
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "getStatus", eventType: "Read" }
+  );
 
-  async bulkDeprecate(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  bulkDeprecate = controllerWrapper(
+    async (req) => {
       const { ids } = req.body;
-      if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        res.status(400).json({ success: false, message: "ids array is required" });
-        return;
-      }
+      if (!ids || !Array.isArray(ids) || ids.length === 0) throw new ValidationException("ids array is required");
       const result = await complianceHubService.bulkDeprecateRegulations(
         req.user!.organizationId,
         ids,
         req.user!.userId
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "bulkDeprecate", eventType: "Update" }
+  );
 
-  async bulkUpdateStatus(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  bulkUpdateStatus = controllerWrapper(
+    async (req) => {
       const { ids, status } = req.body;
-      if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        res.status(400).json({ success: false, message: "ids array is required" });
-        return;
-      }
-      if (!status) {
-        res.status(400).json({ success: false, message: "status is required" });
-        return;
-      }
+      if (!ids || !Array.isArray(ids) || ids.length === 0) throw new ValidationException("ids array is required");
+      if (!status) throw new ValidationException("status is required");
       const result = await complianceHubService.bulkUpdateRegulationStatus(
         req.user!.organizationId,
         ids,
         status,
         req.user!.userId
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "bulkUpdateStatus", eventType: "Update" }
+  );
 
-  async updateImplementation(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  updateImplementation = controllerWrapper(
+    async (req) => {
       const result = await complianceHubService.updateRequirementImplementation(
         req.user!.organizationId,
         req.params.implId as string,
         req.body,
         req.user!.userId
       );
-      res.json({ success: true, data: result });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: result };
+    },
+    { functionName: "updateImplementation", eventType: "Update" }
+  );
 }
 
 export const organizationRegulationController = new OrganizationRegulationController();

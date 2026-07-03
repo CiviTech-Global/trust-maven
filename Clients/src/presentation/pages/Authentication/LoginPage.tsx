@@ -232,6 +232,11 @@ export default function LoginPage() {
                   {loading ? "Signing in..." : "Sign In"}
                 </Button>
               )}
+              <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+                <Link to="/forgot-password" style={{ color: "primary.main" }}>
+                  Forgot Password?
+                </Link>
+              </Typography>
             </form>
           )}
 

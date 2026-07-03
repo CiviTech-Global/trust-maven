@@ -1,89 +1,80 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../middleware/auth.middleware";
 import { userService } from "../services/user.service";
+import { controllerWrapper } from "../utils/controllerWrapper";
+import { ValidationException } from "../domain.layer/exceptions/custom.exception";
 
 export class UserController {
-  async findAll(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const users = await userService.findAll(req.user!.organizationId);
-      res.json({ success: true, data: users });
-    } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  }
+  findAll = controllerWrapper(
+    async (req) => {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const result = await userService.findAll(req.user!.organizationId, page, limit);
+      return { status: 200, data: result.users, pagination: result.pagination };
+    },
+    { functionName: "findAll", eventType: "Read" }
+  );
 
-  async findById(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  findById = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const user = await userService.findById(id, req.user!.organizationId);
-      res.json({ success: true, data: user });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: user };
+    },
+    { functionName: "findById", eventType: "Read" }
+  );
 
-  async update(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  update = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const { firstName, lastName } = req.body;
       const user = await userService.update(id, { firstName, lastName }, req.user!.organizationId);
-      res.json({ success: true, data: user });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: user };
+    },
+    { functionName: "update", eventType: "Update" }
+  );
 
-  async create(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  create = controllerWrapper(
+    async (req) => {
       const { email, firstName, lastName, roleId } = req.body;
-      if (!email || !firstName || !lastName) {
-        res.status(400).json({ success: false, message: "Email, first name, and last name are required" });
-        return;
-      }
+      if (!email || !firstName || !lastName) throw new ValidationException("Email, first name, and last name are required");
       const user = await userService.create(
         { email, firstName, lastName, roleId },
         req.user!.organizationId
       );
-      res.status(201).json({ success: true, data: user });
-    } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 201, data: user };
+    },
+    { functionName: "create", eventType: "Create" }
+  );
 
-  async updateRole(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  updateRole = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       const { roleId } = req.body;
-      if (!roleId) {
-        res.status(400).json({ success: false, message: "Role ID is required" });
-        return;
-      }
+      if (!roleId) throw new ValidationException("Role ID is required");
       const user = await userService.updateRole(id, roleId, req.user!.organizationId);
-      res.json({ success: true, data: user });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, data: user };
+    },
+    { functionName: "updateRole", eventType: "Update" }
+  );
 
-  async deactivate(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  deactivate = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       await userService.deactivate(id, req.user!.organizationId);
-      res.json({ success: true, message: "User deactivated" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "User deactivated" };
+    },
+    { functionName: "deactivate", eventType: "Update" }
+  );
 
-  async activate(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
+  activate = controllerWrapper(
+    async (req) => {
       const id = req.params.id as string;
       await userService.activate(id, req.user!.organizationId);
-      res.json({ success: true, message: "User activated" });
-    } catch (error: any) {
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
+      return { status: 200, message: "User activated" };
+    },
+    { functionName: "activate", eventType: "Update" }
+  );
 }
 
 export const userController = new UserController();

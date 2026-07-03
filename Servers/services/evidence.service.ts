@@ -5,7 +5,7 @@ import { auditService } from "./audit.service";
 import { AuditAction } from "../types";
 
 export class EvidenceService {
-  async findAll(organizationId: string, filters?: { entityType?: string; entityId?: string; status?: string; search?: string }) {
+  async findAll(organizationId: string, filters?: { entityType?: string; entityId?: string; status?: string; search?: string; page?: number; limit?: number }) {
     const where: WhereOptions = { organizationId } as any;
     if (filters?.entityType) (where as any).entityType = filters.entityType;
     if (filters?.entityId) (where as any).entityId = filters.entityId;
@@ -14,11 +14,22 @@ export class EvidenceService {
       (where as any).title = { [Op.iLike]: `%${filters.search}%` };
     }
 
-    return Evidence.findAll({
+    const page = filters?.page || 1;
+    const limit = Math.min(filters?.limit || 50, 100);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Evidence.findAndCountAll({
       where,
       include: [{ model: User, as: "uploadedBy", attributes: ["id", "firstName", "lastName", "email"] }],
       order: [["createdAt", "DESC"]],
+      limit,
+      offset,
     });
+
+    return {
+      evidence: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) },
+    };
   }
 
   async findById(id: string, organizationId: string) {
@@ -70,7 +81,8 @@ export class EvidenceService {
   }
 
   async getSummary(organizationId: string) {
-    const all = await this.findAll(organizationId);
+    const result = await this.findAll(organizationId);
+    const all = result.evidence;
     return {
       total: all.length,
       draft: all.filter((e) => e.status === "draft").length,
